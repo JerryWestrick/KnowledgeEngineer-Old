@@ -1,0 +1,15 @@
+.system --- INSTRUCTIONS ---
+.include Prompts/File Format.pe
+.user
+You will receive several text blocks containing Requirements for different Actors of a System.
+Decide what components are required to implement such a system; be sure to include a Database component.
+.system --- DATA ---
+.text_block Dynamic/Requirements/*
+.system
+--- GENERATE FOR EACH ACTOR
+[Actor Name]
+```
+    The requirements for the Actor [Actor Name] are:
+    - ###Please Complete ###
+```
+

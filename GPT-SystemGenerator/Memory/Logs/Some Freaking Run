@@ -1,0 +1,20 @@
+[2023-06-29 22:56:55] Create: Creation of Log File Memory/Logs/Some Freaking Run
+[2023-06-29 22:56:55] RUN: Using model: text-davinci-003
+[2023-06-29 22:56:55] RUN: --- start ---
+[2023-06-29 22:56:55] MEMORY: deleted /home/jerry/PycharmProjects/GPT-SystemGenerator/Memory/Dynamic 
+[2023-06-29 22:56:55] SYSTEM: Using model text-davinci-003 in mode complete
+[2023-06-29 22:56:55] RUN: Target Technology: FLASK
+[2023-06-29 22:56:55] WARNNIG: Model text_davinci-003 not available for provided API key. Reverting to text-davinci-003. Sign up for the GPT-4 wait list here: https://openai.com/waitlist/gpt-4-api
+[2023-06-29 22:56:55] SYSTEM: Using model text-davinci-003 in mode complete
+[2023-06-29 22:56:55] WARNNIG: Model text_davinci-003 not available for provided API key. Reverting to text-davinci-003. Sign up for the GPT-4 wait list here: https://openai.com/waitlist/gpt-4-api
+[2023-06-29 22:56:55] SYSTEM: Using model text-davinci-003 in mode complete
+[2023-06-29 22:56:56] WARNNIG: Model text_davinci-003 not available for provided API key. Reverting to text-davinci-003. Sign up for the GPT-4 wait list here: https://openai.com/waitlist/gpt-4-api
+[2023-06-29 22:56:56] SYSTEM: Using model text-davinci-003 in mode complete
+[2023-06-29 22:56:56] WARNNIG: Model text_davinci-003 not available for provided API key. Reverting to text-davinci-003. Sign up for the GPT-4 wait list here: https://openai.com/waitlist/gpt-4-api
+[2023-06-29 22:56:56] SYSTEM: Using model text-davinci-003 in mode complete
+[2023-06-29 22:56:56] WARNNIG: Model text_davinci-003 not available for provided API key. Reverting to text-davinci-003. Sign up for the GPT-4 wait list here: https://openai.com/waitlist/gpt-4-api
+[2023-06-29 22:56:56] SYSTEM: Using model text-davinci-003 in mode complete
+[2023-06-29 22:56:56] WARNNIG: Model text_davinci-003 not available for provided API key. Reverting to text-davinci-003. Sign up for the GPT-4 wait list here: https://openai.com/waitlist/gpt-4-api
+[2023-06-29 22:56:56] SYSTEM: Using model text-davinci-003 in mode complete
+[2023-06-29 22:56:56] RUN: Flask Generated
+[2023-06-29 22:56:56] RUN: --- end of run ---

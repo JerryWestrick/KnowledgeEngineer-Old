@@ -1,0 +1,14 @@
+.system --- INSTRUCTIONS ---
+.include Prompts/File Format.pe
+.user
+You will receive a text block containing the database definitions of the System.
+You will receive a text block containing the Operator Requirements
+You will analyze them.
+Generate all files required for a Web App using REST API to implement User requirements.
+Use Bootstrap and DataTables.
+Generate individual files as text blocks with appropriate extensions.
+Generate a text block explaining how to access GUI
+.system --- DATA ---
+.text_block Dynamic/System Specifications/CreateDatabase.sql
+.text_block Dynamic/Requirements/User Requirements.pe
+.system --- RESPONSE ---

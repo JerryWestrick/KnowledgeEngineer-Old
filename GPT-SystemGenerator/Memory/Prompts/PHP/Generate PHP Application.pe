@@ -1,0 +1,14 @@
+.system --- INSTRUCTIONS ---
+.include Prompts/File Format.pe
+.user
+You will receive a text block containing the database definitions of the System.
+You will receive a text block containing the User requirements of the System.
+You will analyze them.
+Generate the fully functional PHP application including all required files like 'config.php'.
+Generate each file in a separate text block.
+Use SQLite database 'BookStore.db'.
+Please generate a separate page for each User requirement.
+.system --- DATA ---
+.text_block Dynamic/System Specifications/CreateDatabase.sql
+.text_block Dynamic/Requirements/User Requirements.pe
+.system --- RESPONSE ---

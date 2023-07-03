@@ -1,0 +1,12 @@
+.system --- INSTRUCTIONS ---
+.include Prompts/File Format.pe
+.user
+You will receive a text blocks containing Requirements for the different Actors of the System.
+You will receive a text block containing the SQL DDL of the database component.
+You will analyze them.
+Generate a text block called 'SQLTestData.sql' with the SQL to Create test data with at least 10 items in each table.
+Generate a linux sh script called 'LoadTestDate.sh' to load the above file into a SQLite database called 'BookStore.db'.
+.system --- DATA ---
+.text_block Dynamic/Requirements/*
+.text_block Dynamic/System Specifications/CreateDatabase.sql
+.system --- RESPONSE ---

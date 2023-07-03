@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Knowledge Engineer</title>
+    <style>
+        /* CSS styles for the offscreen area */
+        .offscreen {
+            position: fixed;
+            top: 0;
+            right: -600px;
+            width: 600px;
+            height: 100vh;
+            background-color: #f1f1f1;
+            padding: 20px;
+            transition: right 0.3s ease-in-out;
+        }
+
+        /* CSS styles to show the offscreen area */
+        .offscreen.show {
+            right: 0;
+        }
+
+        /* CSS styles for the header */
+        .header {
+            background-color: #f1f1f1;
+            padding: 10px;
+            text-align: center;
+        }
+
+        /* CSS styles for the buttons */
+        .button {
+            padding: 5px 10px;
+            background-color: #3498db;
+            border: none;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        /* CSS styles for the active button */
+        .button.active {
+            background-color: #2ecc71;
+        }
+
+        /* CSS styles for the content area */
+        .content {
+            padding: 20px;
+        }
+
+        /* CSS styles for the footer */
+        .footer {
+            background-color: #f1f1f1;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        /* CSS styles for the message line */
+        .message-line {
+            flex-grow: 1;
+            margin-left: 10px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        /* CSS styles for the status toggle */
+        .status-toggle {
+            padding: 5px 10px;
+            background-color: #3498db;
+            border: none;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        /* CSS styles for the active status */
+        .status-toggle.active {
+            background-color: #2ecc71;
+        }
+
+
+        .open {
+            color: #114f11;
+            background-color: #d0fdd0;
+            font-size: small;
+        }
+
+        .close {
+            color: #114f11;
+            background-color: #d0fdd0;
+            font-size: small;
+        }
+
+        .send {
+            color: #114f11;
+            background-color: #d0fdd0;
+            font-size: small;
+        }
+
+        .receive {
+            color: #114f11;
+            background-color: #d0fdd0;
+            font-size: small;
+        }
+
+        .error {
+            color: red;
+            background-color: #fdd0d4;
+            font-size: small;
+        }
+
+        .call {
+            color: #804d00;
+            background-color: #fdf7d0;
+            font-size: small;
+        }
+
+        .fail {
+            color: red;
+            background-color: #fdd0d4;
+            font-size: small;
+        }
+
+        .user {
+            color: midnightblue;
+            background-color: #d0d4fd;
+            font-size: small;
+        }
+
+        .head {
+            display: inline;
+            border: 1px solid black;
+            border-radius: 4px;
+            width: 57px;
+            background-color: white;
+            font-size: small;
+        }
+
+
+    </style>
+    <style >
+        /* Styling for the login popup */
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .popup-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .popup input[type="text"],
+        .popup input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .popup button {
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 20px;
+            color: #aaa;
+            cursor: pointer;
+        }
+    </style>
+    <style >
+        /* Styling for the Table  */
+        table.t1 {
+            width: 100%;
+            margin: 1em auto;
+            border-collapse: collapse;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .t1 th, .t1 td {
+            padding: 4px 8px;
+        }
+
+        .t1 thead th {
+            background: #4f81bd;
+            text-transform: lowercase;
+            text-align: left;
+            font-size: 15px;
+            color: #fff;
+        }
+
+        .t1 tr {
+            border-right: 1px solid #95b3d7;
+        }
+
+        .t1 tbody tr {
+            border-bottom: 1px solid #95b3d7;
+        }
+
+        .t1 tbody tr:nth-child(odd) {
+            background: #dbe5f0;
+        }
+
+        .t1 tbody th, .t1 tbody tr:nth-child(even) td {
+            border-right: 1px solid #95b3d7;
+        }
+
+        .t1 tfoot th {
+            background: #4f81bd;
+            text-align: left;
+            font-weight: normal;
+            font-size: 10px;
+            color: #fff;
+        }
+
+        .t1 tr *:nth-child(3), .t1 tr *:nth-child(4) {
+            text-align: right;
+        }
+
+        /* styling for the Step Editor */
+        .step_popup_editor {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 20px;
+            width: 400px;
+            max-width: 100%;
+            box-sizing: border-box;
+            z-index: 9999;
+        }
+
+        .step_popup_editor label,
+        .step_popup_editor input,
+        .step_popup_editor button {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .step_popup_editor label {
+            font-weight: bold;
+            text-align: right;
+        }
+
+        .step_popup_editor input {
+            /*width: 100%;*/
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .step_popup_editor button {
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+
+    </style>
+
+    <script src="kb_websocket.js"></script>
+</head>
+<body>
+<div class="header">
+    <h1>Knowledge Engineer</h1>
+</div>
+
+<div class="tabs">
+    <button class="button active">Execution</button>
+    <button class="button">Step Editor</button>
+    <button class="button">Page 3</button>
+</div>
+
+<div class="content">
+    <h1>Run Generation</h1>
+    <button id='RunTest' onclick="execute_test()">Run Test</button>
+    <h2>Results of run</h2>
+    <div id="RunLog"></div>
+    <table id="LogTable" class="t1">
+        <tr>
+<!--            <th>Time Stamp</th>-->
+            <th>System</th>
+            <th>Message</th>
+        </tr>
+    </table>
+
+</div>
+
+<script title="Run Generation">
+
+
+
+
+
+
+
+
+    function execute_test() {
+         document.getElementById('RunTest').classList.toggle('active')
+         let msg = {'process': 'test', 'model': 'gpt-3.5-turbo'};
+        window.send_msg({cmd: 'exec', object: 'process', cb: 'exec_process_log', record: msg});
+    }
+    function exec_process_log(msg) {
+        logx('user',`In exec_process_log(${JSON.stringify(msg)})`)
+
+        if (window.execlog == null) {
+            window.execlog = document.getElementById('RunLog');
+        }
+
+        if (msg['rc'] === 'Okay') {
+            let ll = msg['record']['msg'].replace(/\n/g, "<br />");
+
+            // Create table.
+            const table = document.getElementById("LogTable");
+            let tr = table.insertRow(-1);                   // table row.
+
+            // let tabCell = tr.insertCell(-1);
+            // tabCell.innerHTML = msg['record']['time'];
+
+            tabCell = tr.insertCell(-1);
+            tabCell.innerHTML = msg['record']['log'];
+
+            tabCell = tr.insertCell(-1);
+            tabCell.innerHTML = ll;
+
+            // Now, add the newly created table with json data, to a container.
+            // divShowData.appendChild(table);
+
+        } else {
+            let div_html = `<div class="error"><div class="error head">Error: </div>${msg['reason']}</div>`;
+            execlog.innerHTML += div_html;
+            execlog.scrollTop = execlog.scrollHeight;
+        }
+    }
+
+
+
+</script>
+
+<div class="content" style="display: none;">
+    <h1>Page 2 Content</h1>
+    <h1>Step Editor</h1>
+    <div>Step Data</div>
+    <h3>Steps</h3>
+    <div id="table_steps"></div>
+
+    <h3>Users</h3>
+    <div id="table_users"></div>
+</div>
+
+<div class="content" style="display: none;">
+    <h1>Page 3 Content</h1>
+    <!-- Add content for Page 3 here -->
+</div>
+
+<div class="footer">
+    <button class="status-toggle" id="statusToggle">Online</button>
+    <button class="button" id="commsBtn">Comms</button>
+    <div class="message-line" id="msgline"></div>
+</div>
+
+<script title="statusTogle Online Offline">
+    function on_socket_open(msg) {
+        const statusToggle = document.getElementById('statusToggle');
+        statusToggle.classList.add('active');
+        statusToggle.textContent = 'Online';
+    }
+
+    function on_socket_close(msg) {
+        const statusToggle = document.getElementById('statusToggle');
+        statusToggle.classList.remove('active');
+        statusToggle.textContent = 'Offline';
+    }
+</script>
+<script title="Tables From WebSocket">
+
+
+    function tableFromObject(table_id, table_obj) {
+        // the json data.
+        // {"1":
+        //   {"id":1,"name":"Step 1","prompt_id":null,"storage_path":"","messages":null,"response":null,"files":null,"prompt_tokens":null,"completion_tokens":null,"total_tokens":null,"elapsed":null}}
+
+        logx('user', `${table_id}...`)
+
+        let ids = Object.keys(table_obj);
+        let first = table_obj[ids[0]];
+
+        // Extract value from table header.
+        // ('Book ID', 'Book Name', 'Category' and 'Price')
+        let col = [];
+        for (let col_name in first) {
+            if (col.indexOf(col_name) === -1) {
+                col.push(col_name);
+            }
+        }
+
+        // Create table.
+        const table = document.createElement("table");
+        table.classList.add('t1')
+
+        // Create table header row using the extracted headers above.
+        let tr = table.insertRow(-1);                   // table row.
+
+        for (let i = 0; i < col.length; i++) {
+            let th = document.createElement("th");      // table header.
+            th.innerHTML = col[i];
+            tr.appendChild(th);
+        }
+
+        // add json data to the table as rows.
+        for (let i = 0; i < ids.length; i++) {
+
+            tr = table.insertRow(-1);
+
+            for (let j = 0; j < col.length; j++) {
+                let tabCell = tr.insertCell(-1);
+                tabCell.innerHTML = table_obj[ids[i]][col[j]];
+            }
+        }
+
+        // Now, add the newly created table with json data, to a container.
+        const divShowData = document.getElementById(table_id);
+        divShowData.innerHTML = "";
+        divShowData.appendChild(table);
+    }
+
+
+    let knowledgebase = {}
+
+
+    function db_initial_load(msg) {
+        window.logx('user', JSON.stringify(msg));
+        for (let table in msg['data']) {
+            window.logx('user', `${table}: loaded...`);
+            knowledgebase[table] = msg['data'][table]
+            tableFromObject(`table_${table}`, knowledgebase[table])
+        }
+
+    }
+
+</script>
+<div class="offscreen">
+    <h2>Messages</h2>
+    <div id="LOG" style=" overflow-y: scroll; background-color: lightyellow; min-width: max-content;">
+        <div>Messages go here</div>
+    </div>
+</div>
+
+<script title="Offscreen Message Logs">
+    // JavaScript code to handle button switching
+    const buttons = document.querySelectorAll('.button');
+    const contents = document.querySelectorAll('.content');
+
+    buttons.forEach((button, index) => {
+        button.addEventListener('click', () => {
+            buttons.forEach((button) => button.classList.remove('active'));
+            contents.forEach((content) => content.style.display = 'none');
+
+            button.classList.add('active');
+            contents[index].style.display = 'block';
+        });
+    });
+
+    // JavaScript code to handle the Comms button toggle
+    const commsBtn = document.getElementById('commsBtn');
+    const offscreen = document.querySelector('.offscreen');
+
+    commsBtn.addEventListener('click', () => {
+        offscreen.classList.toggle('show');
+    });
+
+    // JavaScript code to handle the status toggle
+    // const statusToggle = document.getElementById('statusToggle');
+    //
+    // statusToggle.addEventListener('click', () => {
+    //   statusToggle.classList.toggle('active');
+    //   statusToggle.textContent = statusToggle.classList.contains('active') ? 'Online' : 'Offline';
+    // });
+
+</script>
+
+<div class="popup" id="loginPopup">
+    <div class="popup-content">
+        <!--      <span class="close" onclick="send_login()">&times;</span>-->
+        <h2>Login</h2>
+        <form>
+            <input id="typeEmailX-2" placeholder="Username" required type="text">
+            <input id="typePasswordX-2" placeholder="Password" required type="password">
+            <button onclick="send_login()" type="button">Login</button>
+        </form>
+    </div>
+</div>
+<script title="Login Popup">
+    function do_user_login(msg) {
+        window.logx('user', JSON.stringify(msg));
+        document.getElementById("loginPopup").style.display = "flex";
+    }
+
+    function send_login() {
+        document.getElementById("loginPopup").style.display = "none";
+        let email_ele = document.getElementById("typeEmailX-2");
+        let password_ele = document.getElementById("typePasswordX-2");
+
+        let msg = {email: email_ele.value, password: password_ele.value};
+        window.send_msg({cmd: 'login', object: 'users', cb: 'do_user_login', record: msg});
+
+    }
+</script>
+
+
+</body>
+</html>
+

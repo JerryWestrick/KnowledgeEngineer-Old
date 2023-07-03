@@ -1,0 +1,10 @@
+.system --- INSTRUCTIONS ---
+.system This is the system version: ${version}$ <--
+.include Prompts/File Format.pe
+.user
+You will receive a Product Description as a text block.
+You will analyze it.
+For each actor generate an text block called "[Actor name] Requirements" list each simplified requirement
+.system --- DATA ---
+.text_block Knowledge/Product Description.pe
+.system --- RESPONSE ---

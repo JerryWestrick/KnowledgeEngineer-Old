@@ -1,0 +1,17 @@
+.system --- INSTRUCTIONS ---
+.include Prompts/File Format.pe
+.system You are a systems engineer.  You will define major components of a system to be built.
+.user
+Here are the actors of the system:
+.text_block Dynamic/Requirements/*
+For such a system decide what system components are needed.
+Be sure to include a Database component.
+.system --- DATA ---
+.user
+--- Please complete the following sections:
+json
+```
+{   'components': list of components
+}
+```
+

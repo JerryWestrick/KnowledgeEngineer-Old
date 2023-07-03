@@ -1,0 +1,11 @@
+.system --- INSTRUCTIONS ---
+.include Prompts/File Format.pe
+.user
+You will receive a text blocks containing Requirements for the different Actors of the System.
+You will receive a text block containing the SQL DDL of the database component.
+You will analyze them.
+Generate a text block called 'SQL Test Data.sql' with the SQL to Create test data for the database.
+.system --- DATA ---
+.text_block Dynamic/Requirements/*
+.text_block Dynamic/System Specifications/CreateDatabase.sql
+.system --- RESPONSE ---
