@@ -1,11 +1,9 @@
 import datetime
 import os
-
-import colors
-from textwrap import wrap, fill
+from KbServerApp import colors
 
 
-class Logger:
+class GptLogger:
     """
     A logger class that prints log messages to the console if logging is enabled for a specific action,
     and always appends log messages to a log file.
@@ -27,11 +25,11 @@ class Logger:
 
     Attributes:
         log_file (str): The path to the log file.
-        logging_actions (dict): A dictionary to store the enabled logging actions.
+        gpt_logging_actions (dict): A dictionary to store the enabled logging actions.
 
     """
 
-    logging_actions = {
+    gpt_logging_actions = {
         'SYSTEM': True,
         'LLM': True,
         'PROMPT': True,
@@ -84,7 +82,8 @@ class Logger:
                 os.remove(log_file)
 
             directory = os.path.dirname(log_file)  # Get the directory path
-            os.makedirs(directory, exist_ok=True)  # Create the directory if it doesn't exist
+            if directory != '':
+                os.makedirs(directory, exist_ok=True)  # Create the directory if it doesn't exist
 
             with open(log_file, 'w') as file:
                 action = "Create"
@@ -114,7 +113,7 @@ class Logger:
 
             """
 
-        self.logging_actions[action] = True
+        self.gpt_logging_actions[action] = True
 
     def __disable_logging(self, action):
         """
@@ -125,7 +124,7 @@ class Logger:
 
         """
 
-        self.logging_actions[action] = False
+        self.gpt_logging_actions[action] = False
 
     def __log(self, action=None, message=None):
         """
@@ -160,10 +159,10 @@ class Logger:
         #         left_margin = rest
         #     log_entry += wrapped_string
 
-        if action not in self.logging_actions:
-            self.logging_actions[action] = True
+        if action not in self.gpt_logging_actions:
+            self.gpt_logging_actions[action] = True
 
-        if self.logging_actions[action]:
+        if self.gpt_logging_actions[action]:
             color = self.__logging_colors.get(action, colors.DEFAULT)
             print(f'{color}{log_entry}')
 
@@ -181,7 +180,7 @@ class Logger:
 
         """
 
-        logger = Logger.get_instance()
+        logger = GptLogger.get_instance()
         logger.__log(action, message)
 
     @staticmethod
@@ -194,7 +193,7 @@ class Logger:
 
         """
 
-        logger = Logger.get_instance()
+        logger = GptLogger.get_instance()
         logger.__enable_logging(action)
 
     @staticmethod
@@ -207,7 +206,7 @@ class Logger:
 
         """
 
-        logger = Logger.get_instance()
+        logger = GptLogger.get_instance()
         logger.__disable_logging(action)
 
     @classmethod
@@ -221,5 +220,5 @@ class Logger:
         """
 
         if not cls._instance:
-            cls._instance = Logger('log.txt')
+            cls._instance = GptLogger('log.txt')
         return cls._instance

@@ -1,8 +1,9 @@
 import glob
 
 from lark import Lark, Transformer
-import colors
-from logger import Logger
+import KbServerApp.colors
+from KbServerApp import colors
+from KbServerApp.logger import GptLogger as Logger
 
 LineStatement_Grammar = r"""
     ?start: "." statement 

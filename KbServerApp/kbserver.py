@@ -1,7 +1,7 @@
-import asyncio
 import json
 import os
 import threading
+import time
 from typing import List, Callable
 
 import psycopg
@@ -11,82 +11,17 @@ from dotenv import load_dotenv, find_dotenv
 from psycopg import Notify
 from psycopg.rows import dict_row
 from twisted.application.service import Service
-from twisted.internet import reactor
-from twisted.internet.defer import Deferred, inlineCallbacks, returnValue
+from twisted.internet.defer import inlineCallbacks, returnValue
 from twisted.logger import Logger
-import logging
-import re
 from twisted.internet import protocol, reactor
 
+from KbServerApp.OpenAI_API_Costs import OpenAI_API_Costs
+from KbServerApp.Processes import ProcessList
+from KbServerApp.defered import as_deferred
+from KbServerApp.logger import GptLogger
+from KbServerApp.step import Step
+
 load_dotenv(find_dotenv())
-
-
-class GpsProtocol(protocol.ProcessProtocol):
-    log = Logger(namespace='GPS_Protocol')
-
-    def __init__(self, server):
-        self.kbserver = server
-        self.lines: [str] = []
-
-
-    def connectionMade(self):
-        self.log.info("connectionMade!")
-        self.log.info("GPT-SystemGenerator started...")
-        # self.transport.closeStdin()  # We do not read standard input
-
-    def outReceived(self, data):
-        self.log.info("outReceived! {data}", data=data)
-        line_list = data.decode().splitlines()
-        for line in line_list:
-            self.lines.append(line)
-
-        while len(self.lines) > 1:
-            if re.match("\[\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d] ", self.lines[1]):
-                jline = self.lines[0]
-                t = jline[:21]
-                (log, txt) = jline[22:].split(': ', 1)
-                msg = {'cmd': 'exec',
-                       'rc': 'Okay',
-                       'object': 'process',
-                       'cb': 'exec_process_log',
-                       'record': {'time': t, 'log': log, 'msg': txt}
-                       }
-
-                response = json.dumps(msg, ensure_ascii=False, default=str)
-                self.kbserver.sendMessage(response.encode('UTF8'), False)
-
-            else:
-                self.lines[1] = f'{self.lines[0]}\n{self.lines[1]}'
-
-            del self.lines[:1]
-
-
-    def errReceived(self, data):
-        self.log.error("errReceived! with {bytes} bytes!", bytes=len(data))
-        self.log.error("errReceived! {data}", data=data)
-
-    def inConnectionLost(self):
-        self.log.warn("inConnectionLost! stdin is closed! (we probably did it)")
-
-    def outConnectionLost(self):
-        self.log.info("outConnectionLost! The child closed their stdout!")
-        # now is the time to examine what they wrote
-        # print("I saw them write:", self.data)
-        # (dummy, lines, words, chars, file) = re.split(r"\s+", self.data)
-
-    def errConnectionLost(self):
-        self.log.error("errConnectionLost! The child closed their stderr.")
-
-    def processExited(self, reason):
-        self.log.error("processExited, status {status}", status=reason.value.exitCode)
-
-    def processEnded(self, reason):
-        self.log.info("processEnded, status {exitCode}", exitCode=reason.value.exitCode)
-        self.log.info("Good Bye")
-
-
-def as_deferred(f):
-    return Deferred.fromFuture(asyncio.ensure_future(f))
 
 
 class DatabaseStore(object):
@@ -334,6 +269,9 @@ class PostgresListenService(twisted.application.service.Service):
         Service.stopService(self)
 
 
+WS_CONNECTIONS = []  # All connection instances
+
+
 class KbServerProtocol(WebSocketServerProtocol):
     #
     # This is instantiated for each connection...
@@ -348,52 +286,12 @@ class KbServerProtocol(WebSocketServerProtocol):
         super().__init__()
         self.loggedIn = False
         self.user = {}
+        WS_CONNECTIONS.append(self)
 
     def onOpen(self):
         KbServerProtocol.log.info("onOpen()...")
-        # So now send a login challenge
-        msg = {'cmd': 'login',
-               'cb': 'do_user_login',
-               'rc': 'Okay',
-               'object': 'users',
-               'data': {'email': '', 'password': ''}
-               }
-        response = json.dumps(msg, ensure_ascii=False, default=str)
-        self.sendMessage(response.encode('UTF8'), False)
-        return ''
-
-    # Any error in login attempt results in an immediate disconnect of websocket.
-    # Failed attempt is logged on server but no information is sent via websocket.
-    @inlineCallbacks
-    def user_login(self, payload, _):
-        msg = json.loads(payload.decode('utf8'))
-        KbServerProtocol.log.info("received msg cmd:{cmd} object:{object} ...", **msg)
-        if msg['cmd'] != 'login' or msg['object'] != 'users':
-            # msg['rc'] = 'User Login Required'
-            # msg['record']['error'] = 'User Login is required!'
-            # response = json.dumps(msg, ensure_ascii=False, default=str)
-            # self.sendMessage(response.encode('UTF8'), False)
-            KbServerProtocol.log.error("First Message on websocket channel must be login.  Dropping connection.")
-            self.dropConnection(True)
-            returnValue('')
-
-        # Got login Attempt in valid sequence...
-        # See if password is valid...
-        result = None
-        try:
-            result = yield as_deferred(self.factory.db.users_login(msg=msg))
-        except Exception as err:
-            KbServerProtocol.log.error("Login attempt Failed...reason({err})", err=err)
-            self.dropConnection(True)
-            returnValue('')
-
-        if not result:
-            KbServerProtocol.log.error("Login attempt password Failure...")
-            self.dropConnection(True)
-            returnValue('')
 
         # Yippee, we got a valid Login..  Store the
-        self.user = msg['record']
         self.factory.webClients.append(self)
         self.loggedIn = True
 
@@ -405,9 +303,52 @@ class KbServerProtocol(WebSocketServerProtocol):
                }
         response = json.dumps(msg, ensure_ascii=False, default=str)
         self.sendMessage(response.encode('UTF8'), False)
-        KbServerProtocol.log.info("User: {user} logged in, Now Serving {count} clients", user=self.user['email'],
-                                  count=len(self.factory.webClients))
-        returnValue('')
+        KbServerProtocol.log.info("Now Serving {count} clients", count=len(self.factory.webClients))
+        pl = {}
+        for k, v in ProcessList.items():
+            a = []
+            for s in v:
+                a.append(s.to_json())
+            pl[k] = a
+
+        msg['cmd'] = 'process_list_initial_load'
+        msg['cb'] = 'process_list_initial_load'
+        msg['rc'] = 'Okay'
+        msg['object'] = 'process'
+        msg['data'] = pl
+        response = json.dumps(msg, ensure_ascii=False, default=str)
+        self.sendMessage(response.encode('UTF8'), False)
+
+        msg['cmd'] = 'memory_initial_load'
+        msg['cb'] = 'memory_initial_load'
+        msg['rc'] = 'Okay'
+        msg['object'] = 'memory'
+        msg['data'] = self.memory_as_dictionary()
+        response = json.dumps(msg, ensure_ascii=False, default=str)
+        self.sendMessage(response.encode('UTF8'), False)
+
+        return
+
+    def memory_as_dictionary(self):
+        dir_structure = {}
+
+        for dirpath, dirnames, filenames in os.walk('Memory'):
+            subtree = dir_structure
+            dirpath_parts = dirpath.split(os.sep)
+
+            for part in dirpath_parts[1:]:
+                subtree = subtree.setdefault(part, {})
+
+            for dirname in dirnames:
+                subtree.setdefault(dirname, {})
+
+            for filename in filenames:
+                path = os.path.join(dirpath, filename)
+                with open(path, 'r') as f:
+                    content = f.read()
+                subtree[filename] = content
+
+        return dir_structure
 
     def onClose(self, was_clean, code, reason):
         if self in self.factory.webClients:
@@ -418,9 +359,46 @@ class KbServerProtocol(WebSocketServerProtocol):
         else:
             KbServerProtocol.log.info("Disconnect of failed channel.  Now Serving {count} clients",
                                       count=len(self.factory.webClients))
+        WS_CONNECTIONS.remove(self)
 
     def message(self, message):
         self.transport.write(message + b"\n")
+
+    @inlineCallbacks
+    def schedule(self, pname: str):
+        tasklist: List[Step] = ProcessList[pname]
+        start_time = time.time()
+        prompt_tokens = 0
+        completion_tokens = 0
+        total_tokens = 0
+        p_cost = 0.0
+        c_cost = 0.0
+        total = 0.0
+
+        for step in tasklist:
+            ai_model = step.ai.model
+            pricing = OpenAI_API_Costs[ai_model]
+            yield step.run(self, pname)
+            prompt_tokens += step.prompt_tokens
+            completion_tokens += step.completion_tokens
+            total_tokens += step.total_tokens
+            sp_cost = pricing['input'] * (step.prompt_tokens / 1000)
+            sc_cost = pricing['output'] * (step.completion_tokens / 1000)
+            s_total = sp_cost + sc_cost
+            p_cost += sp_cost
+            c_cost += sc_cost
+            total += p_cost + c_cost
+            GptLogger.log('STEP', f'Cost Estimate: Total: {s_total:.4f} ('
+                                  f' Prompt: {sp_cost:.4f}'
+                                  f' Completion: {sc_cost:.4f})')
+
+        elapsed = time.time() - start_time
+        GptLogger.log('RUN', f'Elapsed: {elapsed:.2f}s'
+                             f' Cost Estimate: Total: {total:.4f} ('
+                             f' Prompt: {p_cost:.4f}'
+                             f' Completion: {c_cost:.4f})')
+
+        # Logger.log('RUN', f'Estimated Cost: Total: ${total:.4f}, (Prompt: ${p_cost:.4f}, Completion: ${c_cost:.4f})')
 
     @inlineCallbacks
     def onMessage(self, payload, isbinary):
@@ -432,12 +410,15 @@ class KbServerProtocol(WebSocketServerProtocol):
         KbServerProtocol.log.info("received msg cmd:{cmd} object:{object} ...", **msg)
 
         if msg['cmd'] == 'exec' and msg['object'] == 'process':
-            KbServerProtocol.log.info("Call to run test.....   Responding with Okay for now...")
+            process_name = msg['record']['process']
+            KbServerProtocol.log.info(f"Call to run {process_name}.....")
+            Logger(f'Memory/Dynamic/Logs/{process_name}.log')  # Is a singleton, so ignore result.
+            yield self.schedule(process_name)
             msg['rc'] = 'Okay'
-            msg['record'] = {'log': 'function not programmed yet'}
-            gpssg = GpsProtocol(self)
-            cmd = ["./GPTSG.sh", "main.py", "--target", "test", "--no_log", "LLM"]
-            reactor.spawnProcess(gpssg, cmd[0], cmd, path="../GPT-SystemGenerator/")
+            msg['reason'] = 'Run Completed'
+            msg['data'] = {'one': 'two'}
+            msg['cmd'] = 'Process'
+            msg['object'] = 'Test'
         else:
             try:
                 yield self.factory.db.make_change(msg=msg)
@@ -449,3 +430,61 @@ class KbServerProtocol(WebSocketServerProtocol):
         response = json.dumps(msg, ensure_ascii=False)
         self.sendMessage(response.encode('UTF8'), isbinary)
         returnValue('')
+
+
+from twisted.internet import inotify
+from twisted.python import filepath
+
+
+def notify(ignored, fp, mask):
+    """
+    For historical reasons, an opaque handle is passed as first
+    parameter. This object should never be used.
+
+    @param filepath: FilePath on which the event happened.
+    @param mask: inotify event as hexadecimal masks
+    """
+    fn = fp.asTextMode()  # encode('utf-8')# decode('utf-8')
+    [path, ext] = fn.splitext()
+
+    # Ignore backup files
+    if ext != '' and ext[-1] == '~':
+        return
+
+    path_list = path.split(fn.sep)
+    start_idx = path_list.index('Memory') + 1
+    p = path_list[start_idx:-1]
+    n = f'{path_list[-1]}{ext}'
+    m = inotify.humanReadableMask(mask)
+
+    if 'delete' in m:
+        content = ''
+    else:
+        content = fp.getContent().decode('utf-8')
+
+    print(f"event {', '.join(m)} on {'/'.join(p)}/{n}: {content[:80]}")
+    msg = {'cmd': 'memory_update',
+           'cb': 'memory_update',
+           'rc': 'Okay',
+           'object': 'memory',
+           'data': {
+               'mask': m,
+               'path': p,
+               'name': n,
+               'content': content,
+                }
+           }
+
+    response = json.dumps(msg, ensure_ascii=False)
+    for conn in WS_CONNECTIONS:
+        conn.sendMessage(response.encode('UTF8'), False)
+
+
+notifier = inotify.INotify()
+notifier.startReading()
+notifier.watch(filepath.FilePath("Memory"),
+               mask=inotify.IN_WATCH_MASK,
+               autoAdd=True,
+               callbacks=[notify],
+               recursive=True,
+               )

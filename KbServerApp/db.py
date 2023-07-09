@@ -3,9 +3,9 @@ import shutil
 from pathlib import Path
 import re
 import glob
-import colors
-from LineStatement import Compiler
-from logger import Logger
+import KbServerApp.colors
+from KbServerApp.LineStatement import Compiler
+from KbServerApp.logger import GptLogger as Logger
 
 
 # This class represents a simple database that stores its data as files in a directory hierarchy.

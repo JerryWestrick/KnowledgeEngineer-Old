@@ -9,7 +9,7 @@ Be sure to include a Database component.
 .system --- DATA ---
 .user
 --- Please complete the following sections:
-json
+variables
 ```
 {   'components': list of components
 }

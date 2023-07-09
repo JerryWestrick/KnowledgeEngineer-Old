@@ -14,7 +14,7 @@ You will identify each Actor described and what his requirements are.
 .text_block Knowledge/Product Description.pe
 .system
 ### Complete the following json list:
-json
+variables
 ```
 { 'actors': [ 'actor', ... ] }
 ```

@@ -22,8 +22,11 @@ log = Logger(namespace='Knowledge Engineer')
 application = service.Application("Knowledge Engineer")
 
 # Create static file http server using www directory
-root = File("www")
-
+www_dir = "www-svelte/public"
+# www_dir = "www"
+root = File(www_dir)
+log.info("Now serving {dir}", dir=www_dir)
+# root = File("www")
 # Create websocket mess
 
 factory = WebSocketServerFactory()  # factory to instantiate Protocol for each connection... global storage
@@ -43,7 +46,7 @@ notification_service.setServiceParent(application)
 # contextFactory = ssl.DefaultOpenSSLContextFactory('SSL_Keys/server.key',
 #                                                   'SSL_Keys/server.crt')
 
-# Ficky fucky with logs...
+# Messy way to filter with logs...
 info_predicate = LogLevelFilterPredicate(LogLevel.info)
 log_observer = FilteringLogObserver(textFileLogObserver(sys.stdout), predicates=[info_predicate])
 application.setComponent(ILogObserver, log_observer)
@@ -51,5 +54,5 @@ application.setComponent(ILogObserver, log_observer)
 # www_server = internet.SSLServer(8080, website, contextFactory)  # Connect it to a Comm End Point
 
 # Using straight http:// protocol for now...
-www_server = internet.TCPServer(8080, website)  # Connect it to a Comm End Point
+www_server = internet.TCPServer(8090, website)  # Connect it to a Comm End Point
 www_server.setServiceParent(application)  # Register www server in Application
