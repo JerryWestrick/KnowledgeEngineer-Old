@@ -1,0 +1,13 @@
+.include Prompts/File_Format.pe
+.user
+Read main_window.py file.
+Output a new version.
+- define a required argv parameter called --memory (-m) which accepts a directory and is passed as parameter
+  to the instantiation of the MemoryTab
+.text_block Prompts/Python_GUI/code/main_window.py
+.system
+Please complete the following:
+main_window.py
+```python
+file contents
+```

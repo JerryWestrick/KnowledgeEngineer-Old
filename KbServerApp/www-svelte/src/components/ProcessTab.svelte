@@ -53,6 +53,12 @@
     }
 
 
+    function execute_step(step) {
+        let msg = {'process_name': selectedProcess, 'step_name': step.name};
+        sendMessage({cmd: 'exec', object: 'step', cb: 'exec_step', record: msg})
+    }
+
+
 
 </script>
 
@@ -68,8 +74,8 @@
         {/each}
       </select>
       <button class="edit-button" on:click={() => execute_process({selectedProcess})}>Execute Process</button>
-<!--      <button class="edit-button" on:click={() => reload_steps()}>Reload Steps</button>-->
-      <button class="edit-button" >Reload Steps</button>
+      <button class="edit-button" on:click={() => execute_step(step)}>Execute Step</button>
+<!--      <button class="edit-button" >Execute Step</button>-->
   </div>
 {/if}
   <div>

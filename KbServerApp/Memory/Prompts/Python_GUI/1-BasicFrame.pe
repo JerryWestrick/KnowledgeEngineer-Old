@@ -1,0 +1,11 @@
+.include Prompts/File_Format.pe
+.user
+Give me a simple, executable PyQT program called 'main_window.py'.
+the GUI has a status bar, and 3 tabs: 'Process', 'Memory', 'Log'.
+Each tab will have an edit widget showing process.txt, memory.txt, and log.txt respectively.
+.system
+Please complete the following:
+main_window.py
+```python
+file contents
+```

@@ -8,6 +8,7 @@ import time
 
 from twisted.internet.defer import inlineCallbacks
 
+from KbServerApp.OpenAI_API_Costs import OpenAI_API_Costs
 from KbServerApp.ai import AI
 from KbServerApp.db import DB
 from KbServerApp.logger import GptLogger
@@ -56,6 +57,9 @@ class Step:
         self.prompt_tokens: int = 0
         self.completion_tokens: int = 0
         self.total_tokens: int = 0
+        self.sp_cost: float = 0.0
+        self.sc_cost: float = 0.0
+        self.s_total: float = 0.0
         self.elapsed_time: float = 0.0
 
     def to_json(self) -> dict:
@@ -74,7 +78,10 @@ class Step:
             'prompt_tokens': self.prompt_tokens,
             'completion_tokens': self.completion_tokens,
             'total_tokens': self.total_tokens,
-            'elapsed_time': self.elapsed_time
+            'sp_cost': self.sp_cost,
+            'sc_cost': self.sc_cost,
+            's_total': self.s_total,
+            'elapsed_time': self.elapsed_time,
         }
 
     @classmethod
@@ -95,6 +102,9 @@ class Step:
         step.prompt_tokens = json_obj['prompt_tokens']
         step.completion_tokens = json_obj['completion_tokens']
         step.total_tokens = json_obj['total_tokens']
+        step.sp_cost = json_obj['sp_cost']
+        step.sc_cost = json_obj['sc_cost']
+        step.s_total = json_obj['s_total']
         step.elapsed_time = json_obj['elapsed_time']
         return step
 
@@ -129,6 +139,11 @@ class Step:
             self.answer = self.response.choices[0].text
 
         self.files = interpret_results(text=self.answer)
+        pricing = OpenAI_API_Costs[self.ai.model]
+
+        self.sp_cost = pricing['input'] * (self.prompt_tokens / 1000)
+        self.sc_cost = pricing['output'] * (self.completion_tokens / 1000)
+        self.s_total = self.sp_cost + self.sc_cost
 
         # Send Update to the GUI
         msg = {'cmd': 'StepUpdate', 'cb': 'process_step_update', 'rc': 'Okay', 'object': pname, 'data': self.to_json()}

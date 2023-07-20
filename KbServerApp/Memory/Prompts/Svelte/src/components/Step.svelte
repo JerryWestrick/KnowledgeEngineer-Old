@@ -27,9 +27,6 @@
           'prompt_tokens': 'key_str',
           'completion_tokens': 'key_str',
           'total_tokens': 'key_str',
-          'sp_cost': 'key_str',
-          'sc_cost': 'key_str',
-          's_total': 'key_str',
           'elapsed_time': 'key_str',
           };
 
@@ -44,57 +41,6 @@ function toggleContent(id) {
 }
 
 </script>
-
-
-<div class="card">
-
-{#each Object.entries(step) as [key, value] }
-
-  {#if display_type[key] === 'key_str'}
-    <div><strong>{key}:</strong> {step[key]}</div>
-  {:else if display_type[key] === 'key_h3'}
-    <h2>{step[key]}</h2>
-  {:else if display_type[key] === 'key_ai'}
-    <div><strong>{step[key]['model']}</strong>(temp={step[key]['temperature']},max_tokens={step[key]['max_tokens']},mode={step[key]['mode']})</div>
-  {:else if display_type[key] === 'key_pre'}
-    <div><strong>{key}:</strong><pre>{step[key]}</pre></div>
-  {:else if display_type[key] === 'key_obj'}
-    <strong>{key}: </strong>
-    <ul>
-      {#each Object.entries(step[key]) as [subKey, subValue]}
-        <li>{subKey}: {JSON.stringify(subValue)}</li>
-      {/each}
-    </ul>
-  {:else if display_type[key] === 'key_msg'}
-    <div >
-      <strong style="vertical-align: top;font-size: x-small;">Msg: </strong>
-      <div style="display: inline-block;font-size: x-small;background-color: lightblue;
-    border-radius: 8px;">
-        {#each value as msg, msg_no}
-          <strong>{msg['role']}:</strong>
-<!--            <pre >{msg['content']}</pre>-->
-            <pre class="collapsible" id="{`cc-${msg_no}`}" onclick={() => toggleContent(`cc-${msg_no}`)}>
-            {msg['content']}
-            </pre>
-
-
-        {/each}
-      </div>
-    </div>
-  {:else if display_type[key] === 'key_obj_pre'}
-    <strong>{key}: </strong>
-    <ul>
-      {#each Object.entries(step[key]) as [subKey, subValue]}
-        <li>{subKey}: <pre>{subValue}</pre></li>
-      {/each}
-    </ul>
-  {:else}
-    <div><strong>???{key}:</strong> {step[key]}</div>
-  {/if}
-{/each}
-<!--<button class="edit-button" on:click={() => editStep(step)}>Edit</button>-->
-</div>
-
 
 <style>
     .card {
@@ -150,5 +96,56 @@ function toggleContent(id) {
 }
 
 </style>
+
+
+
+<div class="card">
+
+{#each Object.entries(step) as [key, value] }
+
+  {#if display_type[key] === 'key_str'}
+    <div><strong>{key}:</strong> {step[key]}</div>
+  {:else if display_type[key] === 'key_h3'}
+    <h2>{step[key]}</h2>
+  {:else if display_type[key] === 'key_ai'}
+    <div><strong>{step[key]['model']}</strong>(temp={step[key]['temperature']},max_tokens={step[key]['max_tokens']},mode={step[key]['mode']})</div>
+  {:else if display_type[key] === 'key_pre'}
+    <div><strong>{key}:</strong><pre>{step[key]}</pre></div>
+  {:else if display_type[key] === 'key_obj'}
+    <strong>{key}: </strong>
+    <ul>
+      {#each Object.entries(step[key]) as [subKey, subValue]}
+        <li>{subKey}: {JSON.stringify(subValue)}</li>
+      {/each}
+    </ul>
+  {:else if display_type[key] === 'key_msg'}
+    <div >
+      <strong style="vertical-align: top;font-size: x-small;">Msg: </strong>
+      <div style="display: inline-block;font-size: x-small;background-color: lightblue;
+    border-radius: 8px;">
+        {#each value as msg, msg_no}
+          <strong>{msg['role']}:</strong>
+<!--            <pre >{msg['content']}</pre>-->
+            <pre class="collapsible" id="{`cc-${msg_no}`}" onclick={() => toggleContent("nada")}>
+            {msg['content']}
+            </pre>
+
+
+        {/each}
+      </div>
+    </div>
+  {:else if display_type[key] === 'key_obj_pre'}
+    <strong>{key}: </strong>
+    <ul>
+      {#each Object.entries(step[key]) as [subKey, subValue]}
+        <li>{subKey}: <pre>{subValue}</pre></li>
+      {/each}
+    </ul>
+  {:else}
+    <div><strong>???{key}:</strong> {step[key]}</div>
+  {/if}
+{/each}
+<!--<button class="edit-button" on:click={() => editStep(step)}>Edit</button>-->
+</div>
 
 

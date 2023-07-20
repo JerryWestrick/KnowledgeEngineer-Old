@@ -1,0 +1,13 @@
+.include Prompts/File_Format.pe
+.user
+Read memory_tab.py file.
+Output a new version.
+- in QTreeView hide columns 1, 2, and 3.
+- add an instantiation parameter to MemoryTab that has the directory path of root dir to be displayed.
+.text_block Prompts/Python_GUI/code/memory_tab.py
+.system
+Please complete the following:
+memory_tab.py
+```python
+file contents
+```

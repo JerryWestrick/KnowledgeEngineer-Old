@@ -1,0 +1,21 @@
+.include Prompts/File Format.pe
+.system
+You are a programmer with experience with the Svelte framework.
+The application structure is already generated.
+You are to emulate a file browser.
+On the left (1/4 page width) a list of collapsible Directories with their files.
+On the right an area to edit the selected file.
+
+The directory structure is stored in ./GlobalStorage.js as follows:
+
+export var memory_store =
+{"Memory/Knowledge/Product Description.pe": "The System will pro ...",
+  "Memory/Knowledge/Product Description Short.pe": "The System will ...",
+  "Memory/Dynamic/System Specifications/CreateDatabase.sql": "-- Create the ...",
+};
+
+You need to be reactive to the memory_store var.
+
+Generate FileBrowser.svelte
+
+=== Generation ===

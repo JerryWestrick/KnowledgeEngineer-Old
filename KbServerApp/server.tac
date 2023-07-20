@@ -5,17 +5,18 @@ from autobahn.twisted import WebSocketServerFactory
 from autobahn.twisted.resource import WebSocketResource
 from twisted.internet import asyncioreactor
 
-
 # This needs to be done ASAP... or one of the twisted libs will define reactor
 asyncioreactor.install(asyncio.get_event_loop())
 
 from twisted.application import service, internet
 from twisted.logger import Logger, LogLevel, LogLevelFilterPredicate, FilteringLogObserver, textFileLogObserver, \
-    globalLogPublisher, ILogObserver
+    ILogObserver
 from twisted.web.server import Site
 from twisted.web.static import File
-from KbServerApp.kbserver import KbServerProtocol, DatabaseStore, PostgresListenService
+from KbServerApp.kbserver import KbServerProtocol
 
+# skip database for now...
+# from KbServerApp.sql_datastore import DatabaseStore, PostgresListenService
 
 # The application we are building is...
 log = Logger(namespace='Knowledge Engineer')
@@ -31,7 +32,8 @@ log.info("Now serving {dir}", dir=www_dir)
 
 factory = WebSocketServerFactory()  # factory to instantiate Protocol for each connection... global storage
 factory.protocol = KbServerProtocol  # Protocol to instantiate
-factory.db = DatabaseStore(factory)  # interface to the Kb Database
+# factory.db = DatabaseStore(factory)  # interface to the Kb Database
+factory.db = None  # Not using a database for now...
 factory.webClients = []  # connected web sockets...
 resource = WebSocketResource(factory)  # Communication is to be via websocket.
 root.putChild(b"ws", resource)  # Add it to the http server as /ws folder.
@@ -39,10 +41,13 @@ root.putChild(b"ws", resource)  # Add it to the http server as /ws folder.
 # Create website
 website = Site(root)
 
+# not right now...
 # Create a service to listen for postgresql notifications
-notification_service = PostgresListenService(factory.db)
-notification_service.setServiceParent(application)
+# notification_service = PostgresListenService(factory.db)
+# notification_service.setServiceParent(application)
 
+# Still ain't figured out how to get this to work right...
+# probably should b e using something like endpoints.serverFromString(reactor, "ssl:8080:interface=000000000")
 # contextFactory = ssl.DefaultOpenSSLContextFactory('SSL_Keys/server.key',
 #                                                   'SSL_Keys/server.crt')
 

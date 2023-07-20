@@ -1,0 +1,30 @@
+.include Prompts/File_Format.pe
+.user
+Read the main_window.py file.
+Output 4 files:
+- main_window.py containing the startup code, and main window and imports the GUI for each tab from the following files.
+- process_tab.py containing the GUI for that tab.
+- memory_tab.py containing the GUI for that tab.
+- log_tab.py containing the GUI for that tab.
+.text_block Prompts/Python_GUI/code/main_window.py
+.system
+Please complete the following:
+main_window.py
+```python
+file contents
+```
+
+process_tab.py
+```python
+file contents
+```
+
+memory_tab.py
+```python
+file contents
+```
+
+log_tab.py
+```python
+file contents
+```

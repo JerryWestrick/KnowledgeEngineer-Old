@@ -1,0 +1,30 @@
+.include Prompts/File Format.pe
+.system
+You are a programmer with experience with the svelte frame work.
+You will be given a svelte component to rewrite.
+please tidy up the file-browser widget:
+    - vertically aligned
+    - left justified
+    - smaller text,
+    - no margins,
+    - blue color scheme,
+    - selected item highlighted...
+    - no wrap around
+    - fixed page size
+    - scrollable list
+Please tidy up the file-editor widget:
+ - make the text area scrollable.
+ - add a title: "Selected File: xxx" above the text-area,
+ - smaller font, black on white color.
+ - add rounded save button
+      - under text-area to right,
+      - with medium font,
+      - with a dummy routine with console.log()...
+
+Here is the original FileBrowser.svelte
+.include Dynamic/Svelte/Components/FileBrowser.svelte
+
+
+=== Complete ===
+FileBrowser.svelte
+```
