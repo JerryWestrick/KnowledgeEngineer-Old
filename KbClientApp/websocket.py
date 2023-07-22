@@ -7,8 +7,8 @@ from log_tab import LOG
 
 
 def SEND(message):
-    # print(f'SEND: {message}')
     WebSocketClient.connection.send_message(message)
+
 
 class WebSocketClient(QWebSocket):
     connection = None
@@ -44,7 +44,6 @@ class WebSocketClient(QWebSocket):
         obj = json.loads(message)
         self.log({'action': 'on_message_received', 'message': obj})
         if obj['cb'] == 'db_initial_load':
-            # self.log({'action': f'db_initial_load from server {obj["cmd"]} of {obj["object"]}', 'message': 'db_initial_load'})
             self.parent.DatabaseStore = obj['data']
 
         elif obj['cb'] == 'db_async_notification':
@@ -83,10 +82,9 @@ class WebSocketClient(QWebSocket):
         self.close()
 
     def on_error(self, error_code):
-        error_message = QWebSocketProtocol.errorString(error_code)
+        error_message = self.errorString()
         self.log({'action': 'on_websocket_error', 'message': f'WebSocket error: {error_message}'})
 
     def on_websocket_binary_message(self, message):
         text = message.data().decode('utf-8')
         self.log({'action': 'on_websocket_binary_message', 'message': text})
-

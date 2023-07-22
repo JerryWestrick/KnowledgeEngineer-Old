@@ -13,7 +13,7 @@ from websocket import WebSocketClient
 class MainWindow(QMainWindow):
     DatabaseStore = {}
 
-    def __init__(self, memory_dir):
+    def __init__(self, connection: str):
         super().__init__()
 
         # instantiate the Logger as soon as Possible
@@ -25,14 +25,14 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.tab_widget)
 
         self.process_tab = ProcessTab(self)
-        self.memory_tab = MemoryTab(memory_dir, self)
+        self.memory_tab = MemoryTab(self)
         self.log_tab = LogTab(self)
 
         self.tab_widget.addTab(self.process_tab, "Process")
         self.tab_widget.addTab(self.memory_tab, "Memory")
         self.tab_widget.addTab(self.log_tab, "Log")
 
-        self.websocket = WebSocketClient('ws://localhost:8090/ws', self)
+        self.websocket = WebSocketClient(connection, self)
 
     def delayedFunction(self):
         # This function will be called after the GUI is shown
@@ -51,11 +51,12 @@ class MainWindow(QMainWindow):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-m', '--memory', required=True, help='Directory for memory tab')
+    parser.add_argument('-c', '--connection', required=False, default='ws://localhost:8080/ws',
+                        help='connection string to the server')
     args = parser.parse_args()
 
     app = QApplication(sys.argv)
-    main = MainWindow(args.memory)
+    main = MainWindow(args.connection)
     main.show()
     QTimer.singleShot(0, main.delayedFunction)  # Delay execution until event loop starts
     sys.exit(app.exec_())

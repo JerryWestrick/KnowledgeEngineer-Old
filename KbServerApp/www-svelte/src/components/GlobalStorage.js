@@ -90,7 +90,7 @@ export var DatabaseStore = {}
 let ws;
 
 const connect = () => {
-    ws = new WebSocket('ws://localhost:8090/ws');
+    ws = new WebSocket('ws://127.0.0.1:8080/ws');
 
     ws.onopen = () => {
         // console.log('WebSocket is open now.');

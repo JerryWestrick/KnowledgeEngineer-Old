@@ -1,12 +1,15 @@
 import asyncio
 import sys
 
-from autobahn.twisted import WebSocketServerFactory
-from autobahn.twisted.resource import WebSocketResource
+# This needs to be done ASAP... or one of the twisted libs will define reactor for us
 from twisted.internet import asyncioreactor
 
-# This needs to be done ASAP... or one of the twisted libs will define reactor
 asyncioreactor.install(asyncio.get_event_loop())
+
+
+from autobahn.twisted import WebSocketServerFactory
+from autobahn.twisted.resource import WebSocketResource
+from twisted.internet import ssl, reactor, endpoints
 
 from twisted.application import service, internet
 from twisted.logger import Logger, LogLevel, LogLevelFilterPredicate, FilteringLogObserver, textFileLogObserver, \
@@ -14,6 +17,8 @@ from twisted.logger import Logger, LogLevel, LogLevelFilterPredicate, FilteringL
 from twisted.web.server import Site
 from twisted.web.static import File
 from KbServerApp.kbserver import KbServerProtocol
+
+
 
 # skip database for now...
 # from KbServerApp.sql_datastore import DatabaseStore, PostgresListenService
@@ -27,11 +32,9 @@ www_dir = "www-svelte/public"
 # www_dir = "www"
 root = File(www_dir)
 log.info("Now serving {dir}", dir=www_dir)
-# root = File("www")
-# Create websocket mess
 
-factory = WebSocketServerFactory()  # factory to instantiate Protocol for each connection... global storage
-factory.protocol = KbServerProtocol  # Protocol to instantiate
+factory = WebSocketServerFactory()
+factory.protocol = KbServerProtocol
 # factory.db = DatabaseStore(factory)  # interface to the Kb Database
 factory.db = None  # Not using a database for now...
 factory.webClients = []  # connected web sockets...
@@ -41,23 +44,21 @@ root.putChild(b"ws", resource)  # Add it to the http server as /ws folder.
 # Create website
 website = Site(root)
 
-# not right now...
-# Create a service to listen for postgresql notifications
-# notification_service = PostgresListenService(factory.db)
-# notification_service.setServiceParent(application)
-
-# Still ain't figured out how to get this to work right...
-# probably should b e using something like endpoints.serverFromString(reactor, "ssl:8080:interface=000000000")
-# contextFactory = ssl.DefaultOpenSSLContextFactory('SSL_Keys/server.key',
-#                                                   'SSL_Keys/server.crt')
-
 # Messy way to filter with logs...
 info_predicate = LogLevelFilterPredicate(LogLevel.info)
 log_observer = FilteringLogObserver(textFileLogObserver(sys.stdout), predicates=[info_predicate])
 application.setComponent(ILogObserver, log_observer)
 
-# www_server = internet.SSLServer(8080, website, contextFactory)  # Connect it to a Comm End Point
+# Create SSL context factory
+# context_factory = ssl.DefaultOpenSSLContextFactory('../ssl/private.key', '../ssl/certificate.pem')
+
+# Create SSL server endpoint
+endpoint = endpoints.serverFromString(reactor, "tcp:port=8080:interface=0.0.0.0")
+
+# Listen on the SSL endpoint
+endpoint_service = internet.StreamServerEndpointService(endpoint, website)
+endpoint_service.setServiceParent(application)
 
 # Using straight http:// protocol for now...
-www_server = internet.TCPServer(8090, website)  # Connect it to a Comm End Point
-www_server.setServiceParent(application)  # Register www server in Application
+# www_server = internet.TCPServer(8090, website)  # Connect it to a Comm End Point
+# www_server.setServiceParent(application)  # Register www server in Application

@@ -12,10 +12,10 @@ class MemoryTab(QWidget):
         message['system'] = 'memory_tab'
         LOG(message)
 
-    def __init__(self, root_dir, parent):
+    def __init__(self, parent):
         super().__init__(parent)
         self.selected_filename = None
-        self.root_path = root_dir.split('/')
+        # self.root_path = root_dir.split('/')
         self.layout = QVBoxLayout(self)
         self.splitter = QSplitter(Qt.Horizontal)
         self.tree = QTreeView(self.splitter)
