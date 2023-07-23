@@ -66,6 +66,12 @@ class WebSocketClient(QWebSocket):
         elif obj['cb'] == 'memory_update':
             self.parent.memory_tab.memory_update(obj)
 
+        elif obj['cb'] == 'memory_test':
+            self.parent.memory_tab.memory_test(obj)
+
+        elif obj['cb'] == 'file_saved':
+            self.parent.memory_tab.file_saved(obj)
+
         else:
             self.log({'action': obj['cb'],
                       'message': f"No Such Routine: {obj['cb']}(msg(cmd={obj['cmd']}, "

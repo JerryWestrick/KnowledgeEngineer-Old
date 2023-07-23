@@ -1,6 +1,8 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTextEdit, QTreeView, QSplitter, QDirModel
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTextEdit, QTreeView, QSplitter, QPushButton, QHBoxLayout
 from PyQt5.QtCore import Qt
 
+from read_only_dialog import ReadOnlyDialog
+from websocket import SEND
 from memory_model import MemoryModel
 from log_tab import LOG
 
@@ -15,32 +17,84 @@ class MemoryTab(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
         self.selected_filename = None
-        # self.root_path = root_dir.split('/')
-        self.layout = QVBoxLayout(self)
-        self.splitter = QSplitter(Qt.Horizontal)
-        self.tree = QTreeView(self.splitter)
-        # self.model = QDirModel()
-        # self.tree.setModel(self.model)
+
+        self.layout = QHBoxLayout(self)  # Changed from QVBoxLayout to QHBoxLayout
+        self.tree = QTreeView()
         self.model = MemoryModel(self.MemoryStore)
         self.tree.setModel(self.model)
-        # self.tree.setRootIndex(self.model.index(root_dir))
 
         for i in range(1, 4):
             self.tree.hideColumn(i)
 
-        self.edit = QTextEdit(self.splitter)
-        self.layout.addWidget(self.splitter)
+        self.layout.addWidget(self.tree)
         self.tree.clicked.connect(self.select_file)
 
-    # def select_file(self, index):
-    #     full_file_name = self.model.filePath(index)
-    #     full_path = full_file_name.split('/')
-    #     root_path = full_path[len(self.root_path):]  # Skip all till 'Memory'
-    #     self.selected_filename = '/'.join(root_path)
-    #     ele = self.MemoryStore
-    #     for i in root_path:
-    #         ele = ele[i]
-    #     self.edit.setText(ele)
+        self.right_layout = QVBoxLayout()  # New QVBoxLayout for the right side
+
+        self.edit = QTextEdit()
+        self.edit.textChanged.connect(self.handle_text_changed)
+        self.right_layout.addWidget(self.edit)
+
+        self.button_layout = QHBoxLayout()
+        self.save_button = QPushButton('Save', self)
+        self.save_button.clicked.connect(self.save_content)
+        self.save_button.setDisabled(True)
+        self.button_layout.addWidget(self.save_button)
+        self.button_layout.addStretch()
+
+        self.test_button = QPushButton('Test', self)
+        self.test_button.clicked.connect(self.test_content)
+        self.test_button.setDisabled(True)
+        self.button_layout.addWidget(self.test_button)
+
+        self.right_layout.addLayout(self.button_layout)
+        self.layout.addLayout(self.right_layout)
+
+    def handle_text_changed(self):
+        new_text = self.edit.toPlainText()
+        if self.selected_filename is not None and new_text != self.get_file_contents(self.selected_filename):
+            self.save_button.setEnabled(True)
+            self.test_button.setDisabled(True)
+        else:
+            self.save_button.setDisabled(True)
+            self.test_button.setEnabled(True)
+
+    def file_saved(self, obj):
+        self.log({'action': 'file_saved', 'message': obj})
+        self.save_button.setDisabled(True)
+        self.test_button.setEnabled(True)
+        # Add the code to save the content here.
+
+    def save_content(self):
+
+        # Add the code to save the content here.
+
+        if self.selected_filename is not None:
+            new_file_content = self.edit.toPlainText()
+            self.MemoryStore[self.selected_filename] = new_file_content
+            SEND({'cmd': 'write', 'object': self.selected_filename, 'cb': 'file_saved',
+                  'record': {'text': new_file_content}})
+            self.save_button.setDisabled(True)
+            self.test_button.setDisabled(True)
+        else:
+            self.save_button.setDisabled(True)
+            self.test_button.setEnabled(True)
+
+    def test_content(self):
+        # Add the code to test the content here.
+        self.log({'action': 'test_content', 'message': self.edit.toPlainText()})
+        self.test_button.setDisabled(True)
+        SEND({'cmd': 'read', 'object': self.selected_filename, 'cb': 'memory_test', 'record': {}})
+
+    def memory_test(self, obj):
+        # self.log({'action': 'memory_test', 'message': obj})
+        prompt_name = obj['object']
+        expanded_text = ''
+        for line in obj['data']['text']:
+            expanded_text += f"{line['role']}: {line['content']} \n"
+        self.test_button.setEnabled(True)
+        dialog = ReadOnlyDialog(prompt_name, expanded_text)
+        dialog.exec_()
 
     def select_file(self, index):
         if not index.isValid():
@@ -60,7 +114,18 @@ class MemoryTab(QWidget):
         full_path = path_parts[::-1]
 
         self.selected_filename = '/'.join(full_path)
+        text_1 = self.get_file_contents(self.selected_filename)
+        text_2 = str(index.internalPointer().value)
+        # self.log({'action': 'select_file', 'message': f'{self.selected_filename} - {text_1} - {text_2}'})
         self.edit.setText(str(index.internalPointer().value))
+        self.handle_text_changed()
+
+    def get_file_contents(self, filename):
+        path = filename.split('/')
+        ele = self.MemoryStore
+        for i in path:
+            ele = ele[i]
+        return ele
 
     def memory_update(self, obj):
         # self.log({'action': 'memory_update', 'message': obj})
@@ -90,4 +155,3 @@ class MemoryTab(QWidget):
         self.log({'action': 'memory_initial_load', 'message': obj})
         self.MemoryStore = obj['data']
         self.model.update(self.MemoryStore)
-

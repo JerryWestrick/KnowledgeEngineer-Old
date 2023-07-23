@@ -188,6 +188,33 @@ class KbServerProtocol(WebSocketServerProtocol):
             msg['data'] = {'one': 'two'}
             msg['cmd'] = 'Process'
             msg['object'] = 'Test'
+        elif msg['cmd'] == 'read':
+            prompt_name = msg['object']
+            KbServerProtocol.log.info(f"Call to test read {prompt_name}...")
+            msg['rc'] = 'Okay'
+            msg['reason'] = 'Test Read Complete'
+            try:
+                expanded_text = Step.memory[prompt_name]
+            except KeyError as key:
+                expanded_text = [{'role': 'Error', 'content': f'Expansion of {prompt_name} failed.'},
+                                 {'role': 'Error', 'content': f'Could not find {key} in memory.'}
+                                 ]
+                msg['rc'] = 'Fail'
+                msg['reason'] = 'Test Read Failed'
+
+            msg['data'] = {'text':  expanded_text}
+        elif msg['cmd'] == 'write':
+            prompt_name = msg['object']
+            KbServerProtocol.log.info(f"Call to write {prompt_name}...")
+            msg['rc'] = 'Okay'
+            msg['reason'] = f'Write of {prompt_name} Complete'
+            msg['data'] = msg['record']
+            try:
+                Step.memory[prompt_name] = msg['record']['text']
+                KbServerProtocol.log.info(f"Call to write {prompt_name} complete.")
+            except KeyError as key:
+                msg['rc'] = 'Fail'
+                msg['reason'] = f'write of {prompt_name} Failed'
         else:
             try:
                 yield self.factory.db.make_change(msg=msg)
