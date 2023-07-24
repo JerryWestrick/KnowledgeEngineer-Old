@@ -15,10 +15,10 @@ from KbServerApp.step import Step
 
 load_dotenv(find_dotenv())
 
-
 WS_CONNECTIONS = []  # All connection instances
 
 
+# @todo Replace json.dumps with jsonpickle
 class KbServerProtocol(WebSocketServerProtocol):
     #
     # This is instantiated for each connection...
@@ -113,8 +113,6 @@ class KbServerProtocol(WebSocketServerProtocol):
                 except UnicodeDecodeError:
                     KbServerProtocol.log.error("Could not read file {fname}", fname=path)
 
-
-
         return dir_structure
 
     def onClose(self, was_clean, code, reason):
@@ -194,7 +192,7 @@ class KbServerProtocol(WebSocketServerProtocol):
             GptLogger(f'Memory/Dynamic/Logs/{process_name}_{step_name}.log')  # Is a singleton, so ignore result.
             tasklist: List[Step] = ProcessList[process_name]
             steps = [step for step in tasklist if step.name == step_name]
-            yield self.schedule(process_name,  steps)
+            yield self.schedule(process_name, steps)
             msg['rc'] = 'Okay'
             msg['reason'] = 'Run Completed'
             msg['data'] = {'one': 'two'}
@@ -214,7 +212,7 @@ class KbServerProtocol(WebSocketServerProtocol):
                 msg['rc'] = 'Fail'
                 msg['reason'] = 'Test Read Failed'
 
-            msg['data'] = {'text':  expanded_text}
+            msg['data'] = {'text': expanded_text}
         elif msg['cmd'] == 'write':
             prompt_name = msg['object']
             KbServerProtocol.log.info(f"Call to write {prompt_name}...")
@@ -297,7 +295,7 @@ def notify(ignored, fp, mask):
                'path': p,
                'name': n,
                'content': content,
-                }
+           }
            }
 
     response = json.dumps(msg, ensure_ascii=False)
