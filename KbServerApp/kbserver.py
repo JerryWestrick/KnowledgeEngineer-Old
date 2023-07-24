@@ -9,7 +9,7 @@ from twisted.internet.defer import inlineCallbacks, returnValue
 from twisted.logger import Logger
 
 from KbServerApp.OpenAI_API_Costs import OpenAI_API_Costs
-from KbServerApp.Processes import ProcessList
+from KbServerApp.Processes import ProcessList, ProcessList_save, ProcessList_load
 from KbServerApp.logger import GptLogger
 from KbServerApp.step import Step
 
@@ -227,6 +227,23 @@ class KbServerProtocol(WebSocketServerProtocol):
             except KeyError as key:
                 msg['rc'] = 'Fail'
                 msg['reason'] = f'write of {prompt_name} Failed'
+
+        elif msg['cmd'] == 'save_step':
+            process_name = msg['record']['process_name']
+            new_step = msg['record']['step']
+            step_name = new_step['name']
+            KbServerProtocol.log.info(f"Call to write step {process_name}::{step_name}...")
+            msg['rc'] = 'Okay'
+            msg['reason'] = f'Write of step {process_name}::{step_name} Complete'
+            msg['data'] = msg['record']
+            tasklist: List[Step] = ProcessList[process_name]
+            for idx, step in enumerate(tasklist):
+                if step.name == step_name:
+                    tasklist[idx] = Step.from_json(new_step)
+                    break
+            ProcessList_save(ProcessList)
+            KbServerProtocol.log.info(f"Call to write step {process_name}::{step_name}...")
+
         else:
             try:
                 yield self.factory.db.make_change(msg=msg)

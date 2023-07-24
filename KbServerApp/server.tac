@@ -4,6 +4,8 @@ import sys
 # This needs to be done ASAP... or one of the twisted libs will define reactor for us
 from twisted.internet import asyncioreactor
 
+from KbServerApp.Processes import ProcessList, ProcessList_load
+
 asyncioreactor.install(asyncio.get_event_loop())
 
 

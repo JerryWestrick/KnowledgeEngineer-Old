@@ -1,15 +1,16 @@
-.system --- INSTRUCTIONS ---
-.include Prompts/File Format.pe
 .user
-You will receive several text blocks containing Requirements for different Actors of a System.
-Decide what components are required to implement such a system; be sure to include a Database component.
-.system --- DATA ---
-.text_block Dynamic/Requirements/*
-.system
---- GENERATE FOR EACH ACTOR
-[Actor Name]
+Here is a json with the actors and their requirements for a system:
+.include Dynamic/Requirements/Actors.json
+.user
+List what components are required to implement such a system, and what each component must do.
+Be sure to include a Database component.
+### Complete the following json:
+Components.json
+```json
+{'Components':
+    {'<component_name>':
+        {'name': '<component_name>', 'requirements': ['<first requirement of component>', ...]
+        }
+    }
+}
 ```
-    The requirements for the Actor [Actor Name] are:
-    - ###Please Complete ###
-```
-

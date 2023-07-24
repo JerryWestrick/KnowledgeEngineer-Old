@@ -95,6 +95,8 @@ class Step:
             ai=AI.from_json(json_obj['ai']),
             storage_path=json_obj['storage_path']
         )
+        if 'messages' not in json_obj:
+            return step
         step.messages = json_obj['messages']
         step.response = json_obj['response']
         step.answer = json_obj['answer']
@@ -164,11 +166,11 @@ class Step:
                 self.memory[full_path] = content
                 GptLogger.log('STEP', f"Writing {full_path}")
 
-    @classmethod
-    def __retrieve(cls, name):
-        return cls.instances.get(name, None)
-
-    def __getitem__(self, name):
-        # This is meant to allow accessing the step by name
-        # Directly on  the class.  i.e. Step['name']
-        return self.__retrieve(name)
+    # @classmethod
+    # def __retrieve(cls, name):
+    #     return cls.instances.get(name, None)
+    #
+    # def __getitem__(self, name):
+    #     # This is meant to allow accessing the step by name
+    #     # Directly on  the class.  i.e. Step['name']
+    #     return self.__retrieve(name)

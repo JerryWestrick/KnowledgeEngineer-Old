@@ -1,22 +1,13 @@
-.include Prompts/File Format.pe
 .user
-You will receive a Product Description as a text block.
-You will analyze it. You will identify each Actor described., and what his requirements are.
-you will identify each simple individual requirements the actor has.
-.system ### DATA ###
-.text_block Knowledge/Product Description.pe
-.system
-### Complete for following:
-List Of Actors.pe
+Here is a product Description:
+.include Knowledge/Product Description.pe
+.user
+Identify each Actor described, and what his requirements are.
+### Complete the following list of actors:
+Actors.json
+```json
+{'Actors' :
+    { '<actor>': { 'name': '<actor>', 'requirements': [ '<first requirement>', '<second requirement>', ... ]}
+    }
+}
 ```
-Actors
- -
-```
-### Complete the following for each actor identified
-[Actor].pe
-```
-[Actor] must be able to:
-    [list of requirements]
-```
-.system
-

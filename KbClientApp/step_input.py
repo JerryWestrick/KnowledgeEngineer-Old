@@ -1,5 +1,6 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QWidget, QTableWidget, QTableWidgetItem, QHeaderView, QVBoxLayout, QPushButton, QComboBox, QDoubleSpinBox
+from PyQt5.QtWidgets import QApplication, QWidget, QTableWidget, QTableWidgetItem, QHeaderView, QVBoxLayout, \
+    QPushButton, QComboBox, QDoubleSpinBox, QHBoxLayout
 
 from websocket import SEND
 from log_tab import LOG
@@ -24,7 +25,26 @@ class InputTable(QWidget):
         # Create the QPushButton
         self.execute_button = QPushButton(f"Execute Step ")
         self.execute_button.clicked.connect(self.execute_selected_step)
-        layout.addWidget(self.execute_button)
+        # layout.addWidget(self.execute_button)
+        # Create Save button and add it to the layout
+        self.save_button = QPushButton("Save")
+        self.save_button.setEnabled(False)  # Initially disabled
+
+        # Create a horizontal box layout for the buttons
+        button_layout = QHBoxLayout()
+        button_layout.addWidget(self.save_button)
+        # Add the execute button to the horizontal box layout
+        # Assume the execute button is named self.execute_button
+        button_layout.addWidget(self.execute_button)
+
+        # Add the horizontal box layout to the main vertical layout
+        layout.addLayout(button_layout)
+
+        # Set the layout for the widget
+        self.setLayout(layout)
+
+        # Connect slot to itemChanged signal of QTableWidget
+        self.input_table.itemChanged.connect(self.handle_item_changed)
 
         # Set the layout of the InputTable widget
         self.setLayout(layout)
@@ -37,6 +57,18 @@ class InputTable(QWidget):
             QHeaderView.ResizeToContents)  # Set row height to fit contents
 
         self.update_step(process_name, step)
+        self.save_button.clicked.connect(self.handle_save_clicked)
+
+    def handle_save_clicked(self):
+        self.save_button.setEnabled(False)
+        self.log({'action': 'handle_save_clicked', 'message': f"{self.process_name}::{self.step['name']}"})
+        SEND({'cmd': 'save_step', 'object': 'step', 'cb': 'saved_step',
+              'record': {'process_name': self.process_name, 'step': self.step}
+              })
+
+    def handle_item_changed(self, item):
+        # Enable the Save button when an item is changed
+        self.save_button.setEnabled(True)
 
     def log(self, message):
         message['system'] = 'step'
@@ -55,6 +87,7 @@ class InputTable(QWidget):
         self._fill_input_table()
 
         self.execute_button.setText(f"Execute {self.step['name']}")
+
 
     def _fill_input_table(self):
         # Fill the input table with the new step
