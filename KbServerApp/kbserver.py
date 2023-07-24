@@ -54,6 +54,8 @@ class KbServerProtocol(WebSocketServerProtocol):
             response = json.dumps(msg, ensure_ascii=False, default=str)
             self.sendMessage(response.encode('UTF8'), False)
         KbServerProtocol.log.info("Now Serving {count} clients", count=len(self.factory.webClients))
+
+        # process_list_initial_load
         pl = {}
         for k, v in ProcessList.items():
             a = []
@@ -69,11 +71,21 @@ class KbServerProtocol(WebSocketServerProtocol):
         response = json.dumps(msg, ensure_ascii=False, default=str)
         self.sendMessage(response.encode('UTF8'), False)
 
+        # memory_initial_load
         msg['cmd'] = 'memory_initial_load'
         msg['cb'] = 'memory_initial_load'
         msg['rc'] = 'Okay'
         msg['object'] = 'memory'
         msg['data'] = self.memory_as_dictionary()
+        response = json.dumps(msg, ensure_ascii=False, default=str)
+        self.sendMessage(response.encode('UTF8'), False)
+
+        # memory_initial_load
+        msg['cmd'] = 'models_initial_load'
+        msg['cb'] = 'models_initial_load'
+        msg['rc'] = 'Okay'
+        msg['object'] = 'models'
+        msg['data'] = OpenAI_API_Costs
         response = json.dumps(msg, ensure_ascii=False, default=str)
         self.sendMessage(response.encode('UTF8'), False)
 

@@ -60,6 +60,9 @@ class WebSocketClient(QWebSocket):
         elif obj['cb'] == 'memory_initial_load':
             self.parent.memory_tab.memory_initial_load(obj)
 
+        elif obj['cb'] == 'models_initial_load':
+            self.parent.process_tab.models_initial_load(obj)
+
         elif obj['cb'] == 'process_step_update':
             self.parent.process_tab.process_step_update(obj)
 

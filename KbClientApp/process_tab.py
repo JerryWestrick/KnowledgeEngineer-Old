@@ -11,6 +11,7 @@ from websocket import SEND
 
 
 class ProcessTab(QWidget):
+    ModelsStore: dict = {}
     ProcessStore: dict = {}
     empty_step = {
         "name": "",
@@ -141,5 +142,11 @@ class ProcessTab(QWidget):
         self.log({'action': 'process_list_initial_load', 'message': obj})
         self.ProcessStore = obj
         self.load_data()
+
+    def models_initial_load(self, obj):
+        self.log({'action': 'models_initial_load', 'message': obj})
+        self.ModelsStore = obj['data']
+        self.input_display.update_models(self.ModelsStore)
+
 
 
