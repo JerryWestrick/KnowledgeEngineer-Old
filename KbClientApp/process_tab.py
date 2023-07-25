@@ -92,7 +92,6 @@ class ProcessTab(QWidget):
         self.log({'action': 'execute_selected_process', 'message': self.process_name})
         SEND({'cmd': 'exec', 'object': 'process', 'cb': 'exec_process_log', 'record': {'process': self.process_name}})
 
-
     def on_item_clicked(self, item, column):
         process_name = item.parent().text(0) if item.parent() is not None else None
         step_name = item.text(1) if column == 1 else None
@@ -121,7 +120,6 @@ class ProcessTab(QWidget):
         self.steps = self.ProcessStore[self.process_name]
         self.step = self.steps[0]
 
-
     def process_step_update(self, obj):
         self.log({'action': 'process_step_update', 'message': obj})
         process_name = obj['object']
@@ -147,6 +145,3 @@ class ProcessTab(QWidget):
         self.log({'action': 'models_initial_load', 'message': obj})
         self.ModelsStore = obj['data']
         self.input_display.update_models(self.ModelsStore)
-
-
-

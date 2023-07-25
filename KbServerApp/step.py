@@ -75,13 +75,15 @@ class Step:
             'response': self.response,
             'answer': self.answer,
             'files': self.files,
-            'prompt_tokens': self.prompt_tokens,
-            'completion_tokens': self.completion_tokens,
-            'total_tokens': self.total_tokens,
-            'sp_cost': self.sp_cost,
-            'sc_cost': self.sc_cost,
-            's_total': self.s_total,
-            'elapsed_time': self.elapsed_time,
+            'e_stats': {
+                'prompt_tokens': self.prompt_tokens,
+                'completion_tokens': self.completion_tokens,
+                'total_tokens': self.total_tokens,
+                'sp_cost': self.sp_cost,
+                'sc_cost': self.sc_cost,
+                's_total': self.s_total,
+                'elapsed_time': self.elapsed_time,
+            }
         }
 
     @classmethod
@@ -101,13 +103,13 @@ class Step:
         step.response = json_obj['response']
         step.answer = json_obj['answer']
         step.files = json_obj['files']
-        step.prompt_tokens = json_obj['prompt_tokens']
-        step.completion_tokens = json_obj['completion_tokens']
-        step.total_tokens = json_obj['total_tokens']
-        step.sp_cost = json_obj['sp_cost']
-        step.sc_cost = json_obj['sc_cost']
-        step.s_total = json_obj['s_total']
-        step.elapsed_time = json_obj['elapsed_time']
+        step.prompt_tokens = json_obj['e_stats']['prompt_tokens']
+        step.completion_tokens = json_obj['e_stats']['completion_tokens']
+        step.total_tokens = json_obj['e_stats']['total_tokens']
+        step.sp_cost = json_obj['e_stats']['sp_cost']
+        step.sc_cost = json_obj['e_stats']['sc_cost']
+        step.s_total = json_obj['e_stats']['s_total']
+        step.elapsed_time = json_obj['e_stats']['elapsed_time']
         return step
 
     @inlineCallbacks
