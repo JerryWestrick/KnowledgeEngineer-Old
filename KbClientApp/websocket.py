@@ -44,7 +44,7 @@ class WebSocketClient(QWebSocket):
         obj = json.loads(message)
         self.log({'action': 'on_message_received', 'message': obj})
         if obj['cb'] == 'db_initial_load':
-            self.parent.DatabaseStore = obj['data']
+            self.parent.DatabaseStore = obj['record']
 
         elif obj['cb'] == 'db_async_notification':
             self.log({'action': f'db_async_notification from server {obj["cmd"]} of {obj["object"]}',
@@ -55,7 +55,7 @@ class WebSocketClient(QWebSocket):
                 del self.parent.DatabaseStore[obj['object']][obj['id']]
 
         elif obj['cb'] == 'process_list_initial_load':
-            self.parent.process_tab.process_list_initial_load(obj['data'])
+            self.parent.process_tab.process_list_initial_load(obj['record'])
 
         elif obj['cb'] == 'memory_initial_load':
             self.parent.memory_tab.memory_initial_load(obj)
@@ -78,7 +78,7 @@ class WebSocketClient(QWebSocket):
         else:
             self.log({'action': obj['cb'],
                       'message': f"No Such Routine: {obj['cb']}(msg(cmd={obj['cmd']}, "
-                                 f"object={obj['object']}, rc={obj['rc']}, cb={obj['cb']}, data={obj['data']}))", })
+                                 f"object={obj['object']}, rc={obj['rc']}, cb={obj['cb']}, data={obj['record']}))", })
 
     def send_message(self, message):
         if self.state() == QAbstractSocket.ConnectedState:

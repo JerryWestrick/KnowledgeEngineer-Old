@@ -28,7 +28,7 @@ export var memory_store = {};
 
 function memory_initial_load(msg) {
     logx('call', 'in memory_initial_load()')
-    let mem = msg['data'];
+    let mem = msg['record'];
     for (let key in mem) {
         if (mem.hasOwnProperty(key)) {
             memory_store[key] = mem[key];
@@ -40,9 +40,9 @@ function memory_initial_load(msg) {
 
 function memory_update(msg) {
         // console.log(`call memory_update(${msg.data.name}...)`)
-        const path = msg['data']['path'];
-        const name = msg['data']['name'];
-        const content = msg['data']['content'];
+        const path = msg['record']['path'];
+        const name = msg['record']['name'];
+        const content = msg['record']['content'];
 
         let my_dir = memory_store;
         for (const d of path) {
@@ -60,7 +60,7 @@ export var process_list = {};
 
 function process_list_initial_load(msg) {
     logx('call', 'in process_list_initial_load()')
-    let pl = msg['data'];
+    let pl = msg['record'];
     for (let key in pl) {
         if (pl.hasOwnProperty(key)) {
             process_list[key] = pl[key];
@@ -71,7 +71,7 @@ function process_list_initial_load(msg) {
 
 function process_step_update(msg) {
     // console.log(`In process_step_update(${msg.data.name}...)`)
-    let step = msg['data'];
+    let step = msg['record'];
     let process = process_list[msg.object];
     let i = 0;
     for (; i < process_list[msg.object].length; i++) {
@@ -110,7 +110,7 @@ const connect = () => {
             switch (rtn) {
                 case 'db_initial_load':
                     logx('user', `db_initial_load from server ${msg.cmd} of ${msg.object}`);
-                    let mem = msg['data'];
+                    let mem = msg['record'];
                     for (let key in mem) {
                         if (mem.hasOwnProperty(key)) {
                             memory_store[key] = mem[key];

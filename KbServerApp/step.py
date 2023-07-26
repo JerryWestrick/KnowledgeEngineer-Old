@@ -121,7 +121,7 @@ class Step:
         self.messages = self.memory[self.prompt_name]
 
         # Send Update to the GUI
-        msg = {'cmd': 'StepUpdate', 'cb': 'process_step_update', 'rc': 'Okay', 'object': pname, 'data': self.to_json()}
+        msg = {'cmd': 'StepUpdate', 'cb': 'process_step_update', 'rc': 'Okay', 'object': pname, 'record': self.to_json()}
         response = json.dumps(msg, ensure_ascii=False, default=str)
         proto.sendMessage(response.encode('UTF8'), False)
 
@@ -150,7 +150,7 @@ class Step:
         self.s_total = self.sp_cost + self.sc_cost
 
         # Send Update to the GUI
-        msg = {'cmd': 'StepUpdate', 'cb': 'process_step_update', 'rc': 'Okay', 'object': pname, 'data': self.to_json()}
+        msg = {'cmd': 'StepUpdate', 'cb': 'process_step_update', 'rc': 'Okay', 'object': pname, 'record': self.to_json()}
         response = json.dumps(msg, ensure_ascii=False, default=str)
         proto.sendMessage(response.encode('UTF8'), False)
 

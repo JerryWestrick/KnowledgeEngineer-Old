@@ -49,7 +49,7 @@ class KbServerProtocol(WebSocketServerProtocol):
                    'cb': 'db_initial_load',
                    'rc': 'Okay',
                    'object': 'db_initial_load',
-                   'data': self.factory.db.sql_database_tables
+                   'record': self.factory.db.sql_database_tables
                    }
             response = json.dumps(msg, ensure_ascii=False, default=str)
             self.sendMessage(response.encode('UTF8'), False)
@@ -67,7 +67,7 @@ class KbServerProtocol(WebSocketServerProtocol):
         msg['cb'] = 'process_list_initial_load'
         msg['rc'] = 'Okay'
         msg['object'] = 'process'
-        msg['data'] = pl
+        msg['record'] = pl
         response = json.dumps(msg, ensure_ascii=False, default=str)
         self.sendMessage(response.encode('UTF8'), False)
 
@@ -76,7 +76,7 @@ class KbServerProtocol(WebSocketServerProtocol):
         msg['cb'] = 'memory_initial_load'
         msg['rc'] = 'Okay'
         msg['object'] = 'memory'
-        msg['data'] = self.memory_as_dictionary()
+        msg['record'] = self.memory_as_dictionary()
         response = json.dumps(msg, ensure_ascii=False, default=str)
         self.sendMessage(response.encode('UTF8'), False)
 
@@ -85,7 +85,7 @@ class KbServerProtocol(WebSocketServerProtocol):
         msg['cb'] = 'models_initial_load'
         msg['rc'] = 'Okay'
         msg['object'] = 'models'
-        msg['data'] = OpenAI_API_Costs
+        msg['record'] = OpenAI_API_Costs
         response = json.dumps(msg, ensure_ascii=False, default=str)
         self.sendMessage(response.encode('UTF8'), False)
 
@@ -182,7 +182,7 @@ class KbServerProtocol(WebSocketServerProtocol):
             yield self.schedule(process_name, tasklist)
             msg['rc'] = 'Okay'
             msg['reason'] = 'Run Completed'
-            msg['data'] = {'one': 'two'}
+            msg['record'] = {'one': 'two'}
             msg['cmd'] = 'Process'
             msg['object'] = 'Test'
         elif msg['cmd'] == 'exec' and msg['object'] == 'step':
@@ -195,7 +195,7 @@ class KbServerProtocol(WebSocketServerProtocol):
             yield self.schedule(process_name, steps)
             msg['rc'] = 'Okay'
             msg['reason'] = 'Run Completed'
-            msg['data'] = {'one': 'two'}
+            msg['record'] = {'one': 'two'}
             msg['cmd'] = 'Process'
             msg['object'] = 'Test'
         elif msg['cmd'] == 'read':
@@ -212,13 +212,13 @@ class KbServerProtocol(WebSocketServerProtocol):
                 msg['rc'] = 'Fail'
                 msg['reason'] = 'Test Read Failed'
 
-            msg['data'] = {'text': expanded_text}
+            msg['record'] = {'text': expanded_text}
         elif msg['cmd'] == 'write':
             prompt_name = msg['object']
             KbServerProtocol.log.info(f"Call to write {prompt_name}...")
             msg['rc'] = 'Okay'
             msg['reason'] = f'Write of {prompt_name} Complete'
-            msg['data'] = msg['record']
+            msg['record'] = msg['record']
             try:
                 Step.memory[prompt_name] = msg['record']['text']
                 KbServerProtocol.log.info(f"Call to write {prompt_name} complete.")
@@ -233,7 +233,7 @@ class KbServerProtocol(WebSocketServerProtocol):
             KbServerProtocol.log.info(f"Call to write step {process_name}::{step_name}...")
             msg['rc'] = 'Okay'
             msg['reason'] = f'Write of step {process_name}::{step_name} Complete'
-            msg['data'] = msg['record']
+            # msg['record'] = msg['record']
             tasklist: List[Step] = ProcessList[process_name]
             for idx, step in enumerate(tasklist):
                 if step.name == step_name:
@@ -243,12 +243,16 @@ class KbServerProtocol(WebSocketServerProtocol):
             KbServerProtocol.log.info(f"Call to write step {process_name}::{step_name}...")
 
         else:
-            try:
-                yield self.factory.db.make_change(msg=msg)
-            except Exception as err:
-                KbServerProtocol.log.error("message not processed...reason({err})", err=err)
-                msg['rc'] = 'Fail'
-                msg['reason'] = f"message not processed...reason({err})"
+            # try:
+            #     yield self.factory.db.make_change(msg=msg)
+            # except Exception as err:
+            #     KbServerProtocol.log.error("message not processed...reason({err})", err=err)
+            #     msg['rc'] = 'Fail'
+            #     msg['reason'] = f"message not processed...reason({err})"
+            err = f"Unknown message cmd:{msg['cmd']} object:{msg['object']}"
+            KbServerProtocol.log.error("message not processed...reason({err})", err=err)
+            msg['rc'] = 'Fail'
+            msg['reason'] = f"message not processed...reason({err})"
 
         response = json.dumps(msg, ensure_ascii=False)
         self.sendMessage(response.encode('UTF8'), isbinary)
@@ -290,7 +294,7 @@ def notify(ignored, fp, mask):
            'cb': 'memory_update',
            'rc': 'Okay',
            'object': 'memory',
-           'data': {
+           'record': {
                'mask': m,
                'path': p,
                'name': n,

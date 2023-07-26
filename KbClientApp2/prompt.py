@@ -79,11 +79,11 @@ class Prompt(QWidget):
 
     def memory_initial_load(self, obj):
         self.log({'action': 'memory_initial_load', 'message': 'In Prompt::memory_initial_load'})
-        self.PromptStore = obj['data']
+        self.PromptStore = obj['record']
         self.load_data(self.model, self.PromptStore)
 
     def memory_update(self, obj):
-        data = obj['data']
+        data = obj['record']
         ele = self.PromptStore
         for key in data['path']:
             ele = ele[key]

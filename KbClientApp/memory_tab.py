@@ -90,7 +90,7 @@ class MemoryTab(QWidget):
         # self.log({'action': 'memory_test', 'message': obj})
         prompt_name = obj['object']
         expanded_text = ''
-        for line in obj['data']['text']:
+        for line in obj['record']['text']:
             expanded_text += f"{line['role']}: {line['content']} \n"
         self.test_button.setEnabled(True)
         dialog = ReadOnlyDialog(prompt_name, expanded_text)
@@ -129,7 +129,7 @@ class MemoryTab(QWidget):
 
     def memory_update(self, obj):
         # self.log({'action': 'memory_update', 'message': obj})
-        data = obj['data']
+        data = obj['record']
         ele = self.MemoryStore
         for i in data['path']:
             ele = ele[i]
@@ -153,5 +153,5 @@ class MemoryTab(QWidget):
 
     def memory_initial_load(self, obj):
         self.log({'action': 'memory_initial_load', 'message': obj})
-        self.MemoryStore = obj['data']
+        self.MemoryStore = obj['record']
         self.model.update(self.MemoryStore)

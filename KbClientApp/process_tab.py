@@ -123,7 +123,7 @@ class ProcessTab(QWidget):
     def process_step_update(self, obj):
         self.log({'action': 'process_step_update', 'message': obj})
         process_name = obj['object']
-        new_step = obj['data']
+        new_step = obj['record']
         step_name = new_step['name']
         this_process = self.ProcessStore[process_name]
         for index, step in enumerate(this_process):
@@ -143,5 +143,5 @@ class ProcessTab(QWidget):
 
     def models_initial_load(self, obj):
         self.log({'action': 'models_initial_load', 'message': obj})
-        self.ModelsStore = obj['data']
+        self.ModelsStore = obj['record']
         self.input_display.update_models(self.ModelsStore)

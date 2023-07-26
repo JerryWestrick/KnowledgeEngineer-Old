@@ -6,8 +6,6 @@ from websocket import SEND, REGISTER_CALLBACK
 from log_tab import LOG
 
 
-
-
 class InputTable(QWidget):
     model_keys = []
 
@@ -65,7 +63,7 @@ class InputTable(QWidget):
 
     def models_initial_load(self, obj):
         self.log({'action': 'models_initial_load', 'message': f"{obj}"})
-        self.update_models(obj['data'])
+        self.update_models(obj['record'])
 
     def handle_save_clicked(self):
         self.save_button.setEnabled(False)
@@ -95,7 +93,6 @@ class InputTable(QWidget):
         self._fill_input_table()
 
         self.execute_button.setText(f"Execute {self.process_name}::{self.step['name']}")
-
 
     def _fill_input_table(self):
         # Fill the input table with the new step
@@ -164,33 +161,10 @@ class InputTable(QWidget):
 
 if __name__ == "__main__":
     app = QApplication([])
-    step = {
-        "name": "Step 1",
-        "prompt_name": "Prompts/Flask/Use Case Description to Requirements.pe",
-        "ai": {
-            "model": "gpt-3.5-turbo",
-            "temperature": 0,
-            "max_tokens": 3000,
-            "mode": "chat"
-        },
-        "storage_path": "Dynamic/Requirements",
-        "messages": [],
-        "response": {},
-        "answer": "",
-        "files": {},
-        "prompt_tokens": 0,
-        "completion_tokens": 0,
-        "total_tokens": 0,
-        "sp_cost": 0.0,
-        "sc_cost": 0.0,
-        "s_total": 0.0,
-        "elapsed_time": 0.0
-    }
-
     from PyQt5.QtWidgets import QMainWindow
 
     main_window = QMainWindow()
-    display = InputTable("fTest Process", step)
+    display = InputTable("fTest Process", empty_step)
     main_window.setCentralWidget(display)
     main_window.show()
     app.exec_()
