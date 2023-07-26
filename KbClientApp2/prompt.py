@@ -67,7 +67,13 @@ class Prompt(QWidget):
 
     def select_prompt(self, full_name):
         self.selected_item = full_name
-        value = self.get_value(self.selected_item)
+        try:
+            value = self.get_value(self.selected_item)
+        except KeyError as bad_key:
+            value = None
+            self.log({'action': 'select_prompt', 'message': f'Error: Bad Key {bad_key} in Prompt::select_prompt({full_name})'})
+            return
+
         if isinstance(value, dict):
             return
         # print(f'{self.selected_item}:{value}')

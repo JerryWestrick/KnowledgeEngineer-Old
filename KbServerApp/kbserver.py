@@ -166,97 +166,160 @@ class KbServerProtocol(WebSocketServerProtocol):
         # Logger.log('RUN', f'Estimated Cost: Total: ${total:.4f}, (Prompt: ${p_cost:.4f}, Completion: ${c_cost:.4f})')
 
     @inlineCallbacks
+    def exec_step(self, msg, isbinary):
+        process_name = msg['record']['process_name']
+        step_name = msg['record']['step_name']
+        KbServerProtocol.log.info(f"Call to run a single step {process_name}::{step_name}")
+        GptLogger(f'Memory/Dynamic/Logs/{process_name}_{step_name}.log')  # Is a singleton, so ignore result.
+        tasklist: List[Step] = ProcessList[process_name]
+        steps = [step for step in tasklist if step.name == step_name]
+        yield self.schedule(process_name, steps)
+        msg['rc'] = 'Okay'
+        msg['reason'] = 'Run Completed'
+        msg['record'] = {'one': 'two'}
+        msg['cmd'] = 'Process'
+        msg['object'] = 'Test'
+        self.send_object(msg)
+        returnValue('')
+
+    @inlineCallbacks
+    def exec_process(self, msg, isbinary):
+        process_name = msg['record']['process']
+        if process_name not in ProcessList:
+            msg['rc'] = 'Error'
+            msg['reason'] = f'Process {process_name} not found.'
+            self.send_object(msg)
+            returnValue('')
+
+        KbServerProtocol.log.info(f"Call to run {process_name}.....")
+        GptLogger(f'Memory/Dynamic/Logs/{process_name}.log')  # Is a singleton, so ignore result.
+        tasklist: List[Step] = ProcessList[process_name]
+        yield self.schedule(process_name, tasklist)
+        msg['rc'] = 'Okay'
+        msg['reason'] = 'Run Completed'
+        msg['record'] = {'one': 'two'}
+        msg['cmd'] = 'Process'
+        msg['object'] = 'Test'
+        self.send_object(msg)
+        returnValue('')
+
+    def read_memory(self, msg, isbinary):
+        prompt_name = msg['record']['prompt_name']
+        KbServerProtocol.log.info(f"Call to test read {prompt_name}...")
+        msg['rc'] = 'Okay'
+        msg['reason'] = 'Test Read Complete'
+        try:
+            expanded_text = Step.memory[prompt_name]
+        except KeyError as key:
+            expanded_text = [{'role': 'Error', 'content': f'Expansion of {prompt_name} failed.'},
+                             {'role': 'Error', 'content': f'Could not find {key} in memory.'}
+                             ]
+            msg['rc'] = 'Fail'
+            msg['reason'] = 'Test Read Failed'
+            self.send_object(msg)
+            return
+
+        msg['record'] = {'text': expanded_text}
+        self.send_object(msg)
+        return
+
+    def write_memory(self, msg, isbinary):
+        prompt_name = msg['record']['prompt_name']
+        KbServerProtocol.log.info(f"Call to write {prompt_name}...")
+        msg['rc'] = 'Okay'
+        msg['reason'] = f'Write of {prompt_name} Complete'
+        msg['record'] = msg['record']
+        try:
+            Step.memory[prompt_name] = msg['record']['text']
+            KbServerProtocol.log.info(f"Call to write {prompt_name} complete.")
+        except KeyError as key:
+            msg['rc'] = 'Fail'
+            msg['reason'] = f'write of {prompt_name} Failed'
+        self.send_object(msg)
+
+    def write_step(self, msg, isbinary):
+        process_name = msg['record']['process_name']
+        new_step = msg['record']['step']
+        step_name = new_step['name']
+        KbServerProtocol.log.info(f"Call to write step {process_name}::{step_name}...")
+        msg['rc'] = 'Okay'
+        msg['reason'] = f'Write of step {process_name}::{step_name} Complete'
+        tasklist: List[Step] = ProcessList[process_name]
+        for idx, step in enumerate(tasklist):
+            if step.name == step_name:
+                tasklist[idx] = Step.from_json(new_step)
+                break
+        ProcessList_save(ProcessList)
+        KbServerProtocol.log.info(f"Call to write step {process_name}::{step_name}...")
+        self.send_object(msg)
+
+    def rename_process(self, msg, isbinary):
+        process_old_name = msg['record']['process_old_name']
+        process_new_name = msg['record']['process_new_name']
+        msg['rc'] = 'Okay'
+        msg['reason'] = f'rename_process({process_old_name}, {process_new_name})... Complete'
+        ProcessList[process_new_name] = ProcessList[process_old_name]
+        del ProcessList[process_old_name]
+        ProcessList_save(ProcessList)
+        KbServerProtocol.log.info("Call rename_process({msg})... Complete", msg=msg)
+        self.send_object(msg)
+
+    def delete_step(self, msg, isbinary):
+        KbServerProtocol.log.info("Enter delete_step({msg})", msg=msg)
+        process_name = msg['record']['process_name']
+        step_name = msg['record']['step_name']
+        KbServerProtocol.log.info(f"Call to delete_step({process_name}, {step_name})")
+        msg['rc'] = 'Okay'
+        msg['reason'] = f'Delete of step {process_name}::{step_name} Complete'
+        tasklist: List[Step] = ProcessList[process_name]
+        for idx, step in enumerate(tasklist):
+            if step.name == step_name:
+                del tasklist[idx]
+                break
+        ProcessList_save(ProcessList)
+        self.send_object(msg)
+        # returnValue('')
+
+
+    @inlineCallbacks
     def onMessage(self, payload, isbinary):
         if not self.loggedIn:
             yield self.user_login(payload, isbinary)
             returnValue('')
 
         msg = json.loads(payload.decode('utf8'))
-        KbServerProtocol.log.info("received msg cmd:{cmd} object:{object} ...", **msg)
-
-        if msg['cmd'] == 'exec' and msg['object'] == 'process':
-            process_name = msg['record']['process']
-            KbServerProtocol.log.info(f"Call to run {process_name}.....")
-            GptLogger(f'Memory/Dynamic/Logs/{process_name}.log')  # Is a singleton, so ignore result.
-            tasklist: List[Step] = ProcessList[process_name]
-            yield self.schedule(process_name, tasklist)
-            msg['rc'] = 'Okay'
-            msg['reason'] = 'Run Completed'
-            msg['record'] = {'one': 'two'}
-            msg['cmd'] = 'Process'
-            msg['object'] = 'Test'
-        elif msg['cmd'] == 'exec' and msg['object'] == 'step':
-            process_name = msg['record']['process_name']
-            step_name = msg['record']['step_name']
-            KbServerProtocol.log.info(f"Call to run a single step {process_name}::{step_name}")
-            GptLogger(f'Memory/Dynamic/Logs/{process_name}_{step_name}.log')  # Is a singleton, so ignore result.
-            tasklist: List[Step] = ProcessList[process_name]
-            steps = [step for step in tasklist if step.name == step_name]
-            yield self.schedule(process_name, steps)
-            msg['rc'] = 'Okay'
-            msg['reason'] = 'Run Completed'
-            msg['record'] = {'one': 'two'}
-            msg['cmd'] = 'Process'
-            msg['object'] = 'Test'
-        elif msg['cmd'] == 'read':
-            prompt_name = msg['object']
-            KbServerProtocol.log.info(f"Call to test read {prompt_name}...")
-            msg['rc'] = 'Okay'
-            msg['reason'] = 'Test Read Complete'
+        method_name = f"{msg['cmd']}_{msg['object']}"
+        # Check if the method exists in the instance and call it with parameters
+        if hasattr(self, method_name):
+            KbServerProtocol.log.info("received msg calling {method_name}(...)", method_name=method_name)
+            method = getattr(self, method_name)
             try:
-                expanded_text = Step.memory[prompt_name]
-            except KeyError as key:
-                expanded_text = [{'role': 'Error', 'content': f'Expansion of {prompt_name} failed.'},
-                                 {'role': 'Error', 'content': f'Could not find {key} in memory.'}
-                                 ]
+                yield method(msg, isbinary)
+            except Exception as err:
+                KbServerProtocol.log.warn("Error calling {method_name}(...): {err}", method_name=method_name, err=err)
                 msg['rc'] = 'Fail'
-                msg['reason'] = 'Test Read Failed'
+                msg['reason'] = f'{method_name}(...) Failed: {err}'
+                self.send_object(msg)
 
-            msg['record'] = {'text': expanded_text}
-        elif msg['cmd'] == 'write':
-            prompt_name = msg['object']
-            KbServerProtocol.log.info(f"Call to write {prompt_name}...")
-            msg['rc'] = 'Okay'
-            msg['reason'] = f'Write of {prompt_name} Complete'
-            msg['record'] = msg['record']
-            try:
-                Step.memory[prompt_name] = msg['record']['text']
-                KbServerProtocol.log.info(f"Call to write {prompt_name} complete.")
-            except KeyError as key:
-                msg['rc'] = 'Fail'
-                msg['reason'] = f'write of {prompt_name} Failed'
+            returnValue('')
 
-        elif msg['cmd'] == 'save_step':
-            process_name = msg['record']['process_name']
-            new_step = msg['record']['step']
-            step_name = new_step['name']
-            KbServerProtocol.log.info(f"Call to write step {process_name}::{step_name}...")
-            msg['rc'] = 'Okay'
-            msg['reason'] = f'Write of step {process_name}::{step_name} Complete'
-            # msg['record'] = msg['record']
-            tasklist: List[Step] = ProcessList[process_name]
-            for idx, step in enumerate(tasklist):
-                if step.name == step_name:
-                    tasklist[idx] = Step.from_json(new_step)
-                    break
-            ProcessList_save(ProcessList)
-            KbServerProtocol.log.info(f"Call to write step {process_name}::{step_name}...")
+        # SQL Database Access - Not Used Yet
+        # try:
+        #     yield self.factory.db.make_change(msg=msg)
+        # except Exception as err:
+        #     KbServerProtocol.log.error("message not processed...reason({err})", err=err)
+        #     msg['rc'] = 'Fail'
+        #     msg['reason'] = f"message not processed...reason({err})"
 
-        else:
-            # try:
-            #     yield self.factory.db.make_change(msg=msg)
-            # except Exception as err:
-            #     KbServerProtocol.log.error("message not processed...reason({err})", err=err)
-            #     msg['rc'] = 'Fail'
-            #     msg['reason'] = f"message not processed...reason({err})"
-            err = f"Unknown message cmd:{msg['cmd']} object:{msg['object']}"
-            KbServerProtocol.log.error("message not processed...reason({err})", err=err)
-            msg['rc'] = 'Fail'
-            msg['reason'] = f"message not processed...reason({err})"
-
-        response = json.dumps(msg, ensure_ascii=False)
-        self.sendMessage(response.encode('UTF8'), isbinary)
+        KbServerProtocol.log.error("received msg method not defined {method_name}(...)", method_name=method_name)
+        msg['rc'] = 'Fail'
+        msg['reason'] = f"Server msg method not defined {method_name}(...)"
+        self.send_object(msg)
         returnValue('')
+
+    def send_object(self, msg):
+        response = json.dumps(msg, ensure_ascii=False)
+        self.sendMessage(response.encode('UTF8'), False)
 
 
 from twisted.internet import inotify

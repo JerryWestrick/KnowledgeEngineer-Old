@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QTableWidget, QT
     QAbstractItemView
 from PyQt5.QtGui import QColor
 
-from KbClientApp2.websocket import REGISTER_CALLBACK
+from websocket import REGISTER_CALLBACK
 
 empty_step = {
     "name": "",

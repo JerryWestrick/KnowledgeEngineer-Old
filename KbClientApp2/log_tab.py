@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTableWidget, QTableWidgetItem
 from PyQt5.QtGui import QColor, QFont
 from PyQt5.QtCore import Qt
 
+
 class LogTab(QWidget):
     singleton = None  # public singleton for other classes to use
 
@@ -12,7 +13,7 @@ class LogTab(QWidget):
         'main_window': QColor('darkorange'),
         'Process': QColor('darkmagenta'),
         'Prompt': QColor('darkorange'),
-        'Error': QColor('darkred'),
+        'Error': QColor('red'),
     }
 
     # Singleton class wacky hacky
@@ -65,6 +66,17 @@ class LogTab(QWidget):
         color = self.colors[message['system']]
         if message['action'] == 'Error':
             color = self.colors['Error']
+
+        # print(f">>{message}<<")
+        msg = message['message']
+        if type(msg) is dict:
+            if 'rc' in msg and msg['rc'] == 'Fail':
+                color = self.colors['Error']
+
+        if type(msg) is str:
+            if 'Error:' == msg[0:6]:
+                color = self.colors['Error']
+
         for i in range(3):
             self.table_widget.item(row, i).setForeground(color)
 
@@ -73,6 +85,7 @@ class LogTab(QWidget):
         obj_str = json.dumps(obj, indent=4)
         dialog = QMessageBox(f'{obj["system"]} - {obj["action"]}', obj_str, self)
         dialog.exec_()
+
 
 def LOG(message: dict[str, any]):
     if LogTab.singleton is None:

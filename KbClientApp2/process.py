@@ -1,6 +1,6 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QTreeWidget, QPushButton, QTreeWidgetItem, \
-    QMenu
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QTreeWidget, QPushButton, \
+    QTreeWidgetItem, QMenu
 
 from rename_process import RenameProcessDialog
 from websocket import SEND, REGISTER_CALLBACK
@@ -43,6 +43,12 @@ class Process(QWidget):
         self.init_ui()
         REGISTER_CALLBACK(self, 'process_list_initial_load')
         REGISTER_CALLBACK(self, 'process_step_update')
+        REGISTER_CALLBACK(self, 'cb_create_step')
+        REGISTER_CALLBACK(self, 'cb_delete_step')
+        REGISTER_CALLBACK(self, 'cb_create_process')
+        REGISTER_CALLBACK(self, 'cb_rename_process')
+        REGISTER_CALLBACK(self, 'cb_exec_process')
+        REGISTER_CALLBACK(self, 'cb_exec_step')
 
     def init_ui(self):
         layout = QVBoxLayout()
@@ -63,57 +69,131 @@ class Process(QWidget):
         self.setWindowTitle('Process')
         self.show()
 
+    def cb_create_step(self, msg):
+        pass
+
+    def create_step(self, index=0):
+        print(f"Add New Step idx: {index} (After {self.selected_step}) in process {self.selected_process}")
+        self.log({'action': 'add_step_action',
+                  'message': f"{self.selected_process}:New Step Idx: {index} After {self.selected_step}"})
+        SEND({'cmd': 'create', 'object': 'step', 'cb': 'cb_create_step',
+              'record': {'process_name': self.selected_process, 'step_name': 'New Step', 'step_index': index}})
+
+    def add_first_step(self):
+        print(f"Add First Step to {self.selected_process} Process")
+        self.log({'action': 'add_first_step_action', 'message': f"{self.selected_process}:New First Step"})
+        SEND({'cmd': 'create', 'object': 'step', 'cb': 'cb_create_step',
+              'record': {'process_name': self.selected_process, 'step_name': 'New First Step', 'step_index': 0}})
+
+    def cb_delete_step(self, msg):
+        pass
+
+    def delete_step(self):
+        print(f"Delete {self.selected_process}:{self.selected_step}")
+        self.log({'action': 'delete_step_action', 'message': f"{self.selected_process}:{self.selected_step}"})
+        SEND({'cmd': 'delete', 'object': 'step', 'cb': 'cb_delete_step',
+              'record': {'process_name': self.selected_process, 'step_name': self.selected_step}})
+
+    def cb_create_process(self, msg):
+        pass
+
+    def create_process(self):
+        self.log({'action': 'add_process_action', 'message': self.selected_process})
+        SEND({'cmd': 'create', 'object': 'process', 'cb': 'cb_create_process',
+              'record': {'process_name': self.selected_process}})
+
+    def cb_rename_process(self, msg):
+        old_name = msg['record']['process_old_name']
+        new_name = msg['record']['process_new_name']
+        self.ProcessStore[new_name] = self.ProcessStore[old_name]
+        del self.ProcessStore[old_name]
+        self.selected_process = new_name
+        self.log({'action': 'rename_process_action', 'message': f'Rename Process <{old_name}> to <{new_name}>'})
+        self.process_list_initial_load({'record': self.ProcessStore})
+
+    def rename_process(self):
+        old_name = self.selected_process
+        RenameProcessDialog(old_name, self).exec_()  # The Dialog directly updates self.selected_process
+        self.log({'action': 'rename_process', 'message': f'Rename Process <{old_name}> to <{self.selected_process}>'})
+        SEND({'cmd': 'rename', 'object': 'process', 'cb': 'cb_rename_process',
+              'record': {'process_old_name': old_name, 'process_new_name': self.selected_process}})
+
+    def cb_exec_process(self, msg):
+        pass
+    def exec_process(self):
+        self.log({'action': 'execute_selected_process', 'message': self.selected_process})
+        SEND({'cmd': 'exec', 'object': 'process', 'cb': 'cb_exec_process',
+              'record': {'process_name': self.selected_process}})
+
+    def cb_exec_step(self, msg):
+        pass
+
+    def exec_step(self):
+        self.log({'action': 'execute_selected_step', 'message': f"{self.selected_process}::{self.selected_step}"})
+        SEND({'cmd': 'exec', 'object': 'step', 'cb': 'cb_exec_step',
+              'record': {'process_name': self.selected_process, 'step_name': self.selected_step}})
+
     def on_tree_context_menu(self, point):
         # This method is called when the user right-clicks an item in the tree.
         # Create a QMenu
         context_menu = QMenu(self)
 
         # Placeholder for actions
-        add_step_action = None
+        create_step_action = None
         delete_step_action = None
-        add_process_action = None
+        create_process_action = None
         rename_process_action = None
-        execute_process_action = None
-        execute_step_action = None
-        add_first_step_action = None
+        exec_process_action = None
+        exec_step_action = None
+        create_first_step_action = None
 
         # Add actions to the context menu
         if self.selected_is_step:
-            execute_step_action = context_menu.addAction(f"Execute {self.selected_step} from {self.selected_process}")
-            add_step_action = context_menu.addAction(f"Add New Step After {self.selected_step}")
+            exec_step_action = context_menu.addAction(f"Execute {self.selected_step} from {self.selected_process}")
+            create_step_action = context_menu.addAction(f"Add New Step After {self.selected_step}")
             delete_step_action = context_menu.addAction(f"Delete {self.selected_step} from {self.selected_process}")
         else:
-            add_first_step_action = context_menu.addAction(f"Add First Step to {self.selected_process} Process")
-            execute_process_action = context_menu.addAction(f"Execute {self.selected_process} Process")
-            add_process_action = context_menu.addAction("Create a new Process")
+            create_first_step_action = context_menu.addAction(f"Add First Step to {self.selected_process} Process")
+            exec_process_action = context_menu.addAction(f"Execute {self.selected_process} Process")
+            create_process_action = context_menu.addAction("Create a new Process")
             rename_process_action = context_menu.addAction(f"Rename {self.selected_process} Process")
 
         # Execute the context menu
         action = context_menu.exec_(self.tree.mapToGlobal(point))
 
-        # @Todo: Handle Process Popup Menu Actions
-        if add_step_action is not None and action == add_step_action:
-            print(f"Add New Step After {self.selected_step} in process {self.selected_process}")
-        elif add_first_step_action is not None and action == delete_step_action:
-            print(f"Add First Step to {self.selected_process} Process")
-        elif delete_step_action is not None and action == delete_step_action:
-            print(f"Delete {self.selected_process}:{self.selected_step}")
-        elif add_process_action is not None and action == add_process_action:
-            print("Add New Process")
-        elif rename_process_action is not None and action == rename_process_action:
-            old_name = self.selected_process
-            RenameProcessDialog(old_name, self).exec_()  # The Dialog directly updates self.selected_process
-            self.log({'action': 'rename_process', 'message': f'Rename Process <{old_name}> to <{self.selected_process}>'})
-            SEND({'cmd': 'rename', 'object': 'process', 'cb': 'process_renamed', 'record':
-                 {'process_old_name': old_name, 'process_new_name': self.selected_process}})
-        elif execute_process_action is not None and action == execute_process_action:
-            self.log({'action': 'execute_selected_process', 'message': self.selected_process})
-            SEND({'cmd': 'exec', 'object': 'process', 'cb': 'exec_process_log',
-                  'record': {'process': self.selected_process}})
-        elif execute_step_action is not None and action == execute_step_action:
-            self.log({'action': 'execute_selected_step', 'message': f"{self.selected_process}::{self.selected_step}"})
-            SEND({'cmd': 'exec', 'object': 'step', 'cb': 'exec_step', 'record':
-                 {'process_name': self.selected_process, 'step_name': self.selected_step}})
+        if create_step_action is not None and action == create_step_action:
+            step_index = 0
+            for i, step in enumerate(self.ProcessStore[self.selected_process]):
+                if step['name'] == self.selected_step:
+                    step_index = i + 1
+                    break
+
+            self.create_step(index=step_index)
+            return
+
+        if create_first_step_action is not None and action == create_first_step_action:
+            self.create_step(index=0)
+            return
+
+        if delete_step_action is not None and action == delete_step_action:
+            self.delete_step()
+            return
+
+        if create_process_action is not None and action == create_process_action:
+            self.create_process()
+            return
+
+        if rename_process_action is not None and action == rename_process_action:
+            self.rename_process()
+            return
+
+        if exec_process_action is not None and action == exec_process_action:
+            self.exec_process()
+            return
+
+        if exec_step_action is not None and action == exec_step_action:
+            self.exec_step()
+            return
 
     def process_step_update(self, obj):
         process_name = obj['object']

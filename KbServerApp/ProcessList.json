@@ -1,5 +1,82 @@
 {
-  "flask": [
+  "test": [
+    {
+      "py/object": "KbServerApp.step.Step",
+      "name": "Step 1",
+      "prompt_name": "Prompts/Test Prompt.pe",
+      "ai": {
+        "py/object": "KbServerApp.ai.AI",
+        "temperature": 0,
+        "max_tokens": 3000,
+        "model": "gpt-3.5-turbo-16k",
+        "mode": "chat"
+      },
+      "storage_path": "Dynamic/Requirements",
+      "messages": [],
+      "response": {},
+      "answer": "",
+      "files": {},
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "sp_cost": 0.0,
+      "sc_cost": 0.0,
+      "s_total": 0.0,
+      "elapsed_time": 0.0
+    },
+    {
+      "py/object": "KbServerApp.step.Step",
+      "name": "Step 2",
+      "prompt_name": "Prompts/Test Prompt 2.pe",
+      "ai": {
+        "py/object": "KbServerApp.ai.AI",
+        "temperature": 0,
+        "max_tokens": 3000,
+        "model": "text-babbage-001",
+        "mode": "complete"
+      },
+      "storage_path": "Dynamic/Components",
+      "messages": [],
+      "response": {},
+      "answer": "",
+      "files": {},
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "sp_cost": 0.0,
+      "sc_cost": 0.0,
+      "s_total": 0.0,
+      "elapsed_time": 0.0
+    }
+  ],
+  "ke": [],
+  "Online BookStore - svelte": [
+    {
+      "py/object": "KbServerApp.step.Step",
+      "name": "Step 1",
+      "prompt_name": "Prompts/Svelte/Components/Directory Editor.pe",
+      "ai": {
+        "py/object": "KbServerApp.ai.AI",
+        "temperature": 0,
+        "max_tokens": 3000,
+        "model": "gpt-4",
+        "mode": "chat"
+      },
+      "storage_path": "Dynamic/Svelte/Components/",
+      "messages": [],
+      "response": {},
+      "answer": "",
+      "files": {},
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "sp_cost": 0.0,
+      "sc_cost": 0.0,
+      "s_total": 0.0,
+      "elapsed_time": 0.0
+    }
+  ],
+  "Online BookStore - flask": [
     {
       "py/object": "KbServerApp.step.Step",
       "name": "Step 1",
@@ -145,7 +222,7 @@
       "elapsed_time": 0.0
     }
   ],
-  "php": [
+  "Online BookStore - php": [
     {
       "py/object": "KbServerApp.step.Step",
       "name": "Step 1",
@@ -261,7 +338,19 @@
               {
                 "index": 0,
                 "message": {
-                  "py/id": 47
+                  "_response_ms": null,
+                  "_retrieve_params": {
+                    "py/id": 61
+                  },
+                  "api_key": "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",
+                  "api_version": null,
+                  "api_type": null,
+                  "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
+                  "api_base_override": null,
+                  "engine": null,
+                  "_previous": {
+                    "py/id": 62
+                  }
                 },
                 "finish_reason": "stop"
               }
@@ -401,7 +490,19 @@
               {
                 "index": 0,
                 "message": {
-                  "py/id": 71
+                  "_response_ms": null,
+                  "_retrieve_params": {
+                    "py/id": 74
+                  },
+                  "api_key": "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",
+                  "api_version": null,
+                  "api_type": null,
+                  "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
+                  "api_base_override": null,
+                  "engine": null,
+                  "_previous": {
+                    "py/id": 75
+                  }
                 },
                 "finish_reason": "stop"
               }
@@ -553,7 +654,7 @@
               {
                 "index": 0,
                 "message": {
-                  "py/id": 98
+                  "py/id": 88
                 },
                 "finish_reason": "stop"
               }
@@ -710,7 +811,19 @@
               {
                 "index": 0,
                 "message": {
-                  "py/id": 126
+                  "_response_ms": null,
+                  "_retrieve_params": {
+                    "py/id": 106
+                  },
+                  "api_key": "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",
+                  "api_version": null,
+                  "api_type": null,
+                  "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
+                  "api_base_override": null,
+                  "engine": null,
+                  "_previous": {
+                    "py/id": 107
+                  }
                 },
                 "finish_reason": "stop"
               }
@@ -760,133 +873,7 @@
       "elapsed_time": 0.0
     }
   ],
-  "test": [
-    {
-      "py/object": "KbServerApp.step.Step",
-      "name": "Step 1",
-      "prompt_name": "Prompts/Test Prompt.pe",
-      "ai": {
-        "py/object": "KbServerApp.ai.AI",
-        "temperature": 0,
-        "max_tokens": 3000,
-        "model": "gpt-3.5-turbo-16k",
-        "mode": "chat"
-      },
-      "storage_path": "Dynamic/Requirements",
-      "messages": [],
-      "response": {},
-      "answer": "",
-      "files": {},
-      "prompt_tokens": 0,
-      "completion_tokens": 0,
-      "total_tokens": 0,
-      "sp_cost": 0.0,
-      "sc_cost": 0.0,
-      "s_total": 0.0,
-      "elapsed_time": 0.0
-    },
-    {
-      "py/object": "KbServerApp.step.Step",
-      "name": "Step 2",
-      "prompt_name": "Prompts/Test Prompt 2.pe",
-      "ai": {
-        "py/object": "KbServerApp.ai.AI",
-        "temperature": 0,
-        "max_tokens": 3000,
-        "model": "text-babbage-001",
-        "mode": "complete"
-      },
-      "storage_path": "Dynamic/Components",
-      "messages": [],
-      "response": {},
-      "answer": "",
-      "files": {},
-      "prompt_tokens": 0,
-      "completion_tokens": 0,
-      "total_tokens": 0,
-      "sp_cost": 0.0,
-      "sc_cost": 0.0,
-      "s_total": 0.0,
-      "elapsed_time": 0.0
-    }
-  ],
-  "svelte": [
-    {
-      "py/object": "KbServerApp.step.Step",
-      "name": "Step 1",
-      "prompt_name": "Prompts/Svelte/Components/Directory Editor.pe",
-      "ai": {
-        "py/object": "KbServerApp.ai.AI",
-        "temperature": 0,
-        "max_tokens": 3000,
-        "model": "gpt-4",
-        "mode": "chat"
-      },
-      "storage_path": "Dynamic/Svelte/Components/",
-      "messages": [],
-      "response": {},
-      "answer": "",
-      "files": {},
-      "prompt_tokens": 0,
-      "completion_tokens": 0,
-      "total_tokens": 0,
-      "sp_cost": 0.0,
-      "sc_cost": 0.0,
-      "s_total": 0.0,
-      "elapsed_time": 0.0
-    },
-    {
-      "py/object": "KbServerApp.step.Step",
-      "name": "Step 2",
-      "prompt_name": "Prompts/Svelte/Components/Esthetics.pe",
-      "ai": {
-        "py/object": "KbServerApp.ai.AI",
-        "temperature": 0,
-        "max_tokens": 3000,
-        "model": "gpt-4",
-        "mode": "chat"
-      },
-      "storage_path": "Dynamic/Svelte/Components/",
-      "messages": [],
-      "response": {},
-      "answer": "",
-      "files": {},
-      "prompt_tokens": 0,
-      "completion_tokens": 0,
-      "total_tokens": 0,
-      "sp_cost": 0.0,
-      "sc_cost": 0.0,
-      "s_total": 0.0,
-      "elapsed_time": 0.0
-    }
-  ],
-  "ke": [
-    {
-      "py/object": "KbServerApp.step.Step",
-      "name": "Step 1",
-      "prompt_name": "Prompts/Svelte/src/Fix Reflection.pe",
-      "ai": {
-        "py/object": "KbServerApp.ai.AI",
-        "temperature": 0,
-        "max_tokens": 3000,
-        "model": "gpt-4",
-        "mode": "chat"
-      },
-      "storage_path": "Dynamic/Svelte/components/",
-      "messages": [],
-      "response": {},
-      "answer": "",
-      "files": {},
-      "prompt_tokens": 0,
-      "completion_tokens": 0,
-      "total_tokens": 0,
-      "sp_cost": 0.0,
-      "sc_cost": 0.0,
-      "s_total": 0.0,
-      "elapsed_time": 0.0
-    }
-  ],
-  "Python_GUI": [
+  "KnowledgeEngineer - Python_GUI": [
     {
       "py/object": "KbServerApp.step.Step",
       "name": "Step 1",

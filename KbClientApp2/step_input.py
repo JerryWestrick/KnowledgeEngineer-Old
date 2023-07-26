@@ -68,7 +68,7 @@ class InputTable(QWidget):
     def handle_save_clicked(self):
         self.save_button.setEnabled(False)
         self.log({'action': 'handle_save_clicked', 'message': f"{self.process_name}::{self.step['name']}"})
-        SEND({'cmd': 'save_step', 'object': 'step', 'cb': 'saved_step',
+        SEND({'cmd': 'write', 'object': 'step', 'cb': 'saved_step',
               'record': {'process_name': self.process_name, 'step': self.step}
               })
 

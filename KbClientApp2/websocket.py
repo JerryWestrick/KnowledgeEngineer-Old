@@ -50,8 +50,8 @@ class WebSocketClient(QWebSocket):
                 method = getattr(ins, method_name)
                 method(obj)
         else:
-            self.log({'action': 'Error',
-                      'message': f"No Such Routine: {obj['cb']}(msg(cmd={obj['cmd']}, "
+            self.log({'action': 'on_message_received',
+                      'message': f"Error: No Such Routine: {obj['cb']}(msg(cmd={obj['cmd']}, "
                                  f"object={obj['object']}, rc={obj['rc']}, cb={obj['cb']}, record={obj['record']}))", })
 
     def send_message(self, message):
@@ -60,14 +60,14 @@ class WebSocketClient(QWebSocket):
             self.sendTextMessage(msg)
             self.log({'action': 'send_message', 'message': message})
         else:
-            self.log({'action': 'send_message', 'message': 'WebSocket not connected'})
+            self.log({'action': 'send_message', 'message': 'Error: WebSocket not connected'})
 
     def close_connection(self):
         self.close()
 
     def on_error(self, error_code):
         error_message = self.errorString()
-        self.log({'action': 'on_websocket_error', 'message': f'WebSocket error: {error_message}'})
+        self.log({'action': 'on_websocket_error', 'message': f'Error: {error_message}'})
 
     def on_websocket_binary_message(self, message):
         text = message.record().decode('utf-8')

@@ -84,7 +84,7 @@ class MemoryTab(QWidget):
         # Add the code to test the content here.
         self.log({'action': 'test_content', 'message': self.edit.toPlainText()})
         self.test_button.setDisabled(True)
-        SEND({'cmd': 'read', 'object': self.selected_filename, 'cb': 'memory_test', 'record': {}})
+        SEND({'cmd': 'read', 'object': 'memory', 'cb': 'memory_test', 'record': {'prompt_name': self.selected_filename}})
 
     def memory_test(self, obj):
         # self.log({'action': 'memory_test', 'message': obj})
