@@ -46,6 +46,7 @@ class Process(QWidget):
         REGISTER_CALLBACK(self, 'cb_create_step')
         REGISTER_CALLBACK(self, 'cb_delete_step')
         REGISTER_CALLBACK(self, 'cb_create_process')
+        REGISTER_CALLBACK(self, 'cb_delete_process')
         REGISTER_CALLBACK(self, 'cb_rename_process')
         REGISTER_CALLBACK(self, 'cb_exec_process')
         REGISTER_CALLBACK(self, 'cb_exec_step')
@@ -94,11 +95,33 @@ class Process(QWidget):
         SEND({'cmd': 'delete', 'object': 'step', 'cb': 'cb_delete_step',
               'record': {'process_name': self.selected_process, 'step_name': self.selected_step}})
 
+    def cb_delete_process(self, msg):
+        process_name = msg['record']['process_name']
+        del self.ProcessStore[process_name]
+        self.selected_process = ''
+        self.log({'action': 'delete_process', 'message': f'Delete Process <{process_name}>'})
+        self.process_list_initial_load({'record': self.ProcessStore})
+
+    def delete_process(self):
+        self.log({'action': 'delete_process_action', 'message': self.selected_process})
+        SEND({'cmd': 'delete', 'object': 'process', 'cb': 'cb_delete_process',
+              'record': {'process_name': self.selected_process}})
+
     def cb_create_process(self, msg):
-        pass
+        if msg['rc'] == 'Fail':
+            self.log({'action': 'cb_create_process', 'message': f"Error: {msg['reason']}"})
+        else:
+            process_name = msg['record']['process_name']
+            self.ProcessStore[process_name] = []
+            self.process_list_initial_load({'record': self.ProcessStore})
+            self.log({'action': 'cb_create_process', 'message': f'Create Process <{process_name}>'})
 
     def create_process(self):
-        self.log({'action': 'add_process_action', 'message': self.selected_process})
+        for i in range(0, 10):
+            if f"New Process {i}" not in self.ProcessStore:
+                self.selected_process = f"New Process {i}"
+                break
+        self.log({'action': 'create_process_action', 'message': self.selected_process})
         SEND({'cmd': 'create', 'object': 'process', 'cb': 'cb_create_process',
               'record': {'process_name': self.selected_process}})
 
@@ -141,6 +164,7 @@ class Process(QWidget):
         # Placeholder for actions
         create_step_action = None
         delete_step_action = None
+        delete_process_action = None
         create_process_action = None
         rename_process_action = None
         exec_process_action = None
@@ -156,6 +180,7 @@ class Process(QWidget):
             create_first_step_action = context_menu.addAction(f"Add First Step to {self.selected_process} Process")
             exec_process_action = context_menu.addAction(f"Execute {self.selected_process} Process")
             create_process_action = context_menu.addAction("Create a new Process")
+            delete_process_action = context_menu.addAction(f"Delete {self.selected_process} Process")
             rename_process_action = context_menu.addAction(f"Rename {self.selected_process} Process")
 
         # Execute the context menu
@@ -181,6 +206,10 @@ class Process(QWidget):
 
         if create_process_action is not None and action == create_process_action:
             self.create_process()
+            return
+
+        if delete_process_action is not None and action == delete_process_action:
+            self.delete_process()
             return
 
         if rename_process_action is not None and action == rename_process_action:

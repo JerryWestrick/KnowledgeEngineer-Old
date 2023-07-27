@@ -3,6 +3,7 @@ import os
 import time
 from typing import List
 
+import jsonpickle
 from autobahn.twisted.websocket import WebSocketServerProtocol
 from dotenv import load_dotenv, find_dotenv
 from twisted.internet.defer import inlineCallbacks, returnValue
@@ -16,6 +17,34 @@ from KbServerApp.step import Step
 load_dotenv(find_dotenv())
 
 WS_CONNECTIONS = []  # All connection instances
+
+empty_step_json = '''{
+      "py/object": "KbServerApp.step.Step",
+      "name": "New Step",
+      "prompt_name": "",
+      "ai": {
+        "py/object": "KbServerApp.ai.AI",
+        "temperature": 0,
+        "max_tokens": 3000,
+        "model": "gpt-3.5-turbo",
+        "mode": "chat"
+      },
+      "storage_path": "",
+      "messages": [],
+      "response": {},
+      "answer": "",
+      "files": {},
+      "e_stats": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0,
+        "sp_cost": 0.0,
+        "sc_cost": 0.0,
+        "s_total": 0.0,
+        "elapsed_time": 0.0
+      }
+    }
+'''
 
 
 # @todo Replace json.dumps with jsonpickle
@@ -55,41 +84,31 @@ class KbServerProtocol(WebSocketServerProtocol):
             self.sendMessage(response.encode('UTF8'), False)
         KbServerProtocol.log.info("Now Serving {count} clients", count=len(self.factory.webClients))
 
-        # process_list_initial_load
+        self.process_list_initial_load()
+        self.memory_initial_load()
+        self.models_initial_load()
+        return
+
+    def process_list_initial_load(self):
         pl = {}
         for k, v in ProcessList.items():
             a = []
             for s in v:
                 a.append(s.to_json())
             pl[k] = a
+        msg = {'cmd': 'process_list_initial_load', 'cb': 'process_list_initial_load',
+               'rc': 'Okay', 'object': 'process', 'record': pl}
+        self.send_object(msg)
 
-        msg['cmd'] = 'process_list_initial_load'
-        msg['cb'] = 'process_list_initial_load'
-        msg['rc'] = 'Okay'
-        msg['object'] = 'process'
-        msg['record'] = pl
-        response = json.dumps(msg, ensure_ascii=False, default=str)
-        self.sendMessage(response.encode('UTF8'), False)
+    def memory_initial_load(self):
+        msg = {'cmd': 'memory_initial_load', 'cb': 'memory_initial_load',
+               'rc': 'Okay', 'object': 'memory', 'record': self.memory_as_dictionary()}
+        self.send_object(msg)
 
-        # memory_initial_load
-        msg['cmd'] = 'memory_initial_load'
-        msg['cb'] = 'memory_initial_load'
-        msg['rc'] = 'Okay'
-        msg['object'] = 'memory'
-        msg['record'] = self.memory_as_dictionary()
-        response = json.dumps(msg, ensure_ascii=False, default=str)
-        self.sendMessage(response.encode('UTF8'), False)
-
-        # memory_initial_load
-        msg['cmd'] = 'models_initial_load'
-        msg['cb'] = 'models_initial_load'
-        msg['rc'] = 'Okay'
-        msg['object'] = 'models'
-        msg['record'] = OpenAI_API_Costs
-        response = json.dumps(msg, ensure_ascii=False, default=str)
-        self.sendMessage(response.encode('UTF8'), False)
-
-        return
+    def models_initial_load(self):
+        msg = {'cmd': 'models_initial_load', 'cb': 'models_initial_load',
+               'rc': 'Okay', 'object': 'models', 'record': OpenAI_API_Costs}
+        self.send_object(msg)
 
     def memory_as_dictionary(self):
         dir_structure = {}
@@ -253,6 +272,20 @@ class KbServerProtocol(WebSocketServerProtocol):
         KbServerProtocol.log.info(f"Call to write step {process_name}::{step_name}...")
         self.send_object(msg)
 
+    def create_step(self, msg, isbinary):
+        empty_step = jsonpickle.loads(empty_step_json)  # This creates a new Object... Which avoids sharing problems
+        process_name = msg['record']['process_name']
+        step_index = msg['record']['step_index']
+        step_name = msg['record']['step_name']
+        KbServerProtocol.log.info(f"Call to create step {process_name}::{step_name}...")
+        msg['rc'] = 'Okay'
+        msg['reason'] = f'Create step {process_name}::{step_name} Complete'
+        ProcessList[process_name].insert(step_index, empty_step)
+        ProcessList_save(ProcessList)
+        KbServerProtocol.log.info(f"Call to write step {process_name}::{step_name}...")
+        self.send_object(msg)
+        self.process_list_initial_load()
+
     def rename_process(self, msg, isbinary):
         process_old_name = msg['record']['process_old_name']
         process_new_name = msg['record']['process_new_name']
@@ -262,6 +295,24 @@ class KbServerProtocol(WebSocketServerProtocol):
         del ProcessList[process_old_name]
         ProcessList_save(ProcessList)
         KbServerProtocol.log.info("Call rename_process({msg})... Complete", msg=msg)
+        self.send_object(msg)
+
+    def delete_process(self, msg, isbinary):
+        process_name = msg['record']['process_name']
+        msg['rc'] = 'Okay'
+        msg['reason'] = f'delete_process({process_name})... Complete'
+        del ProcessList[process_name]
+        ProcessList_save(ProcessList)
+        KbServerProtocol.log.info("Call delete_process({msg})... Complete", msg=msg)
+        self.send_object(msg)
+
+    def create_process(self, msg, isbinary):
+        process_name = msg['record']['process_name']
+        msg['rc'] = 'Okay'
+        msg['reason'] = f'create_process({process_name})... Complete'
+        ProcessList[process_name] = []
+        ProcessList_save(ProcessList)
+        KbServerProtocol.log.info("Call create_process({msg})... Complete", msg=msg)
         self.send_object(msg)
 
     def delete_step(self, msg, isbinary):
@@ -278,6 +329,7 @@ class KbServerProtocol(WebSocketServerProtocol):
                 break
         ProcessList_save(ProcessList)
         self.send_object(msg)
+        self.process_list_initial_load()
         # returnValue('')
 
 

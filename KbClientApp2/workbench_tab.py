@@ -22,13 +22,16 @@ empty_step = {
     "response": {},
     "answer": "",
     "files": {},
-    "prompt_tokens": 0,
-    "completion_tokens": 0,
-    "total_tokens": 0,
-    "sp_cost": 0.0,
-    "sc_cost": 0.0,
-    "s_total": 0.0,
-    "elapsed_time": 0.0
+    "e_stats": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0,
+        "sp_cost": 0.0,
+        "sc_cost": 0.0,
+        "s_total": 0.0,
+        "elapsed_time": 0.0
+
+    }
 }
 
 

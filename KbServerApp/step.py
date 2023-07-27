@@ -54,13 +54,15 @@ class Step:
         self.response: dict = {}  # The responses that have been received from the AI
         self.answer: str = ''  # The answer from within the response
         self.files: dict[str, str] = {}  # The files that have been returned from the AI
-        self.prompt_tokens: int = 0
-        self.completion_tokens: int = 0
-        self.total_tokens: int = 0
-        self.sp_cost: float = 0.0
-        self.sc_cost: float = 0.0
-        self.s_total: float = 0.0
-        self.elapsed_time: float = 0.0
+        self.e_stats: dict[str, float] = {
+            'sprompt_tokens': 0.0,
+            'completion_tokens': 0.0,
+            'total_tokens': 0.0,
+            'sp_cost': 0.0,
+            'sc_cost': 0.0,
+            's_total': 0.0,
+            'elapsed_time': 0.0,
+        }  # The execution statistics for the AI
 
     def to_json(self) -> dict:
         """
@@ -76,13 +78,13 @@ class Step:
             'answer': self.answer,
             'files': self.files,
             'e_stats': {
-                'prompt_tokens': self.prompt_tokens,
-                'completion_tokens': self.completion_tokens,
-                'total_tokens': self.total_tokens,
-                'sp_cost': self.sp_cost,
-                'sc_cost': self.sc_cost,
-                's_total': self.s_total,
-                'elapsed_time': self.elapsed_time,
+                'prompt_tokens': self.e_stats['prompt_tokens'],
+                'completion_tokens': self.e_stats['completion_tokens'],
+                'total_tokens': self.e_stats['total_tokens'],
+                'sp_cost': self.e_stats['sp_cost'],
+                'sc_cost': self.e_stats['sc_cost'],
+                's_total': self.e_stats['s_total'],
+                'elapsed_time': self.e_stats['elapsed_time'],
             }
         }
 
@@ -103,13 +105,7 @@ class Step:
         step.response = json_obj['response']
         step.answer = json_obj['answer']
         step.files = json_obj['files']
-        step.prompt_tokens = json_obj['e_stats']['prompt_tokens']
-        step.completion_tokens = json_obj['e_stats']['completion_tokens']
-        step.total_tokens = json_obj['e_stats']['total_tokens']
-        step.sp_cost = json_obj['e_stats']['sp_cost']
-        step.sc_cost = json_obj['e_stats']['sc_cost']
-        step.s_total = json_obj['e_stats']['s_total']
-        step.elapsed_time = json_obj['e_stats']['elapsed_time']
+        step.e_stats = json_obj['e_stats']
         return step
 
     @inlineCallbacks
@@ -127,14 +123,14 @@ class Step:
 
         start_time = time.time()
         self.response = yield self.ai.generate(self.messages)
-        self.elapsed_time = time.time() - start_time
-        self.prompt_tokens = self.response['usage']['prompt_tokens']
-        self.completion_tokens = self.response['usage']['completion_tokens']
-        self.total_tokens = self.response['usage']['total_tokens']
-        GptLogger.log('STEP', f"Call {self.ai.model} Elapsed: {self.elapsed_time:.2f}s Token Usage: "
-                              f"Total:{self.total_tokens} ("
-                              f"Prompt:{self.prompt_tokens}, "
-                              f"Completion:{self.completion_tokens})"
+        self.e_stats['elapsed_time'] = time.time() - start_time
+        self.e_stats['prompt_tokens'] = self.response['usage']['prompt_tokens']
+        self.e_stats['completion_tokens'] = self.response['usage']['completion_tokens']
+        self.e_stats['total_tokens'] = self.response['usage']['total_tokens']
+        GptLogger.log('STEP', f"Call {self.ai.model} Elapsed: {self.e_stats['elapsed_time']:.2f}s Token Usage: "
+                              f"Total:{self.e_stats['total_tokens']} ("
+                              f"Prompt:{self.e_stats['prompt_tokens']}, "
+                              f"Completion:{self.e_stats['completion_tokens']})"
                       )
 
         if self.ai.mode == 'chat':
@@ -145,9 +141,9 @@ class Step:
         self.files = interpret_results(text=self.answer)
         pricing = OpenAI_API_Costs[self.ai.model]
 
-        self.sp_cost = pricing['input'] * (self.prompt_tokens / 1000)
-        self.sc_cost = pricing['output'] * (self.completion_tokens / 1000)
-        self.s_total = self.sp_cost + self.sc_cost
+        self.e_stats['sp_cost'] = pricing['input'] * (self.e_stats['prompt_tokens'] / 1000)
+        self.e_stats['sc_cost'] = pricing['output'] * (self.e_stats['completion_tokens'] / 1000)
+        self.e_stats['s_total'] = self.e_stats['sp_cost'] + self.e_stats['sc_cost']
 
         # Send Update to the GUI
         msg = {'cmd': 'StepUpdate', 'cb': 'process_step_update', 'rc': 'Okay', 'object': pname, 'record': self.to_json()}
