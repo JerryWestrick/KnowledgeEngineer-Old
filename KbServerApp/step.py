@@ -74,7 +74,6 @@ class Step:
             'ai': self.ai.to_json(),
             'storage_path': self.storage_path,
             'messages': self.messages,
-            'response': self.response,
             'answer': self.answer,
             'files': self.files,
             'e_stats': {

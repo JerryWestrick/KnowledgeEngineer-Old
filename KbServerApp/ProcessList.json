@@ -439,27 +439,6 @@
           "content": "\nIdentify each Actor described, and what his requirements are.\n### Complete the following list of actors:\nActors.json\n```json\n{'Actors' :\n    { '<actor>': { 'name': '<actor>', 'requirements': [ '<first requirement>', '<second requirement>', ... ]}\n    }\n}\n```"
         }
       ],
-      "response": {
-        "id": "chatcmpl-7i93IcgVZtjJUQLNlYWPGmnIYPxJX",
-        "object": "chat.completion",
-        "created": 1690755584,
-        "model": "gpt-3.5-turbo-0613",
-        "choices": [
-          {
-            "index": 0,
-            "message": {
-              "role": "assistant",
-              "content": "Actors.json\n```json\n{\n  \"Actors\": {\n    \"User\": {\n      \"name\": \"User\",\n      \"requirements\": [\n        \"Browse books\",\n        \"Purchase books\",\n        \"Read books\",\n        \"Create personal account\",\n        \"Maintain private library\",\n        \"Share book reviews\"\n      ]\n    },\n    \"Admin\": {\n      \"name\": \"Admin\",\n      \"requirements\": [\n        \"View transactions\",\n        \"Access logs\",\n        \"Give users access to books\",\n        \"Refund users\",\n        \"Open user accounts\",\n        \"Close user accounts\",\n        \"Block user accounts\"\n      ]\n    },\n    \"Operator\": {\n      \"name\": \"Operator\",\n      \"requirements\": [\n        \"Schedule backups of entire data\",\n        \"Restore entire data or specific user's account\",\n        \"Replay transactions of entire site or single user after a restore\"\n      ]\n    }\n  }\n}\n```"
-            },
-            "finish_reason": "stop"
-          }
-        ],
-        "usage": {
-          "prompt_tokens": 207,
-          "completion_tokens": 191,
-          "total_tokens": 398
-        }
-      },
       "answer": "Actors.json\n```json\n{\n  \"Actors\": {\n    \"User\": {\n      \"name\": \"User\",\n      \"requirements\": [\n        \"Browse books\",\n        \"Purchase books\",\n        \"Read books\",\n        \"Create personal account\",\n        \"Maintain private library\",\n        \"Share book reviews\"\n      ]\n    },\n    \"Admin\": {\n      \"name\": \"Admin\",\n      \"requirements\": [\n        \"View transactions\",\n        \"Access logs\",\n        \"Give users access to books\",\n        \"Refund users\",\n        \"Open user accounts\",\n        \"Close user accounts\",\n        \"Block user accounts\"\n      ]\n    },\n    \"Operator\": {\n      \"name\": \"Operator\",\n      \"requirements\": [\n        \"Schedule backups of entire data\",\n        \"Restore entire data or specific user's account\",\n        \"Replay transactions of entire site or single user after a restore\"\n      ]\n    }\n  }\n}\n```",
       "files": {
         "Actors.json": "{\n  \"Actors\": {\n    \"User\": {\n      \"name\": \"User\",\n      \"requirements\": [\n        \"Browse books\",\n        \"Purchase books\",\n        \"Read books\",\n        \"Create personal account\",\n        \"Maintain private library\",\n        \"Share book reviews\"\n      ]\n    },\n    \"Admin\": {\n      \"name\": \"Admin\",\n      \"requirements\": [\n        \"View transactions\",\n        \"Access logs\",\n        \"Give users access to books\",\n        \"Refund users\",\n        \"Open user accounts\",\n        \"Close user accounts\",\n        \"Block user accounts\"\n      ]\n    },\n    \"Operator\": {\n      \"name\": \"Operator\",\n      \"requirements\": [\n        \"Schedule backups of entire data\",\n        \"Restore entire data or specific user's account\",\n        \"Replay transactions of entire site or single user after a restore\"\n      ]\n    }\n  }\n}"
@@ -498,120 +477,6 @@
           "content": "\nGenerate main_window.py which will consist of 3 tabs.\n  \"WorkBench\" (loaded from workbench_tab.py)\n  \"Log\" (Loaded from log_tab.py)\n  \"Coms\" (loaded from coms_tab.py)\n\n Generate all 4 files."
         }
       ],
-      "response": {
-        "py/object": "openai.openai_object.OpenAIObject",
-        "id": "chatcmpl-7i649oX0xKfZZq5fBrprWVQBtzVzc",
-        "object": "chat.completion",
-        "created": 1690744105,
-        "model": "gpt-3.5-turbo-0613",
-        "choices": [
-          {
-            "py/object": "openai.openai_object.OpenAIObject",
-            "index": 0,
-            "message": {
-              "py/object": "openai.openai_object.OpenAIObject",
-              "role": "assistant",
-              "content": "main_window.py\n```python\nfrom PySide6.QtWidgets import QApplication, QMainWindow, QTabWidget\n\nfrom workbench_tab import WorkBenchTab\nfrom log_tab import LogTab\nfrom coms_tab import ComsTab\n\n\nclass MainWindow(QMainWindow):\n    def __init__(self):\n        super().__init__()\n\n        self.setWindowTitle(\"Main Window\")\n\n        self.tab_widget = QTabWidget()\n        self.setCentralWidget(self.tab_widget)\n\n        self.workbench_tab = WorkBenchTab()\n        self.log_tab = LogTab()\n        self.coms_tab = ComsTab()\n\n        self.tab_widget.addTab(self.workbench_tab, \"WorkBench\")\n        self.tab_widget.addTab(self.log_tab, \"Log\")\n        self.tab_widget.addTab(self.coms_tab, \"Coms\")\n\n\nif __name__ == \"__main__\":\n    app = QApplication([])\n    window = MainWindow()\n    window.show()\n    app.exec()\n```\n\nworkbench_tab.py\n```python\nfrom PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel\n\n\nclass WorkBenchTab(QWidget):\n    def __init__(self):\n        super().__init__()\n\n        layout = QVBoxLayout()\n        label = QLabel(\"WorkBench Tab\")\n        layout.addWidget(label)\n\n        self.setLayout(layout)\n```\n\nlog_tab.py\n```python\nfrom PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel\n\n\nclass LogTab(QWidget):\n    def __init__(self):\n        super().__init__()\n\n        layout = QVBoxLayout()\n        label = QLabel(\"Log Tab\")\n        layout.addWidget(label)\n\n        self.setLayout(layout)\n```\n\ncoms_tab.py\n```python\nfrom PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel\n\n\nclass ComsTab(QWidget):\n    def __init__(self):\n        super().__init__()\n\n        layout = QVBoxLayout()\n        label = QLabel(\"Coms Tab\")\n        layout.addWidget(label)\n\n        self.setLayout(layout)\n```",
-              "__dict__": {
-                "_response_ms": null,
-                "_retrieve_params": {},
-                "api_key": "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",
-                "api_version": null,
-                "api_type": null,
-                "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
-                "api_base_override": null,
-                "engine": null,
-                "_previous": {
-                  "role": "assistant",
-                  "content": "main_window.py\n```python\nfrom PySide6.QtWidgets import QApplication, QMainWindow, QTabWidget\n\nfrom workbench_tab import WorkBenchTab\nfrom log_tab import LogTab\nfrom coms_tab import ComsTab\n\n\nclass MainWindow(QMainWindow):\n    def __init__(self):\n        super().__init__()\n\n        self.setWindowTitle(\"Main Window\")\n\n        self.tab_widget = QTabWidget()\n        self.setCentralWidget(self.tab_widget)\n\n        self.workbench_tab = WorkBenchTab()\n        self.log_tab = LogTab()\n        self.coms_tab = ComsTab()\n\n        self.tab_widget.addTab(self.workbench_tab, \"WorkBench\")\n        self.tab_widget.addTab(self.log_tab, \"Log\")\n        self.tab_widget.addTab(self.coms_tab, \"Coms\")\n\n\nif __name__ == \"__main__\":\n    app = QApplication([])\n    window = MainWindow()\n    window.show()\n    app.exec()\n```\n\nworkbench_tab.py\n```python\nfrom PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel\n\n\nclass WorkBenchTab(QWidget):\n    def __init__(self):\n        super().__init__()\n\n        layout = QVBoxLayout()\n        label = QLabel(\"WorkBench Tab\")\n        layout.addWidget(label)\n\n        self.setLayout(layout)\n```\n\nlog_tab.py\n```python\nfrom PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel\n\n\nclass LogTab(QWidget):\n    def __init__(self):\n        super().__init__()\n\n        layout = QVBoxLayout()\n        label = QLabel(\"Log Tab\")\n        layout.addWidget(label)\n\n        self.setLayout(layout)\n```\n\ncoms_tab.py\n```python\nfrom PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel\n\n\nclass ComsTab(QWidget):\n    def __init__(self):\n        super().__init__()\n\n        layout = QVBoxLayout()\n        label = QLabel(\"Coms Tab\")\n        layout.addWidget(label)\n\n        self.setLayout(layout)\n```"
-                }
-              }
-            },
-            "finish_reason": "stop",
-            "__dict__": {
-              "_response_ms": null,
-              "_retrieve_params": {},
-              "api_key": "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",
-              "api_version": null,
-              "api_type": null,
-              "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
-              "api_base_override": null,
-              "engine": null,
-              "_previous": {
-                "index": 0,
-                "message": {
-                  "role": "assistant",
-                  "content": "main_window.py\n```python\nfrom PySide6.QtWidgets import QApplication, QMainWindow, QTabWidget\n\nfrom workbench_tab import WorkBenchTab\nfrom log_tab import LogTab\nfrom coms_tab import ComsTab\n\n\nclass MainWindow(QMainWindow):\n    def __init__(self):\n        super().__init__()\n\n        self.setWindowTitle(\"Main Window\")\n\n        self.tab_widget = QTabWidget()\n        self.setCentralWidget(self.tab_widget)\n\n        self.workbench_tab = WorkBenchTab()\n        self.log_tab = LogTab()\n        self.coms_tab = ComsTab()\n\n        self.tab_widget.addTab(self.workbench_tab, \"WorkBench\")\n        self.tab_widget.addTab(self.log_tab, \"Log\")\n        self.tab_widget.addTab(self.coms_tab, \"Coms\")\n\n\nif __name__ == \"__main__\":\n    app = QApplication([])\n    window = MainWindow()\n    window.show()\n    app.exec()\n```\n\nworkbench_tab.py\n```python\nfrom PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel\n\n\nclass WorkBenchTab(QWidget):\n    def __init__(self):\n        super().__init__()\n\n        layout = QVBoxLayout()\n        label = QLabel(\"WorkBench Tab\")\n        layout.addWidget(label)\n\n        self.setLayout(layout)\n```\n\nlog_tab.py\n```python\nfrom PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel\n\n\nclass LogTab(QWidget):\n    def __init__(self):\n        super().__init__()\n\n        layout = QVBoxLayout()\n        label = QLabel(\"Log Tab\")\n        layout.addWidget(label)\n\n        self.setLayout(layout)\n```\n\ncoms_tab.py\n```python\nfrom PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel\n\n\nclass ComsTab(QWidget):\n    def __init__(self):\n        super().__init__()\n\n        layout = QVBoxLayout()\n        label = QLabel(\"Coms Tab\")\n        layout.addWidget(label)\n\n        self.setLayout(layout)\n```"
-                },
-                "finish_reason": "stop"
-              }
-            }
-          }
-        ],
-        "usage": {
-          "py/object": "openai.openai_object.OpenAIObject",
-          "prompt_tokens": 115,
-          "completion_tokens": 381,
-          "total_tokens": 496,
-          "__dict__": {
-            "_response_ms": null,
-            "_retrieve_params": {},
-            "api_key": "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",
-            "api_version": null,
-            "api_type": null,
-            "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
-            "api_base_override": null,
-            "engine": null,
-            "_previous": {
-              "prompt_tokens": 115,
-              "completion_tokens": 381,
-              "total_tokens": 496
-            }
-          }
-        },
-        "__dict__": {
-          "_response_ms": 12465,
-          "_retrieve_params": {},
-          "api_key": "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",
-          "api_version": null,
-          "api_type": null,
-          "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
-          "api_base_override": null,
-          "engine": null,
-          "_previous": {
-            "id": "chatcmpl-7i649oX0xKfZZq5fBrprWVQBtzVzc",
-            "object": "chat.completion",
-            "created": 1690744105,
-            "model": "gpt-3.5-turbo-0613",
-            "choices": [
-              {
-                "index": 0,
-                "message": {
-                  "_response_ms": null,
-                  "_retrieve_params": {
-                    "py/id": 49
-                  },
-                  "api_key": "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",
-                  "api_version": null,
-                  "api_type": null,
-                  "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
-                  "api_base_override": null,
-                  "engine": null,
-                  "_previous": {
-                    "py/id": 50
-                  }
-                },
-                "finish_reason": "stop"
-              }
-            ],
-            "usage": {
-              "prompt_tokens": 115,
-              "completion_tokens": 381,
-              "total_tokens": 496
-            }
-          }
-        }
-      },
       "answer": "main_window.py\n```python\nfrom PySide6.QtWidgets import QApplication, QMainWindow, QTabWidget\n\nfrom workbench_tab import WorkBenchTab\nfrom log_tab import LogTab\nfrom coms_tab import ComsTab\n\n\nclass MainWindow(QMainWindow):\n    def __init__(self):\n        super().__init__()\n\n        self.setWindowTitle(\"Main Window\")\n\n        self.tab_widget = QTabWidget()\n        self.setCentralWidget(self.tab_widget)\n\n        self.workbench_tab = WorkBenchTab()\n        self.log_tab = LogTab()\n        self.coms_tab = ComsTab()\n\n        self.tab_widget.addTab(self.workbench_tab, \"WorkBench\")\n        self.tab_widget.addTab(self.log_tab, \"Log\")\n        self.tab_widget.addTab(self.coms_tab, \"Coms\")\n\n\nif __name__ == \"__main__\":\n    app = QApplication([])\n    window = MainWindow()\n    window.show()\n    app.exec()\n```\n\nworkbench_tab.py\n```python\nfrom PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel\n\n\nclass WorkBenchTab(QWidget):\n    def __init__(self):\n        super().__init__()\n\n        layout = QVBoxLayout()\n        label = QLabel(\"WorkBench Tab\")\n        layout.addWidget(label)\n\n        self.setLayout(layout)\n```\n\nlog_tab.py\n```python\nfrom PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel\n\n\nclass LogTab(QWidget):\n    def __init__(self):\n        super().__init__()\n\n        layout = QVBoxLayout()\n        label = QLabel(\"Log Tab\")\n        layout.addWidget(label)\n\n        self.setLayout(layout)\n```\n\ncoms_tab.py\n```python\nfrom PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel\n\n\nclass ComsTab(QWidget):\n    def __init__(self):\n        super().__init__()\n\n        layout = QVBoxLayout()\n        label = QLabel(\"Coms Tab\")\n        layout.addWidget(label)\n\n        self.setLayout(layout)\n```",
       "files": {
         "main_window.py": "from PySide6.QtWidgets import QApplication, QMainWindow, QTabWidget\n\nfrom workbench_tab import WorkBenchTab\nfrom log_tab import LogTab\nfrom coms_tab import ComsTab\n\n\nclass MainWindow(QMainWindow):\n    def __init__(self):\n        super().__init__()\n\n        self.setWindowTitle(\"Main Window\")\n\n        self.tab_widget = QTabWidget()\n        self.setCentralWidget(self.tab_widget)\n\n        self.workbench_tab = WorkBenchTab()\n        self.log_tab = LogTab()\n        self.coms_tab = ComsTab()\n\n        self.tab_widget.addTab(self.workbench_tab, \"WorkBench\")\n        self.tab_widget.addTab(self.log_tab, \"Log\")\n        self.tab_widget.addTab(self.coms_tab, \"Coms\")\n\n\nif __name__ == \"__main__\":\n    app = QApplication([])\n    window = MainWindow()\n    window.show()\n    app.exec()",
@@ -642,7 +507,6 @@
       },
       "storage_path": "Dynamic/KEGUI/src",
       "messages": [],
-      "response": {},
       "answer": "",
       "files": {},
       "e_stats": {
@@ -668,7 +532,6 @@
       },
       "storage_path": "Dynamic/KEGUI/src",
       "messages": [],
-      "response": {},
       "answer": "",
       "files": {},
       "e_stats": {
@@ -709,27 +572,6 @@
           "content": "\nIdentify each Actor, along with its requirements .\n### Complete the following list of actors:\nActors.json\n```json\n{'Actors' :\n    { '<actor>': { 'name': '<actor>', 'requirements': [ '<first requirement>', '<second requirement>', ... ]}\n    }\n}\n```\n\n"
         }
       ],
-      "response": {
-        "id": "chatcmpl-7iknvh3wdXWXAQ9VysQnyL4qnNAJF",
-        "object": "chat.completion",
-        "created": 1690900703,
-        "model": "gpt-3.5-turbo-0613",
-        "choices": [
-          {
-            "index": 0,
-            "message": {
-              "role": "assistant",
-              "content": "Actors.json\n```json\n{\n  \"Actors\": {\n    \"User\": {\n      \"name\": \"User\",\n      \"requirements\": [\n        \"Browse books\",\n        \"Purchase books\",\n        \"Read books\",\n        \"Create personal account\",\n        \"Maintain private library\",\n        \"Share book reviews\"\n      ]\n    },\n    \"Admin\": {\n      \"name\": \"Admin\",\n      \"requirements\": [\n        \"View transactions\",\n        \"Access logs\",\n        \"Give users access to books\",\n        \"Refund users\",\n        \"Open/close/block user accounts\"\n      ]\n    },\n    \"Operator\": {\n      \"name\": \"Operator\",\n      \"requirements\": [\n        \"Schedule backups of entire data\",\n        \"Restore entire data or specific user's account\",\n        \"Replay transactions of entire site or single user after restore\"\n      ]\n    }\n  }\n}\n```"
-            },
-            "finish_reason": "stop"
-          }
-        ],
-        "usage": {
-          "prompt_tokens": 232,
-          "completion_tokens": 180,
-          "total_tokens": 412
-        }
-      },
       "answer": "Actors.json\n```json\n{\n  \"Actors\": {\n    \"User\": {\n      \"name\": \"User\",\n      \"requirements\": [\n        \"Browse books\",\n        \"Purchase books\",\n        \"Read books\",\n        \"Create personal account\",\n        \"Maintain private library\",\n        \"Share book reviews\"\n      ]\n    },\n    \"Admin\": {\n      \"name\": \"Admin\",\n      \"requirements\": [\n        \"View transactions\",\n        \"Access logs\",\n        \"Give users access to books\",\n        \"Refund users\",\n        \"Open/close/block user accounts\"\n      ]\n    },\n    \"Operator\": {\n      \"name\": \"Operator\",\n      \"requirements\": [\n        \"Schedule backups of entire data\",\n        \"Restore entire data or specific user's account\",\n        \"Replay transactions of entire site or single user after restore\"\n      ]\n    }\n  }\n}\n```",
       "files": {
         "Actors.json": "{\n  \"Actors\": {\n    \"User\": {\n      \"name\": \"User\",\n      \"requirements\": [\n        \"Browse books\",\n        \"Purchase books\",\n        \"Read books\",\n        \"Create personal account\",\n        \"Maintain private library\",\n        \"Share book reviews\"\n      ]\n    },\n    \"Admin\": {\n      \"name\": \"Admin\",\n      \"requirements\": [\n        \"View transactions\",\n        \"Access logs\",\n        \"Give users access to books\",\n        \"Refund users\",\n        \"Open/close/block user accounts\"\n      ]\n    },\n    \"Operator\": {\n      \"name\": \"Operator\",\n      \"requirements\": [\n        \"Schedule backups of entire data\",\n        \"Restore entire data or specific user's account\",\n        \"Replay transactions of entire site or single user after restore\"\n      ]\n    }\n  }\n}"
@@ -757,7 +599,6 @@
       },
       "storage_path": "Online Book Store/Generated",
       "messages": [],
-      "response": {},
       "answer": "",
       "files": {},
       "e_stats": {
