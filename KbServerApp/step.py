@@ -55,7 +55,7 @@ class Step:
         self.answer: str = ''  # The answer from within the response
         self.files: dict[str, str] = {}  # The files that have been returned from the AI
         self.e_stats: dict[str, float] = {
-            'sprompt_tokens': 0.0,
+            'prompt_tokens': 0.0,
             'completion_tokens': 0.0,
             'total_tokens': 0.0,
             'sp_cost': 0.0,
@@ -117,7 +117,7 @@ class Step:
         self.messages = self.memory[self.prompt_name]
 
         # Send Update to the GUI
-        msg = {'cmd': 'StepUpdate', 'cb': 'process_step_update', 'rc': 'Okay', 'object': pname, 'record': self.to_json()}
+        msg = {'cmd': 'update', 'cb': 'update_step', 'rc': 'Okay', 'object': 'step', 'record': self.to_json()}
         response = json.dumps(msg, ensure_ascii=False, default=str)
         proto.sendMessage(response.encode('UTF8'), False)
 
@@ -146,7 +146,7 @@ class Step:
         self.e_stats['s_total'] = self.e_stats['sp_cost'] + self.e_stats['sc_cost']
 
         # Send Update to the GUI
-        msg = {'cmd': 'StepUpdate', 'cb': 'process_step_update', 'rc': 'Okay', 'object': pname, 'record': self.to_json()}
+        msg = {'cmd': 'update', 'cb': 'update_step', 'rc': 'Okay', 'object': 'step', 'record': self.to_json()}
         response = json.dumps(msg, ensure_ascii=False, default=str)
         proto.sendMessage(response.encode('UTF8'), False)
 

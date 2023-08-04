@@ -1,5 +1,6 @@
 import json
 import os
+import shutil
 import time
 from typing import List
 
@@ -113,6 +114,7 @@ class KbServerProtocol(WebSocketServerProtocol):
     def memory_as_dictionary(self):
         dir_structure = {}
 
+        # @todo: 'Memory' should be parameter and not constant!
         for dirpath, dirnames, filenames in os.walk('Memory'):
             subtree = dir_structure
             dirpath_parts = dirpath.split(os.sep)
@@ -163,11 +165,11 @@ class KbServerProtocol(WebSocketServerProtocol):
             ai_model = step.ai.model
             pricing = OpenAI_API_Costs[ai_model]
             yield step.run(self, pname)
-            prompt_tokens += step.prompt_tokens
-            completion_tokens += step.completion_tokens
-            total_tokens += step.total_tokens
-            sp_cost = pricing['input'] * (step.prompt_tokens / 1000)
-            sc_cost = pricing['output'] * (step.completion_tokens / 1000)
+            prompt_tokens += step.e_stats['prompt_tokens']
+            completion_tokens += step.e_stats['completion_tokens']
+            total_tokens += step.e_stats['total_tokens']
+            sp_cost = pricing['input'] * (step.e_stats['prompt_tokens'] / 1000)
+            sc_cost = pricing['output'] * (step.e_stats['completion_tokens'] / 1000)
             s_total = sp_cost + sc_cost
             p_cost += sp_cost
             c_cost += sc_cost
@@ -222,9 +224,9 @@ class KbServerProtocol(WebSocketServerProtocol):
         self.send_object(msg)
         returnValue('')
 
-    def read_memory(self, msg, isbinary):
+    def test_memory(self, msg, isbinary):
         prompt_name = msg['record']['prompt_name']
-        KbServerProtocol.log.info(f"Call to test read {prompt_name}...")
+        KbServerProtocol.log.info(f"Call to test read memory {prompt_name}...")
         msg['rc'] = 'Okay'
         msg['reason'] = 'Test Read Complete'
         try:
@@ -234,7 +236,7 @@ class KbServerProtocol(WebSocketServerProtocol):
                              {'role': 'Error', 'content': f'Could not find {key} in memory.'}
                              ]
             msg['rc'] = 'Fail'
-            msg['reason'] = 'Test Read Failed'
+            msg['reason'] = f'Test Read Failed Key {key} not found'
             self.send_object(msg)
             return
 
@@ -247,19 +249,125 @@ class KbServerProtocol(WebSocketServerProtocol):
         KbServerProtocol.log.info(f"Call to write {prompt_name}...")
         msg['rc'] = 'Okay'
         msg['reason'] = f'Write of {prompt_name} Complete'
-        msg['record'] = msg['record']
+        # msg['record'] = msg['record']
         try:
-            Step.memory[prompt_name] = msg['record']['text']
+            contents = msg['record']['text']
+            if type(contents) is str:
+                Step.memory[prompt_name] = contents
+            else:
+                Step.memory[prompt_name] = None
+                self.memory_as_dictionary()
             KbServerProtocol.log.info(f"Call to write {prompt_name} complete.")
         except KeyError as key:
             msg['rc'] = 'Fail'
             msg['reason'] = f'write of {prompt_name} Failed'
         self.send_object(msg)
 
+    def create_directory(self, msg, isbinary):
+        prompt_name = msg['record']['prompt_name']
+        KbServerProtocol.log.info(f"Call to create_directory {prompt_name}...")
+        msg['rc'] = 'Okay'
+        msg['reason'] = f'create_directory {prompt_name} Complete'
+        try:
+            os.mkdir(f'{Step.memory.path}/{prompt_name}')
+            KbServerProtocol.log.info(f"Call to create_directory {prompt_name} complete.")
+        except KeyError as key:
+            msg['rc'] = 'Fail'
+            msg['reason'] = f'create_directory of {prompt_name} Failed {key}'
+        self.send_object(msg)
+
+    def delete_directory(self, msg, isbinary):
+        prompt_name = msg['record']['prompt_name']
+        KbServerProtocol.log.info(f"Call to delete_directory {prompt_name}...")
+        msg['rc'] = 'Okay'
+        msg['reason'] = f'delete_directory {prompt_name} Complete'
+        try:
+            shutil.rmtree(f'{Step.memory.path}/{prompt_name}')
+            KbServerProtocol.log.info(f"Call to delete_directory {prompt_name} complete.")
+        except KeyError as key:
+            msg['rc'] = 'Fail'
+            msg['reason'] = f'delete_directory of {prompt_name} Failed {key}'
+        self.send_object(msg)
+
+    def move_memory(self, msg, isbinary):
+        prompt_name = msg['record']['prompt_name']
+        from_path = msg['record']['from_path']
+        to_path = msg['record']['to_path']
+        KbServerProtocol.log.info(f"Call to move_memory {prompt_name} from {from_path} to {to_path}...")
+        msg['rc'] = 'Okay'
+        msg['reason'] = f"Call to move_memory {prompt_name} from {from_path} to {to_path} complete"
+
+        try:
+            from_full_name = f'{from_path}/{prompt_name}'
+            to_full_name = f'{to_path}/{prompt_name}'
+            contents = Step.memory.read(from_full_name)
+            # KbServerProtocol.log.info(f"read {from_full_name}: {contents}")
+            Step.memory[to_full_name] = contents
+            # KbServerProtocol.log.info(f"write {to_full_name}: {contents[:100]}")
+            del Step.memory[from_full_name]
+            KbServerProtocol.log.info(f"Call to move_memory {prompt_name} from {from_path} to {to_path} complete")
+        except KeyError as key:
+            msg['rc'] = 'Fail'
+            msg['reason'] = f'move failed key error {key}'
+        self.send_object(msg)
+
+    def move_step(self, msg, isbinary):
+        from_process = msg['record']['from_process']
+        from_step_no = msg['record']['from_step_no']
+        to_process = msg['record']['to_process']
+        to_step_no = msg['record']['to_step_no']
+
+        KbServerProtocol.log.info(f"Call to move_step From {from_process}::{from_step_no}  to {to_process}::{to_step_no}...")
+
+        msg['rc'] = 'Okay'
+        msg['reason'] = f"Call to move_step complete"
+
+
+        try:
+            step = ProcessList[from_process].pop(from_step_no)
+            ProcessList[to_process].insert(to_step_no, step)
+            ProcessList_save(ProcessList)
+            KbServerProtocol.log.info(f"Call to move_step From {from_process}::{from_step_no}  to {to_process}::{to_step_no}... complete")
+        except KeyError as key:
+            msg['rc'] = 'Fail'
+            msg['reason'] = f'move_step failed key error {key}'
+        self.send_object(msg)
+        self.process_list_initial_load()
+
+    def move_directory(self, msg, isbinary):
+        prompt_name = msg['record']['prompt_name']
+        from_path = msg['record']['from_path']
+        to_path = msg['record']['to_path']
+        KbServerProtocol.log.info(f"Call to move_directory {prompt_name} from {from_path} to {to_path}...")
+        msg['rc'] = 'Okay'
+        msg['reason'] = f"Call to move_directory {prompt_name} from {from_path} to {to_path} complete"
+
+        try:
+            from_full_name = f'{from_path}/{prompt_name}'
+            to_full_name = f'{to_path}/{prompt_name}'
+            shutil.move(from_full_name, to_full_name)
+            KbServerProtocol.log.info(f"Call to move_directory {prompt_name} from {from_path} to {to_path} complete")
+        except KeyError as key:
+            msg['rc'] = 'Fail'
+            msg['reason'] = f'move failed key error {key}'
+        self.send_object(msg)
+        self.memory_initial_load() # as I don't trust the iNotify to get this one right
+
+    def delete_memory(self, msg, isbinary):
+        KbServerProtocol.log.info("Enter delete_memory({msg})", msg=msg)
+        full_path_name = msg['record']['full_path_name']
+        KbServerProtocol.log.info(f"Call to delete_memory({full_path_name})")
+        msg['rc'] = 'Okay'
+        msg['reason'] = f'Delete of memory {full_path_name} Complete'
+        del Step.memory[full_path_name]
+        self.send_object(msg)
+        # self.memory_initial_load()  Memory is auto updated
+        # returnValue('')
+
     def write_step(self, msg, isbinary):
         process_name = msg['record']['process_name']
         new_step = msg['record']['step']
-        step_name = new_step['name']
+        step_name = msg['record']['step_name']
         KbServerProtocol.log.info(f"Call to write step {process_name}::{step_name}...")
         msg['rc'] = 'Okay'
         msg['reason'] = f'Write of step {process_name}::{step_name} Complete'
@@ -271,6 +379,7 @@ class KbServerProtocol(WebSocketServerProtocol):
         ProcessList_save(ProcessList)
         KbServerProtocol.log.info(f"Call to write step {process_name}::{step_name}...")
         self.send_object(msg)
+        self.process_list_initial_load()
 
     def create_step(self, msg, isbinary):
         empty_step = jsonpickle.loads(empty_step_json)  # This creates a new Object... Which avoids sharing problems
@@ -281,6 +390,7 @@ class KbServerProtocol(WebSocketServerProtocol):
         msg['rc'] = 'Okay'
         msg['reason'] = f'Create step {process_name}::{step_name} Complete'
         ProcessList[process_name].insert(step_index, empty_step)
+        ProcessList[process_name][step_index]['name'] = step_name
         ProcessList_save(ProcessList)
         KbServerProtocol.log.info(f"Call to write step {process_name}::{step_name}...")
         self.send_object(msg)
@@ -304,6 +414,7 @@ class KbServerProtocol(WebSocketServerProtocol):
         del ProcessList[process_name]
         ProcessList_save(ProcessList)
         KbServerProtocol.log.info("Call delete_process({msg})... Complete", msg=msg)
+        self.process_list_initial_load()
         self.send_object(msg)
 
     def create_process(self, msg, isbinary):
@@ -314,6 +425,7 @@ class KbServerProtocol(WebSocketServerProtocol):
         ProcessList_save(ProcessList)
         KbServerProtocol.log.info("Call create_process({msg})... Complete", msg=msg)
         self.send_object(msg)
+        self.process_list_initial_load()
 
     def delete_step(self, msg, isbinary):
         KbServerProtocol.log.info("Enter delete_step({msg})", msg=msg)
@@ -331,7 +443,6 @@ class KbServerProtocol(WebSocketServerProtocol):
         self.send_object(msg)
         self.process_list_initial_load()
         # returnValue('')
-
 
     @inlineCallbacks
     def onMessage(self, payload, isbinary):
@@ -387,6 +498,7 @@ def notify(ignored, fp, mask):
     @param mask: inotify event as hexadecimal masks
     """
     fn = fp.asTextMode()  # encode('utf-8')# decode('utf-8')
+
     [path, ext] = fn.splitext()
 
     # Ignore backup files
@@ -399,7 +511,12 @@ def notify(ignored, fp, mask):
     n = f'{path_list[-1]}{ext}'
     m = inotify.humanReadableMask(mask)
 
+    # print(f"In Notify m:{m} have fp {type(fp)}  isdir(){fp.isdir()}")
     if 'delete' in m:
+        content = ''
+    elif 'is_dir' in m:
+        content = ''
+    elif 'delete_self' in m:
         content = ''
     else:
         content = fp.getContent().decode('utf-8')
@@ -414,7 +531,7 @@ def notify(ignored, fp, mask):
                'path': p,
                'name': n,
                'content': content,
-           }
+               }
            }
 
     response = json.dumps(msg, ensure_ascii=False)

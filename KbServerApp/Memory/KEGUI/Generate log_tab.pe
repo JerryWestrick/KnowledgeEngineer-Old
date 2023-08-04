@@ -1,0 +1,46 @@
+.include KEGUI/persona.pe
+.user
+Create the class LogTab, based on a QTableWidget:
+    I need a class variable: the_logger with a copy of the one and only instantiation of the class
+
+    Create an add_table_entry(message) method:
+        The table consists of a table with 4 columns:
+         1. Timestamp - The time that the row was inserted into the log_table in format: yyyy-MM-dd hh:mm:ss.zzz
+                        This value is automatically inserted when a log entry is added.
+                        This column should be left justified, top justified, and ResizeToContents.
+
+         2. System -    This is an string value passed in the log_entry dict.
+                        This column should be left justified, top justified, and ResizeToContents.
+
+         3. Action -    This is an string value passed in the log_entry dict.
+                        This column should be left justified, top justified, and ResizeToContents.
+
+         4. Message -   This is either a string value (possibly multi-line), or a dict passed in the log_entry dict.
+                        This column should be left justified, top justified, and Stretch.
+
+        use get_color(message) to determine the foreground color of row.
+
+create a get_color routine which returns the font color for the each new row:
+    default is to use color depending on the message['system']:
+        colors = {
+            'websocket': QColor('darkblue'),
+            'step': QColor('darkgreen'),
+            'main_window': QColor('darkorange'),
+            'Process': QColor('darkmagenta'),
+            'Prompt': QColor('darkorange'),
+            'Error': QColor('red'),
+        }
+
+    But there are 3 special cases which force the color to colors['Error'] color:
+    case 1. if message['action'] == 'Error'
+
+    case 2. if type(message['message']) is dict:
+          if 'rc' in message['message'] and message['message']['rc'] == 'Fail':
+
+    case 3. if type(message['message']) is str and message['message'].startswith('Error:'):
+
+    if none of the above use white
+
+
+
+I need a global LOG(message: dict[str, ]) routine that calls LogTab.the_logger.add_table_entry(message)

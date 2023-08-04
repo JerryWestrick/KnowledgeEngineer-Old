@@ -26,19 +26,31 @@ class DB:
     def __contains__(self, key):
         return (self.path / key).is_file()
 
-    def __getitem__(self, key: str) -> [dict[str, str]]:
-        """Return the contents of the file with the given key."""
+    def __delitem__(self, key: str):
+        # Implement the logic to delete the item with the given key
         full_path = self.path / key
+        if full_path.is_file():
+            os.remove(full_path)
+        else:
+            shutil.rmtree(f'{full_path}')
+        return
 
-        result = []
+    def read(self, key: str):
+        full_path = self.path / key
         if not full_path.is_file():
             Logger.log('ERROR', f"Invalid Memory Item.  \nPath not found: {full_path}")
             raise KeyError(key)
         with full_path.open("r", encoding="utf-8") as f:
             # read the file and return the contents
             Logger.log('STEP', f"Reading>>{key}")
-            msgs = self.get_messages(key, f.read().splitlines())
-            return msgs
+            content = f.read()
+        return content
+
+    def __getitem__(self, key: str) -> [dict[str, str]]:
+        """Return the contents of the file with the given key."""
+        lines = self.read(key).splitlines()
+        msgs = self.get_messages(key, lines)
+        return msgs
 
     def get_messages(self, name: str, macro_source: [str]) -> [dict[str, str]]:
         """ Compile the code in source into a list of statements
@@ -78,9 +90,7 @@ class DB:
 
         if isinstance(val, str):
             full_path.write_text(val, encoding="utf-8")
-        else:
-            # If val is neither a string nor bytes, raise an error.
-            raise TypeError("val must be either a str or bytes")
+        # If val is not str assume it was a directory...
 
     # this routine is used to substitute macros within a string
     def replace_macros(self, string: str) -> str:

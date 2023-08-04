@@ -1,0 +1,45 @@
+{
+  "Components": {
+    "Database": {
+      "name": "Database",
+      "requirements": [
+        "Store user information",
+        "Store book information",
+        "Store transaction information",
+        "Store log information"
+      ]
+    },
+    "User Interface": {
+      "name": "User Interface",
+      "requirements": [
+        "Display books for browsing",
+        "Allow users to search for books",
+        "Provide options for purchasing books",
+        "Allow users to read books",
+        "Provide user account creation functionality",
+        "Enable users to maintain their private library",
+        "Allow users to share book reviews"
+      ]
+    },
+    "Admin Interface": {
+      "name": "Admin Interface",
+      "requirements": [
+        "Display transactions for viewing",
+        "Provide access to logs",
+        "Allow admins to grant users access to books",
+        "Enable admins to refund users",
+        "Allow admins to open user accounts",
+        "Allow admins to close user accounts",
+        "Enable admins to block user accounts"
+      ]
+    },
+    "Backup System": {
+      "name": "Backup System",
+      "requirements": [
+        "Schedule regular backups of the entire data",
+        "Enable restoration of entire data or specific user's account",
+        "Allow replay of transactions of the entire site or single user after a restore"
+      ]
+    }
+  }
+}

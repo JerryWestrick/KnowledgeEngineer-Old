@@ -1,0 +1,58 @@
+{
+  "Knowledge": {
+    "Product Description.pe": "The System will provide an intuitive and easy-to-use interface for users to browse, ",
+    "Product Description Short.pe": "The System will provide an intuitive and easy-to-use interface for users to read "
+  },
+  "Dynamic": {
+    "System Specifications": {},
+    "test": {
+      "test.txt": "Hello There\n"
+    },
+    "Logs": {},
+    "System Components": {},
+    "Requirements": {},
+    "Components": {}
+  },
+  "Logs": {},
+  "Prompts": {
+    "Svelte": {
+      "Components": {
+        "Directory Editor.pe": "You are a programmer with experience with the Svelte framework.\nThe application ",
+        "Esthetics.pe": "You are a programmer with experience with the Svelte framework.\nYou will be given a Svelte "
+      }
+    },
+    "Flask": {
+      "Generate flask Rest API.pe": "You will receive a text block containing the database definitions of the System.",
+      "Use Case Description to Requirements.pe": "This is the system version: ${version}$ <---\nYou will receive a ",
+      "Requirements to Components.pe": "You will receive several text blocks containing Requirements for different ",
+      "Database Component Requirements to DDL.pe": "You will receive several text blocks containing Requirements ",
+      "Generate User GUI.pe": "You will receive a text block containing the database definitions of the System.",
+      "Generate Database Test Data.pe": "You will receive text blocks containing Requirements for the different "
+    },
+    "Python_GUI": {
+      "5-AddDefaultDirectoryArgv.pe": "Read main_window.py file.\nOutput a new version.\n- Define a required argv ",
+      "1-BasicFrame.pe": "Give me a simple, executable PyQT program called 'main_window.py'.\nThe GUI has a status ",
+      "4-FixUpMemoryTab.pe": "Read memory_tab.py file.\nOutput a new version.\n- In QTreeView hide columns 1, 2, ",
+      "2-IndividualTabs.pe": "Read the main_window.py file.\nOutput 4 files:\n- main_window.py containing the startup ",
+      "3-GenerateMemoryTab.pe": "Read memory_tab.py file.\nOutput a new version.\n- Import QDirModel from QtWidgets."
+    },
+    "PHP": {
+      "Use Case Description to Requirements.pe": "You will receive a Product Description as a text block.\nYou will ",
+      "Generate PHP Application.pe": "You will receive a text block containing the database definitions of the System.",
+      "Requirements to Components.pe": "You will receive several text blocks containing Requirements for different ",
+      "Database Component Requirements to DDL.pe": "You will receive several text blocks containing Requirements for ",
+      "Generate Database Test Data.pe": "You will receive text blocks containing Requirements for the different "
+    },
+    "Test Prompt.pe": "This is version ${version}$\nYour answers will be concise and short.\nText blocks will be ",
+    "Test Prompt 2.pe": "You are a systems engineer. You will define major components of a system to be built.",
+    "List Format.pe": "Please format all lists as:\n= Name of List\n+ List item one\n+ List item two",
+    "File_Format.pe": "Your answers will be concise and short.\nText blocks will be delineated as follows:"
+  },
+  "prompts": {
+    "Python GUI": {
+      "code": {
+        "aion.py": "Python code for a PyQt application with a file browser and editor."
+      }
+    }
+  }
+}

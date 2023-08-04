@@ -12,18 +12,209 @@
         "mode": "chat"
       },
       "storage_path": "Dynamic/Requirements",
-      "messages": [],
-      "response": {},
-      "answer": "",
-      "files": {},
+      "messages": [
+        {
+          "role": "system",
+          "content": "\nThis is version 1.0\nYour answers will be concise and short.\nText blocks will be delineated as follows:\nTEXT_BLOCK_NAME.EXT\n```\ntext block contents\n```"
+        },
+        {
+          "role": "user",
+          "content": "\nYou will receive a Product Description as a text block.\nYou will analyze it.\nYou will identify each Actor described and what his requirements are."
+        },
+        {
+          "role": "user",
+          "content": "### DATA ###"
+        },
+        {
+          "role": "user",
+          "content": "Product Description.pe\n```\n\nThe System will provide an intuitive and easy-to-use interface for users to browse, purchase, and read books.\nIt will allow users to create personal accounts, maintain a private library, and share reviews on books.\n\nAdmins and Operators can view transactions, and access logs to see failures.\nAdmins can give users access to books. Admins can refund Users. Admin can open, close, and block user accounts.\n\nOperators can schedule backups of entire data.\nOperators can restore entire data or a specific user's account.\nOperators can replay transactions of the entire site or of a single user after a restore.\n\n```"
+        },
+        {
+          "role": "system",
+          "content": "\n### Complete the following json list:\nvariables\n```\n{ 'actors': [ 'actor', ... ] }\n```\n### Complete the following for each actor identified\nActor\n```\nActor must be able to:\n    [list of requirements]\n```"
+        },
+        {
+          "role": "system",
+          "content": "### RESPONSE ###"
+        }
+      ],
+      "response": {
+        "py/object": "openai.openai_object.OpenAIObject",
+        "id": "chatcmpl-7i6DlIMe8yuujUTZfQI4g3FPWLx5W",
+        "object": "chat.completion",
+        "created": 1690744701,
+        "model": "gpt-3.5-turbo-16k-0613",
+        "choices": [
+          {
+            "py/object": "openai.openai_object.OpenAIObject",
+            "index": 0,
+            "message": {
+              "py/object": "openai.openai_object.OpenAIObject",
+              "role": "assistant",
+              "content": "variables\n```\n{ 'actors': [ 'User', 'Admin', 'Operator' ] }\n```\n\nUser\n```\nUser must be able to:\n    - Browse, purchase, and read books\n    - Create a personal account\n    - Maintain a private library\n    - Share reviews on books\n```\n\nAdmin\n```\nAdmin must be able to:\n    - View transactions\n    - Access logs to see failures\n    - Give users access to books\n    - Refund users\n    - Open, close, and block user accounts\n```\n\nOperator\n```\nOperator must be able to:\n    - Schedule backups of entire data\n    - Restore entire data or a specific user's account\n    - Replay transactions of the entire site or of a single user after a restore\n```",
+              "__dict__": {
+                "_response_ms": null,
+                "_retrieve_params": {},
+                "api_key": "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",
+                "api_version": null,
+                "api_type": null,
+                "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
+                "api_base_override": null,
+                "engine": null,
+                "_previous": {
+                  "role": "assistant",
+                  "content": "variables\n```\n{ 'actors': [ 'User', 'Admin', 'Operator' ] }\n```\n\nUser\n```\nUser must be able to:\n    - Browse, purchase, and read books\n    - Create a personal account\n    - Maintain a private library\n    - Share reviews on books\n```\n\nAdmin\n```\nAdmin must be able to:\n    - View transactions\n    - Access logs to see failures\n    - Give users access to books\n    - Refund users\n    - Open, close, and block user accounts\n```\n\nOperator\n```\nOperator must be able to:\n    - Schedule backups of entire data\n    - Restore entire data or a specific user's account\n    - Replay transactions of the entire site or of a single user after a restore\n```"
+                }
+              }
+            },
+            "finish_reason": "stop",
+            "__dict__": {
+              "_response_ms": null,
+              "_retrieve_params": {},
+              "api_key": "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",
+              "api_version": null,
+              "api_type": null,
+              "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
+              "api_base_override": null,
+              "engine": null,
+              "_previous": {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "variables\n```\n{ 'actors': [ 'User', 'Admin', 'Operator' ] }\n```\n\nUser\n```\nUser must be able to:\n    - Browse, purchase, and read books\n    - Create a personal account\n    - Maintain a private library\n    - Share reviews on books\n```\n\nAdmin\n```\nAdmin must be able to:\n    - View transactions\n    - Access logs to see failures\n    - Give users access to books\n    - Refund users\n    - Open, close, and block user accounts\n```\n\nOperator\n```\nOperator must be able to:\n    - Schedule backups of entire data\n    - Restore entire data or a specific user's account\n    - Replay transactions of the entire site or of a single user after a restore\n```"
+                },
+                "finish_reason": "stop"
+              }
+            }
+          }
+        ],
+        "usage": {
+          "py/object": "openai.openai_object.OpenAIObject",
+          "prompt_tokens": 279,
+          "completion_tokens": 163,
+          "total_tokens": 442,
+          "__dict__": {
+            "_response_ms": null,
+            "_retrieve_params": {},
+            "api_key": "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",
+            "api_version": null,
+            "api_type": null,
+            "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
+            "api_base_override": null,
+            "engine": null,
+            "_previous": {
+              "prompt_tokens": 279,
+              "completion_tokens": 163,
+              "total_tokens": 442
+            }
+          }
+        },
+        "__dict__": {
+          "_response_ms": 2855,
+          "_retrieve_params": {},
+          "api_key": "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",
+          "api_version": null,
+          "api_type": null,
+          "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
+          "api_base_override": null,
+          "engine": null,
+          "_previous": {
+            "id": "chatcmpl-7i6DlIMe8yuujUTZfQI4g3FPWLx5W",
+            "object": "chat.completion",
+            "created": 1690744701,
+            "model": "gpt-3.5-turbo-16k-0613",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "_response_ms": null,
+                  "_retrieve_params": {
+                    "_response_ms": null,
+                    "_retrieve_params": {
+                      "_response_ms": null,
+                      "_retrieve_params": {
+                        "_response_ms": null,
+                        "_retrieve_params": {
+                          "_response_ms": null,
+                          "_retrieve_params": {
+                            "py/id": 15
+                          },
+                          "api_key": "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",
+                          "api_version": null,
+                          "api_type": null,
+                          "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
+                          "api_base_override": null,
+                          "engine": null,
+                          "_previous": {
+                            "py/id": 16
+                          }
+                        },
+                        "api_key": "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",
+                        "api_version": null,
+                        "api_type": null,
+                        "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
+                        "api_base_override": null,
+                        "engine": null,
+                        "_previous": {
+                          "py/id": 15
+                        }
+                      },
+                      "api_key": "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",
+                      "api_version": null,
+                      "api_type": null,
+                      "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
+                      "api_base_override": null,
+                      "engine": null,
+                      "_previous": {
+                        "py/id": 31
+                      }
+                    },
+                    "api_key": "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",
+                    "api_version": null,
+                    "api_type": null,
+                    "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
+                    "api_base_override": null,
+                    "engine": null,
+                    "_previous": {
+                      "py/id": 26
+                    }
+                  },
+                  "api_key": "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",
+                  "api_version": null,
+                  "api_type": null,
+                  "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
+                  "api_base_override": null,
+                  "engine": null,
+                  "_previous": {
+                    "py/id": 22
+                  }
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 279,
+              "completion_tokens": 163,
+              "total_tokens": 442
+            }
+          }
+        }
+      },
+      "answer": "variables\n```\n{ 'actors': [ 'User', 'Admin', 'Operator' ] }\n```\n\nUser\n```\nUser must be able to:\n    - Browse, purchase, and read books\n    - Create a personal account\n    - Maintain a private library\n    - Share reviews on books\n```\n\nAdmin\n```\nAdmin must be able to:\n    - View transactions\n    - Access logs to see failures\n    - Give users access to books\n    - Refund users\n    - Open, close, and block user accounts\n```\n\nOperator\n```\nOperator must be able to:\n    - Schedule backups of entire data\n    - Restore entire data or a specific user's account\n    - Replay transactions of the entire site or of a single user after a restore\n```",
+      "files": {
+        "variables": "{ 'actors': [ 'User', 'Admin', 'Operator' ] }",
+        "User": "User must be able to:\n    - Browse, purchase, and read books\n    - Create a personal account\n    - Maintain a private library\n    - Share reviews on books",
+        "Admin": "Admin must be able to:\n    - View transactions\n    - Access logs to see failures\n    - Give users access to books\n    - Refund users\n    - Open, close, and block user accounts",
+        "Operator": "Operator must be able to:\n    - Schedule backups of entire data\n    - Restore entire data or a specific user's account\n    - Replay transactions of the entire site or of a single user after a restore"
+      },
       "e_stats": {
-        "prompt_tokens": 0,
-        "completion_tokens": 0,
-        "total_tokens": 0,
-        "sp_cost": 0.0,
-        "sc_cost": 0.0,
-        "s_total": 0.0,
-        "elapsed_time": 0.0
+        "prompt_tokens": 279,
+        "completion_tokens": 163,
+        "total_tokens": 442,
+        "sp_cost": 0.0008370000000000001,
+        "sc_cost": 0.000652,
+        "s_total": 0.001489,
+        "elapsed_time": 3.5557117462158203
       }
     },
     {
@@ -32,20 +223,458 @@
       "prompt_name": "Prompts/Test Prompt 2.pe",
       "ai": {
         "py/object": "KbServerApp.ai.AI",
-        "temperature": 0,
+        "temperature": 0.0,
         "max_tokens": 3000,
-        "model": "text-babbage-001",
-        "mode": "complete"
+        "model": "gpt-3.5-turbo",
+        "mode": "chat"
       },
       "storage_path": "Dynamic/Components",
+      "messages": [
+        {
+          "role": "system",
+          "content": "--- INSTRUCTIONS ---"
+        },
+        {
+          "role": "system",
+          "content": "\nYour answers will be concise and short.\nText blocks will be delineated as follows:\nTEXT_BLOCK_NAME.EXT\n```FILETYPE\ntext block contents\n```"
+        },
+        {
+          "role": "system",
+          "content": "You are a systems engineer.  You will define major components of a system to be built."
+        },
+        {
+          "role": "user",
+          "content": "\nHere are the actors of the system:"
+        },
+        {
+          "role": "user",
+          "content": "variables\n```\n\n{ 'actors': [ 'User', 'Admin', 'Operator' ] }\n```"
+        },
+        {
+          "role": "user",
+          "content": "Admin\n```\n\nAdmin must be able to:\n    - View transactions\n    - Access logs to see failures\n    - Give users access to books\n    - Refund users\n    - Open, close, and block user accounts\n```"
+        },
+        {
+          "role": "user",
+          "content": "Admin Requirements.pe\n```\n\n- View transactions\n- Access logs\n- Give users access to books\n- Refund users\n- Open, close, and block user accounts\n```"
+        },
+        {
+          "role": "user",
+          "content": "User\n```\n\nUser must be able to:\n    - Browse, purchase, and read books\n    - Create a personal account\n    - Maintain a private library\n    - Share reviews on books\n```"
+        },
+        {
+          "role": "user",
+          "content": "Operator Requirements.pe\n```\n\n- Schedule backups of entire data\n- Restore entire data or a specific user's account\n- Replay transactions of the entire site or of a single user after a restore\n```"
+        },
+        {
+          "role": "user",
+          "content": "Operator\n```\n\nOperator must be able to:\n    - Schedule backups of entire data\n    - Restore entire data or a specific user's account\n    - Replay transactions of the entire site or of a single user after a restore\n```"
+        },
+        {
+          "role": "user",
+          "content": "Actors.json\n```\n\n{\n  \"Actors\": {\n    \"User\": {\n      \"name\": \"User\",\n      \"requirements\": [\n        \"Browse books\",\n        \"Purchase books\",\n        \"Read books\",\n        \"Create personal account\",\n        \"Maintain private library\",\n        \"Share book reviews\"\n      ]\n    },\n    \"Admin\": {\n      \"name\": \"Admin\",\n      \"requirements\": [\n        \"View transactions\",\n        \"Access logs\",\n        \"Give users access to books\",\n        \"Refund users\",\n        \"Open user accounts\",\n        \"Close user accounts\",\n        \"Block user accounts\"\n      ]\n    },\n    \"Operator\": {\n      \"name\": \"Operator\",\n      \"requirements\": [\n        \"Schedule backups of entire data\",\n        \"Restore entire data or specific user's account\",\n        \"Replay transactions of entire site or single user after a restore\"\n      ]\n    }\n  }\n}\n```"
+        },
+        {
+          "role": "system",
+          "content": "--- DATA ---"
+        },
+        {
+          "role": "user",
+          "content": "\n--- Please complete the following sections:\nvariables\n```\n{   'components': list of components\n}\n```\n"
+        }
+      ],
+      "response": {
+        "py/object": "openai.openai_object.OpenAIObject",
+        "id": "chatcmpl-7iA1Wsq4cH2QdJxiUBKfemnIEo32b",
+        "object": "chat.completion",
+        "created": 1690759318,
+        "model": "gpt-3.5-turbo-0613",
+        "choices": [
+          {
+            "py/object": "openai.openai_object.OpenAIObject",
+            "index": 0,
+            "message": {
+              "py/object": "openai.openai_object.OpenAIObject",
+              "role": "assistant",
+              "content": "variables\n```\n{\n  'components': []\n}\n```",
+              "__dict__": {
+                "_response_ms": null,
+                "_retrieve_params": {},
+                "api_key": "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",
+                "api_version": null,
+                "api_type": null,
+                "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
+                "api_base_override": null,
+                "engine": null,
+                "_previous": {
+                  "role": "assistant",
+                  "content": "variables\n```\n{\n  'components': []\n}\n```"
+                }
+              }
+            },
+            "finish_reason": "stop",
+            "__dict__": {
+              "_response_ms": null,
+              "_retrieve_params": {},
+              "api_key": "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",
+              "api_version": null,
+              "api_type": null,
+              "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
+              "api_base_override": null,
+              "engine": null,
+              "_previous": {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "variables\n```\n{\n  'components': []\n}\n```"
+                },
+                "finish_reason": "stop"
+              }
+            }
+          }
+        ],
+        "usage": {
+          "py/object": "openai.openai_object.OpenAIObject",
+          "prompt_tokens": 575,
+          "completion_tokens": 12,
+          "total_tokens": 587,
+          "__dict__": {
+            "_response_ms": null,
+            "_retrieve_params": {},
+            "api_key": "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",
+            "api_version": null,
+            "api_type": null,
+            "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
+            "api_base_override": null,
+            "engine": null,
+            "_previous": {
+              "prompt_tokens": 575,
+              "completion_tokens": 12,
+              "total_tokens": 587
+            }
+          }
+        },
+        "__dict__": {
+          "_response_ms": 551,
+          "_retrieve_params": {},
+          "api_key": "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",
+          "api_version": null,
+          "api_type": null,
+          "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
+          "api_base_override": null,
+          "engine": null,
+          "_previous": {
+            "id": "chatcmpl-7iA1Wsq4cH2QdJxiUBKfemnIEo32b",
+            "object": "chat.completion",
+            "created": 1690759318,
+            "model": "gpt-3.5-turbo-0613",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "_response_ms": null,
+                  "_retrieve_params": {
+                    "py/id": 35
+                  },
+                  "api_key": "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",
+                  "api_version": null,
+                  "api_type": null,
+                  "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
+                  "api_base_override": null,
+                  "engine": null,
+                  "_previous": {
+                    "py/id": 36
+                  }
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 575,
+              "completion_tokens": 12,
+              "total_tokens": 587
+            }
+          }
+        }
+      },
+      "answer": "variables\n```\n{\n  'components': []\n}\n```",
+      "files": {
+        "variables": "{\n  'components': []\n}"
+      },
+      "e_stats": {
+        "prompt_tokens": 575,
+        "completion_tokens": 12,
+        "total_tokens": 587,
+        "sp_cost": 0.0008625,
+        "sc_cost": 2.4e-05,
+        "s_total": 0.0008865,
+        "elapsed_time": 1.1213171482086182
+      }
+    }
+  ],
+  "Second Test": [
+    {
+      "py/object": "KbServerApp.step.Step",
+      "name": "First Step",
+      "prompt_name": "Prompts/PHP/Use Case Description to Requirements.pe",
+      "ai": {
+        "py/object": "KbServerApp.ai.AI",
+        "temperature": 0.0,
+        "max_tokens": 3000,
+        "model": "gpt-3.5-turbo",
+        "mode": "chat"
+      },
+      "storage_path": "Dynamic/Requirements",
+      "messages": [
+        {
+          "role": "user",
+          "content": "\nHere is a product Description:"
+        },
+        {
+          "role": "user",
+          "content": "\nThe System will provide an intuitive and easy-to-use interface for users to browse, purchase, and read books.\nIt will allow users to create personal accounts, maintain a private library, and share reviews on books.\n\nAdmins and Operators can view transactions, and access logs to see failures.\nAdmins can give users access to books. Admins can refund Users. Admin can open, close, and block user accounts.\n\nOperators can schedule backups of entire data.\nOperators can restore entire data or a specific user's account.\nOperators can replay transactions of the entire site or of a single user after a restore.\n"
+        },
+        {
+          "role": "user",
+          "content": "\nIdentify each Actor described, and what his requirements are.\n### Complete the following list of actors:\nActors.json\n```json\n{'Actors' :\n    { '<actor>': { 'name': '<actor>', 'requirements': [ '<first requirement>', '<second requirement>', ... ]}\n    }\n}\n```"
+        }
+      ],
+      "response": {
+        "id": "chatcmpl-7i93IcgVZtjJUQLNlYWPGmnIYPxJX",
+        "object": "chat.completion",
+        "created": 1690755584,
+        "model": "gpt-3.5-turbo-0613",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "Actors.json\n```json\n{\n  \"Actors\": {\n    \"User\": {\n      \"name\": \"User\",\n      \"requirements\": [\n        \"Browse books\",\n        \"Purchase books\",\n        \"Read books\",\n        \"Create personal account\",\n        \"Maintain private library\",\n        \"Share book reviews\"\n      ]\n    },\n    \"Admin\": {\n      \"name\": \"Admin\",\n      \"requirements\": [\n        \"View transactions\",\n        \"Access logs\",\n        \"Give users access to books\",\n        \"Refund users\",\n        \"Open user accounts\",\n        \"Close user accounts\",\n        \"Block user accounts\"\n      ]\n    },\n    \"Operator\": {\n      \"name\": \"Operator\",\n      \"requirements\": [\n        \"Schedule backups of entire data\",\n        \"Restore entire data or specific user's account\",\n        \"Replay transactions of entire site or single user after a restore\"\n      ]\n    }\n  }\n}\n```"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 207,
+          "completion_tokens": 191,
+          "total_tokens": 398
+        }
+      },
+      "answer": "Actors.json\n```json\n{\n  \"Actors\": {\n    \"User\": {\n      \"name\": \"User\",\n      \"requirements\": [\n        \"Browse books\",\n        \"Purchase books\",\n        \"Read books\",\n        \"Create personal account\",\n        \"Maintain private library\",\n        \"Share book reviews\"\n      ]\n    },\n    \"Admin\": {\n      \"name\": \"Admin\",\n      \"requirements\": [\n        \"View transactions\",\n        \"Access logs\",\n        \"Give users access to books\",\n        \"Refund users\",\n        \"Open user accounts\",\n        \"Close user accounts\",\n        \"Block user accounts\"\n      ]\n    },\n    \"Operator\": {\n      \"name\": \"Operator\",\n      \"requirements\": [\n        \"Schedule backups of entire data\",\n        \"Restore entire data or specific user's account\",\n        \"Replay transactions of entire site or single user after a restore\"\n      ]\n    }\n  }\n}\n```",
+      "files": {
+        "Actors.json": "{\n  \"Actors\": {\n    \"User\": {\n      \"name\": \"User\",\n      \"requirements\": [\n        \"Browse books\",\n        \"Purchase books\",\n        \"Read books\",\n        \"Create personal account\",\n        \"Maintain private library\",\n        \"Share book reviews\"\n      ]\n    },\n    \"Admin\": {\n      \"name\": \"Admin\",\n      \"requirements\": [\n        \"View transactions\",\n        \"Access logs\",\n        \"Give users access to books\",\n        \"Refund users\",\n        \"Open user accounts\",\n        \"Close user accounts\",\n        \"Block user accounts\"\n      ]\n    },\n    \"Operator\": {\n      \"name\": \"Operator\",\n      \"requirements\": [\n        \"Schedule backups of entire data\",\n        \"Restore entire data or specific user's account\",\n        \"Replay transactions of entire site or single user after a restore\"\n      ]\n    }\n  }\n}"
+      },
+      "e_stats": {
+        "prompt_tokens": 207,
+        "completion_tokens": 191,
+        "total_tokens": 398,
+        "sp_cost": 0.0003105,
+        "sc_cost": 0.000382,
+        "s_total": 0.0006925,
+        "elapsed_time": 5.466896057128906
+      }
+    }
+  ],
+  "KEGUI": [
+    {
+      "py/object": "KbServerApp.step.Step",
+      "name": "1. Generate window structure",
+      "prompt_name": "KEGUI/MainWindow requirements.pe",
+      "ai": {
+        "py/object": "KbServerApp.ai.AI",
+        "temperature": 0.0,
+        "max_tokens": 2000,
+        "model": "gpt-3.5-turbo",
+        "mode": "chat"
+      },
+      "storage_path": "Dynamic/KEGUI/src",
+      "messages": [
+        {
+          "role": "system",
+          "content": "\nYou are a python programmer.\nYou will use the pyside6 toolkit for GUI.\nYou will write functional code for each iteration.\nFiles will be delineated in the following format:\n\nfilename\n```python\n[actual code]\n```"
+        },
+        {
+          "role": "user",
+          "content": "\nGenerate main_window.py which will consist of 3 tabs.\n  \"WorkBench\" (loaded from workbench_tab.py)\n  \"Log\" (Loaded from log_tab.py)\n  \"Coms\" (loaded from coms_tab.py)\n\n Generate all 4 files."
+        }
+      ],
+      "response": {
+        "py/object": "openai.openai_object.OpenAIObject",
+        "id": "chatcmpl-7i649oX0xKfZZq5fBrprWVQBtzVzc",
+        "object": "chat.completion",
+        "created": 1690744105,
+        "model": "gpt-3.5-turbo-0613",
+        "choices": [
+          {
+            "py/object": "openai.openai_object.OpenAIObject",
+            "index": 0,
+            "message": {
+              "py/object": "openai.openai_object.OpenAIObject",
+              "role": "assistant",
+              "content": "main_window.py\n```python\nfrom PySide6.QtWidgets import QApplication, QMainWindow, QTabWidget\n\nfrom workbench_tab import WorkBenchTab\nfrom log_tab import LogTab\nfrom coms_tab import ComsTab\n\n\nclass MainWindow(QMainWindow):\n    def __init__(self):\n        super().__init__()\n\n        self.setWindowTitle(\"Main Window\")\n\n        self.tab_widget = QTabWidget()\n        self.setCentralWidget(self.tab_widget)\n\n        self.workbench_tab = WorkBenchTab()\n        self.log_tab = LogTab()\n        self.coms_tab = ComsTab()\n\n        self.tab_widget.addTab(self.workbench_tab, \"WorkBench\")\n        self.tab_widget.addTab(self.log_tab, \"Log\")\n        self.tab_widget.addTab(self.coms_tab, \"Coms\")\n\n\nif __name__ == \"__main__\":\n    app = QApplication([])\n    window = MainWindow()\n    window.show()\n    app.exec()\n```\n\nworkbench_tab.py\n```python\nfrom PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel\n\n\nclass WorkBenchTab(QWidget):\n    def __init__(self):\n        super().__init__()\n\n        layout = QVBoxLayout()\n        label = QLabel(\"WorkBench Tab\")\n        layout.addWidget(label)\n\n        self.setLayout(layout)\n```\n\nlog_tab.py\n```python\nfrom PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel\n\n\nclass LogTab(QWidget):\n    def __init__(self):\n        super().__init__()\n\n        layout = QVBoxLayout()\n        label = QLabel(\"Log Tab\")\n        layout.addWidget(label)\n\n        self.setLayout(layout)\n```\n\ncoms_tab.py\n```python\nfrom PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel\n\n\nclass ComsTab(QWidget):\n    def __init__(self):\n        super().__init__()\n\n        layout = QVBoxLayout()\n        label = QLabel(\"Coms Tab\")\n        layout.addWidget(label)\n\n        self.setLayout(layout)\n```",
+              "__dict__": {
+                "_response_ms": null,
+                "_retrieve_params": {},
+                "api_key": "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",
+                "api_version": null,
+                "api_type": null,
+                "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
+                "api_base_override": null,
+                "engine": null,
+                "_previous": {
+                  "role": "assistant",
+                  "content": "main_window.py\n```python\nfrom PySide6.QtWidgets import QApplication, QMainWindow, QTabWidget\n\nfrom workbench_tab import WorkBenchTab\nfrom log_tab import LogTab\nfrom coms_tab import ComsTab\n\n\nclass MainWindow(QMainWindow):\n    def __init__(self):\n        super().__init__()\n\n        self.setWindowTitle(\"Main Window\")\n\n        self.tab_widget = QTabWidget()\n        self.setCentralWidget(self.tab_widget)\n\n        self.workbench_tab = WorkBenchTab()\n        self.log_tab = LogTab()\n        self.coms_tab = ComsTab()\n\n        self.tab_widget.addTab(self.workbench_tab, \"WorkBench\")\n        self.tab_widget.addTab(self.log_tab, \"Log\")\n        self.tab_widget.addTab(self.coms_tab, \"Coms\")\n\n\nif __name__ == \"__main__\":\n    app = QApplication([])\n    window = MainWindow()\n    window.show()\n    app.exec()\n```\n\nworkbench_tab.py\n```python\nfrom PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel\n\n\nclass WorkBenchTab(QWidget):\n    def __init__(self):\n        super().__init__()\n\n        layout = QVBoxLayout()\n        label = QLabel(\"WorkBench Tab\")\n        layout.addWidget(label)\n\n        self.setLayout(layout)\n```\n\nlog_tab.py\n```python\nfrom PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel\n\n\nclass LogTab(QWidget):\n    def __init__(self):\n        super().__init__()\n\n        layout = QVBoxLayout()\n        label = QLabel(\"Log Tab\")\n        layout.addWidget(label)\n\n        self.setLayout(layout)\n```\n\ncoms_tab.py\n```python\nfrom PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel\n\n\nclass ComsTab(QWidget):\n    def __init__(self):\n        super().__init__()\n\n        layout = QVBoxLayout()\n        label = QLabel(\"Coms Tab\")\n        layout.addWidget(label)\n\n        self.setLayout(layout)\n```"
+                }
+              }
+            },
+            "finish_reason": "stop",
+            "__dict__": {
+              "_response_ms": null,
+              "_retrieve_params": {},
+              "api_key": "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",
+              "api_version": null,
+              "api_type": null,
+              "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
+              "api_base_override": null,
+              "engine": null,
+              "_previous": {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "main_window.py\n```python\nfrom PySide6.QtWidgets import QApplication, QMainWindow, QTabWidget\n\nfrom workbench_tab import WorkBenchTab\nfrom log_tab import LogTab\nfrom coms_tab import ComsTab\n\n\nclass MainWindow(QMainWindow):\n    def __init__(self):\n        super().__init__()\n\n        self.setWindowTitle(\"Main Window\")\n\n        self.tab_widget = QTabWidget()\n        self.setCentralWidget(self.tab_widget)\n\n        self.workbench_tab = WorkBenchTab()\n        self.log_tab = LogTab()\n        self.coms_tab = ComsTab()\n\n        self.tab_widget.addTab(self.workbench_tab, \"WorkBench\")\n        self.tab_widget.addTab(self.log_tab, \"Log\")\n        self.tab_widget.addTab(self.coms_tab, \"Coms\")\n\n\nif __name__ == \"__main__\":\n    app = QApplication([])\n    window = MainWindow()\n    window.show()\n    app.exec()\n```\n\nworkbench_tab.py\n```python\nfrom PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel\n\n\nclass WorkBenchTab(QWidget):\n    def __init__(self):\n        super().__init__()\n\n        layout = QVBoxLayout()\n        label = QLabel(\"WorkBench Tab\")\n        layout.addWidget(label)\n\n        self.setLayout(layout)\n```\n\nlog_tab.py\n```python\nfrom PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel\n\n\nclass LogTab(QWidget):\n    def __init__(self):\n        super().__init__()\n\n        layout = QVBoxLayout()\n        label = QLabel(\"Log Tab\")\n        layout.addWidget(label)\n\n        self.setLayout(layout)\n```\n\ncoms_tab.py\n```python\nfrom PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel\n\n\nclass ComsTab(QWidget):\n    def __init__(self):\n        super().__init__()\n\n        layout = QVBoxLayout()\n        label = QLabel(\"Coms Tab\")\n        layout.addWidget(label)\n\n        self.setLayout(layout)\n```"
+                },
+                "finish_reason": "stop"
+              }
+            }
+          }
+        ],
+        "usage": {
+          "py/object": "openai.openai_object.OpenAIObject",
+          "prompt_tokens": 115,
+          "completion_tokens": 381,
+          "total_tokens": 496,
+          "__dict__": {
+            "_response_ms": null,
+            "_retrieve_params": {},
+            "api_key": "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",
+            "api_version": null,
+            "api_type": null,
+            "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
+            "api_base_override": null,
+            "engine": null,
+            "_previous": {
+              "prompt_tokens": 115,
+              "completion_tokens": 381,
+              "total_tokens": 496
+            }
+          }
+        },
+        "__dict__": {
+          "_response_ms": 12465,
+          "_retrieve_params": {},
+          "api_key": "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",
+          "api_version": null,
+          "api_type": null,
+          "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
+          "api_base_override": null,
+          "engine": null,
+          "_previous": {
+            "id": "chatcmpl-7i649oX0xKfZZq5fBrprWVQBtzVzc",
+            "object": "chat.completion",
+            "created": 1690744105,
+            "model": "gpt-3.5-turbo-0613",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "_response_ms": null,
+                  "_retrieve_params": {
+                    "py/id": 49
+                  },
+                  "api_key": "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",
+                  "api_version": null,
+                  "api_type": null,
+                  "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
+                  "api_base_override": null,
+                  "engine": null,
+                  "_previous": {
+                    "py/id": 50
+                  }
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 115,
+              "completion_tokens": 381,
+              "total_tokens": 496
+            }
+          }
+        }
+      },
+      "answer": "main_window.py\n```python\nfrom PySide6.QtWidgets import QApplication, QMainWindow, QTabWidget\n\nfrom workbench_tab import WorkBenchTab\nfrom log_tab import LogTab\nfrom coms_tab import ComsTab\n\n\nclass MainWindow(QMainWindow):\n    def __init__(self):\n        super().__init__()\n\n        self.setWindowTitle(\"Main Window\")\n\n        self.tab_widget = QTabWidget()\n        self.setCentralWidget(self.tab_widget)\n\n        self.workbench_tab = WorkBenchTab()\n        self.log_tab = LogTab()\n        self.coms_tab = ComsTab()\n\n        self.tab_widget.addTab(self.workbench_tab, \"WorkBench\")\n        self.tab_widget.addTab(self.log_tab, \"Log\")\n        self.tab_widget.addTab(self.coms_tab, \"Coms\")\n\n\nif __name__ == \"__main__\":\n    app = QApplication([])\n    window = MainWindow()\n    window.show()\n    app.exec()\n```\n\nworkbench_tab.py\n```python\nfrom PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel\n\n\nclass WorkBenchTab(QWidget):\n    def __init__(self):\n        super().__init__()\n\n        layout = QVBoxLayout()\n        label = QLabel(\"WorkBench Tab\")\n        layout.addWidget(label)\n\n        self.setLayout(layout)\n```\n\nlog_tab.py\n```python\nfrom PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel\n\n\nclass LogTab(QWidget):\n    def __init__(self):\n        super().__init__()\n\n        layout = QVBoxLayout()\n        label = QLabel(\"Log Tab\")\n        layout.addWidget(label)\n\n        self.setLayout(layout)\n```\n\ncoms_tab.py\n```python\nfrom PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel\n\n\nclass ComsTab(QWidget):\n    def __init__(self):\n        super().__init__()\n\n        layout = QVBoxLayout()\n        label = QLabel(\"Coms Tab\")\n        layout.addWidget(label)\n\n        self.setLayout(layout)\n```",
+      "files": {
+        "main_window.py": "from PySide6.QtWidgets import QApplication, QMainWindow, QTabWidget\n\nfrom workbench_tab import WorkBenchTab\nfrom log_tab import LogTab\nfrom coms_tab import ComsTab\n\n\nclass MainWindow(QMainWindow):\n    def __init__(self):\n        super().__init__()\n\n        self.setWindowTitle(\"Main Window\")\n\n        self.tab_widget = QTabWidget()\n        self.setCentralWidget(self.tab_widget)\n\n        self.workbench_tab = WorkBenchTab()\n        self.log_tab = LogTab()\n        self.coms_tab = ComsTab()\n\n        self.tab_widget.addTab(self.workbench_tab, \"WorkBench\")\n        self.tab_widget.addTab(self.log_tab, \"Log\")\n        self.tab_widget.addTab(self.coms_tab, \"Coms\")\n\n\nif __name__ == \"__main__\":\n    app = QApplication([])\n    window = MainWindow()\n    window.show()\n    app.exec()",
+        "workbench_tab.py": "from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel\n\n\nclass WorkBenchTab(QWidget):\n    def __init__(self):\n        super().__init__()\n\n        layout = QVBoxLayout()\n        label = QLabel(\"WorkBench Tab\")\n        layout.addWidget(label)\n\n        self.setLayout(layout)",
+        "log_tab.py": "from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel\n\n\nclass LogTab(QWidget):\n    def __init__(self):\n        super().__init__()\n\n        layout = QVBoxLayout()\n        label = QLabel(\"Log Tab\")\n        layout.addWidget(label)\n\n        self.setLayout(layout)",
+        "coms_tab.py": "from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel\n\n\nclass ComsTab(QWidget):\n    def __init__(self):\n        super().__init__()\n\n        layout = QVBoxLayout()\n        label = QLabel(\"Coms Tab\")\n        layout.addWidget(label)\n\n        self.setLayout(layout)"
+      },
+      "e_stats": {
+        "prompt_tokens": 115,
+        "completion_tokens": 381,
+        "total_tokens": 496,
+        "sp_cost": 0.00017250000000000002,
+        "sc_cost": 0.000762,
+        "s_total": 0.0009345,
+        "elapsed_time": 13.052231311798096
+      }
+    },
+    {
+      "py/object": "KbServerApp.step.Step",
+      "name": "2. Generate log_tab.py",
+      "prompt_name": "KEGUI/Generate log_tab.pe",
+      "ai": {
+        "py/object": "KbServerApp.ai.AI",
+        "temperature": 0.0,
+        "max_tokens": "10000",
+        "model": "gpt-3.5-turbo-16k",
+        "mode": "chat"
+      },
+      "storage_path": "Dynamic/KEGUI/src",
       "messages": [],
       "response": {},
       "answer": "",
       "files": {},
       "e_stats": {
-        "prompt_tokens": 0,
-        "completion_tokens": 0,
-        "total_tokens": 0,
+        "prompt_tokens": 0.0,
+        "completion_tokens": 0.0,
+        "total_tokens": 0.0,
+        "sp_cost": 0.0,
+        "sc_cost": 0.0,
+        "s_total": 0.0,
+        "elapsed_time": 0.0
+      }
+    },
+    {
+      "py/object": "KbServerApp.step.Step",
+      "name": "3. Test Rename Step",
+      "prompt_name": "Prompts/Python_GUI/1-BasicFrame.pe",
+      "ai": {
+        "py/object": "KbServerApp.ai.AI",
+        "temperature": 0.0,
+        "max_tokens": 4000,
+        "model": "gpt-4",
+        "mode": "chat"
+      },
+      "storage_path": "Dynamic/KEGUI/src",
+      "messages": [],
+      "response": {},
+      "answer": "",
+      "files": {},
+      "e_stats": {
+        "prompt_tokens": 0.0,
+        "completion_tokens": 0.0,
+        "total_tokens": 0.0,
         "sp_cost": 0.0,
         "sc_cost": 0.0,
         "s_total": 0.0,
@@ -53,19 +682,80 @@
       }
     }
   ],
-  "Second Test": [
+  "Online Book Store": [
     {
       "py/object": "KbServerApp.step.Step",
-      "name": "New Step",
-      "prompt_name": "",
+      "name": "1. Create Actors and Requirements",
+      "prompt_name": "Online Book Store/Prompts/1. Use Case to Requirements",
       "ai": {
         "py/object": "KbServerApp.ai.AI",
-        "temperature": 0,
+        "temperature": 0.0,
         "max_tokens": 3000,
-        "model": "gpt3.5-turbo",
+        "model": "gpt-3.5-turbo",
         "mode": "chat"
       },
-      "storage_path": "",
+      "storage_path": "Online Book Store/Generated",
+      "messages": [
+        {
+          "role": "system",
+          "content": "\nYour answers will be concise and short.\nText blocks will be delineated as follows:\nTEXT_BLOCK_NAME.EXT\n```FILETYPE\ntext block contents\n```"
+        },
+        {
+          "role": "user",
+          "content": "\nThe System will provide an intuitive and easy-to-use interface for users to browse, purchase, and read books.\nIt will allow users to create personal accounts, maintain a private library, and share reviews on books.\n\nAdmins and Operators can view transactions, and access logs to see failures.\nAdmins can give users access to books. Admins can refund Users. Admin can open, close, and block user accounts.\n\nOperators can schedule backups of entire data.\nOperators can restore entire data or a specific user's account.\nOperators can replay transactions of the entire site or of a single user after a restore."
+        },
+        {
+          "role": "user",
+          "content": "\nIdentify each Actor, along with its requirements .\n### Complete the following list of actors:\nActors.json\n```json\n{'Actors' :\n    { '<actor>': { 'name': '<actor>', 'requirements': [ '<first requirement>', '<second requirement>', ... ]}\n    }\n}\n```\n\n"
+        }
+      ],
+      "response": {
+        "id": "chatcmpl-7iknvh3wdXWXAQ9VysQnyL4qnNAJF",
+        "object": "chat.completion",
+        "created": 1690900703,
+        "model": "gpt-3.5-turbo-0613",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "Actors.json\n```json\n{\n  \"Actors\": {\n    \"User\": {\n      \"name\": \"User\",\n      \"requirements\": [\n        \"Browse books\",\n        \"Purchase books\",\n        \"Read books\",\n        \"Create personal account\",\n        \"Maintain private library\",\n        \"Share book reviews\"\n      ]\n    },\n    \"Admin\": {\n      \"name\": \"Admin\",\n      \"requirements\": [\n        \"View transactions\",\n        \"Access logs\",\n        \"Give users access to books\",\n        \"Refund users\",\n        \"Open/close/block user accounts\"\n      ]\n    },\n    \"Operator\": {\n      \"name\": \"Operator\",\n      \"requirements\": [\n        \"Schedule backups of entire data\",\n        \"Restore entire data or specific user's account\",\n        \"Replay transactions of entire site or single user after restore\"\n      ]\n    }\n  }\n}\n```"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 232,
+          "completion_tokens": 180,
+          "total_tokens": 412
+        }
+      },
+      "answer": "Actors.json\n```json\n{\n  \"Actors\": {\n    \"User\": {\n      \"name\": \"User\",\n      \"requirements\": [\n        \"Browse books\",\n        \"Purchase books\",\n        \"Read books\",\n        \"Create personal account\",\n        \"Maintain private library\",\n        \"Share book reviews\"\n      ]\n    },\n    \"Admin\": {\n      \"name\": \"Admin\",\n      \"requirements\": [\n        \"View transactions\",\n        \"Access logs\",\n        \"Give users access to books\",\n        \"Refund users\",\n        \"Open/close/block user accounts\"\n      ]\n    },\n    \"Operator\": {\n      \"name\": \"Operator\",\n      \"requirements\": [\n        \"Schedule backups of entire data\",\n        \"Restore entire data or specific user's account\",\n        \"Replay transactions of entire site or single user after restore\"\n      ]\n    }\n  }\n}\n```",
+      "files": {
+        "Actors.json": "{\n  \"Actors\": {\n    \"User\": {\n      \"name\": \"User\",\n      \"requirements\": [\n        \"Browse books\",\n        \"Purchase books\",\n        \"Read books\",\n        \"Create personal account\",\n        \"Maintain private library\",\n        \"Share book reviews\"\n      ]\n    },\n    \"Admin\": {\n      \"name\": \"Admin\",\n      \"requirements\": [\n        \"View transactions\",\n        \"Access logs\",\n        \"Give users access to books\",\n        \"Refund users\",\n        \"Open/close/block user accounts\"\n      ]\n    },\n    \"Operator\": {\n      \"name\": \"Operator\",\n      \"requirements\": [\n        \"Schedule backups of entire data\",\n        \"Restore entire data or specific user's account\",\n        \"Replay transactions of entire site or single user after restore\"\n      ]\n    }\n  }\n}"
+      },
+      "e_stats": {
+        "prompt_tokens": 232,
+        "completion_tokens": 180,
+        "total_tokens": 412,
+        "sp_cost": 0.000348,
+        "sc_cost": 0.00035999999999999997,
+        "s_total": 0.000708,
+        "elapsed_time": 8.002811193466187
+      }
+    },
+    {
+      "py/object": "KbServerApp.step.Step",
+      "name": "2. Expand on Actor Requirements",
+      "prompt_name": "Online Book Store/Prompts/2. Expand on Actor Requirements",
+      "ai": {
+        "py/object": "KbServerApp.ai.AI",
+        "temperature": 0.0,
+        "max_tokens": 3000,
+        "model": "gpt-3.5-turbo",
+        "mode": "chat"
+      },
+      "storage_path": "Online Book Store/Generated",
       "messages": [],
       "response": {},
       "answer": "",
