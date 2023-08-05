@@ -32,7 +32,6 @@ empty_step_json = '''{
       },
       "storage_path": "",
       "messages": [],
-      "response": {},
       "answer": "",
       "files": {},
       "e_stats": {
@@ -389,10 +388,10 @@ class KbServerProtocol(WebSocketServerProtocol):
         KbServerProtocol.log.info(f"Call to create step {process_name}::{step_name}...")
         msg['rc'] = 'Okay'
         msg['reason'] = f'Create step {process_name}::{step_name} Complete'
+        empty_step.name = step_name
         ProcessList[process_name].insert(step_index, empty_step)
-        ProcessList[process_name][step_index]['name'] = step_name
         ProcessList_save(ProcessList)
-        KbServerProtocol.log.info(f"Call to write step {process_name}::{step_name}...")
+        KbServerProtocol.log.info(f"Call to create_step {process_name}::{step_name}...")
         self.send_object(msg)
         self.process_list_initial_load()
 

@@ -137,7 +137,31 @@
                         "_retrieve_params": {
                           "_response_ms": null,
                           "_retrieve_params": {
-                            "py/id": 15
+                            "_response_ms": null,
+                            "_retrieve_params": {
+                              "_response_ms": null,
+                              "_retrieve_params": {
+                                "py/id": 15
+                              },
+                              "api_key": "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",
+                              "api_version": null,
+                              "api_type": null,
+                              "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
+                              "api_base_override": null,
+                              "engine": null,
+                              "_previous": {
+                                "py/id": 16
+                              }
+                            },
+                            "api_key": "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",
+                            "api_version": null,
+                            "api_type": null,
+                            "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
+                            "api_base_override": null,
+                            "engine": null,
+                            "_previous": {
+                              "py/id": 15
+                            }
                           },
                           "api_key": "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",
                           "api_version": null,
@@ -146,7 +170,7 @@
                           "api_base_override": null,
                           "engine": null,
                           "_previous": {
-                            "py/id": 16
+                            "py/id": 33
                           }
                         },
                         "api_key": "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",
@@ -156,7 +180,7 @@
                         "api_base_override": null,
                         "engine": null,
                         "_previous": {
-                          "py/id": 15
+                          "py/id": 28
                         }
                       },
                       "api_key": "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",
@@ -166,7 +190,7 @@
                       "api_base_override": null,
                       "engine": null,
                       "_previous": {
-                        "py/id": 31
+                        "py/id": 23
                       }
                     },
                     "api_key": "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",
@@ -176,7 +200,31 @@
                     "api_base_override": null,
                     "engine": null,
                     "_previous": {
-                      "py/id": 26
+                      "_response_ms": 2855,
+                      "_retrieve_params": {
+                        "_response_ms": null,
+                        "_retrieve_params": {
+                          "py/id": 21
+                        },
+                        "api_key": "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",
+                        "api_version": null,
+                        "api_type": null,
+                        "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
+                        "api_base_override": null,
+                        "engine": null,
+                        "_previous": {
+                          "py/id": 22
+                        }
+                      },
+                      "api_key": "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",
+                      "api_version": null,
+                      "api_type": null,
+                      "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
+                      "api_base_override": null,
+                      "engine": null,
+                      "_previous": {
+                        "py/id": 21
+                      }
                     }
                   },
                   "api_key": "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",
@@ -186,7 +234,7 @@
                   "api_base_override": null,
                   "engine": null,
                   "_previous": {
-                    "py/id": 22
+                    "py/id": 18
                   }
                 },
                 "finish_reason": "stop"
@@ -374,7 +422,7 @@
                 "message": {
                   "_response_ms": null,
                   "_retrieve_params": {
-                    "py/id": 35
+                    "py/id": 27
                   },
                   "api_key": "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",
                   "api_version": null,
@@ -383,7 +431,7 @@
                   "api_base_override": null,
                   "engine": null,
                   "_previous": {
-                    "py/id": 36
+                    "py/id": 30
                   }
                 },
                 "finish_reason": "stop"
@@ -598,6 +646,33 @@
         "mode": "chat"
       },
       "storage_path": "Online Book Store/Generated",
+      "messages": [],
+      "answer": "",
+      "files": {},
+      "e_stats": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0,
+        "sp_cost": 0.0,
+        "sc_cost": 0.0,
+        "s_total": 0.0,
+        "elapsed_time": 0.0
+      }
+    }
+  ],
+  "Snake": [
+    {
+      "py/object": "KbServerApp.step.Step",
+      "name": "1. Expand  Requirements",
+      "prompt_name": "",
+      "ai": {
+        "py/object": "KbServerApp.ai.AI",
+        "temperature": 0,
+        "max_tokens": 3000,
+        "model": "gpt-3.5-turbo",
+        "mode": "chat"
+      },
+      "storage_path": "",
       "messages": [],
       "answer": "",
       "files": {},

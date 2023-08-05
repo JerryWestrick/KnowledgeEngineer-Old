@@ -101,7 +101,6 @@ class Step:
         if 'messages' not in json_obj:
             return step
         step.messages = json_obj['messages']
-        step.response = json_obj['response']
         step.answer = json_obj['answer']
         step.files = json_obj['files']
         step.e_stats = json_obj['e_stats']
