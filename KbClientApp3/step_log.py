@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QTableWidget, QTableWidgetItem, QHeaderView, QAbstractItemView
 
-from KbClientApp3.log_tab import LOG
+from log_tab import LOG
 from websocket import REGISTER_CALLBACK
 
 
