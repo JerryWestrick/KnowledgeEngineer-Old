@@ -42,16 +42,16 @@ class Step:
     instances = {}
     memory = DB('Memory')
 
-    def __init__(self, name: str, prompt_name: str, ai: AI, storage_path: str):
+    def __init__(self, name: str, prompt_name: str, ai: AI, storage_path: str, text_file: str):
         # Note:  If you recreate a new step will overwrite the old one.
         self.name: str = name
         self.prompt_name: str = prompt_name
         self.ai: AI = ai
         self.storage_path: str = storage_path
+        self.text_file: str = text_file
         self.__class__.instances[name] = self
         # Storage for historical values
         self.messages: [dict[str, str]] = []  # The messages that have been sent to the AI
-        self.response: dict = {}  # The responses that have been received from the AI
         self.answer: str = ''  # The answer from within the response
         self.files: dict[str, str] = {}  # The files that have been returned from the AI
         self.e_stats: dict[str, float] = {
@@ -76,6 +76,7 @@ class Step:
             'messages': self.messages,
             'answer': self.answer,
             'files': self.files,
+            'text_file': self.text_file,
             'e_stats': {
                 'prompt_tokens': self.e_stats['prompt_tokens'],
                 'completion_tokens': self.e_stats['completion_tokens'],
@@ -96,7 +97,8 @@ class Step:
             name=json_obj['name'],
             prompt_name=json_obj['prompt_name'],
             ai=AI.from_json(json_obj['ai']),
-            storage_path=json_obj['storage_path']
+            storage_path=json_obj['storage_path'],
+            text_file=json_obj['text_file']
         )
         if 'messages' not in json_obj:
             return step
@@ -113,6 +115,16 @@ class Step:
         head = ' ' * head_len
         GptLogger.log('STEP', f"{'=' * 50}\n{head}Begin Step: {self.name}\n{head}{self.prompt_name}")
         self.messages = self.memory[self.prompt_name]
+        # clear old History...
+        self.answer = ''
+        self.files = {}
+        self.e_stats['elapsed_time'] = 0.0
+        self.e_stats['prompt_tokens'] = 0.0
+        self.e_stats['completion_tokens'] = 0.0
+        self.e_stats['sp_cost'] = 0.0
+        self.e_stats['sc_cost'] = 0.0
+        self.e_stats['s_total'] = 0.0
+        self.e_stats['elapsed_time'] = 0.0
 
         # Send Update to the GUI
         msg = {'cmd': 'update', 'cb': 'update_step', 'rc': 'Okay', 'object': 'step', 'record': self.to_json()}
@@ -120,11 +132,11 @@ class Step:
         proto.sendMessage(response.encode('UTF8'), False)
 
         start_time = time.time()
-        self.response = yield self.ai.generate(self.messages)
+        ai_response = yield self.ai.generate(self.messages)
         self.e_stats['elapsed_time'] = time.time() - start_time
-        self.e_stats['prompt_tokens'] = self.response['usage']['prompt_tokens']
-        self.e_stats['completion_tokens'] = self.response['usage']['completion_tokens']
-        self.e_stats['total_tokens'] = self.response['usage']['total_tokens']
+        self.e_stats['prompt_tokens'] = ai_response['usage']['prompt_tokens']
+        self.e_stats['completion_tokens'] = ai_response['usage']['completion_tokens']
+        self.e_stats['total_tokens'] = ai_response['usage']['total_tokens']
         GptLogger.log('STEP', f"Call {self.ai.model} Elapsed: {self.e_stats['elapsed_time']:.2f}s Token Usage: "
                               f"Total:{self.e_stats['total_tokens']} ("
                               f"Prompt:{self.e_stats['prompt_tokens']}, "
@@ -132,9 +144,9 @@ class Step:
                       )
 
         if self.ai.mode == 'chat':
-            self.answer = self.response.choices[0].message.content
+            self.answer = ai_response.choices[0].message.content
         else:
-            self.answer = self.response.choices[0].text
+            self.answer = ai_response.choices[0].text
 
         self.files = interpret_results(text=self.answer)
         pricing = OpenAI_API_Costs[self.ai.model]
@@ -161,12 +173,10 @@ class Step:
                 full_path = f"{self.storage_path}/{name}"
                 self.memory[full_path] = content
                 GptLogger.log('STEP', f"Writing {full_path}")
+        if self.text_file != '':
+            full_path = f"{self.storage_path}/{self.text_file}"
+            self.memory[full_path] = self.answer
+            GptLogger.log('STEP', f"Writing {full_path}")
 
-    # @classmethod
-    # def __retrieve(cls, name):
-    #     return cls.instances.get(name, None)
-    #
-    # def __getitem__(self, name):
-    #     # This is meant to allow accessing the step by name
-    #     # Directly on  the class.  i.e. Step['name']
-    #     return self.__retrieve(name)
+
+    

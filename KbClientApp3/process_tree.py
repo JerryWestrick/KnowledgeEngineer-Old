@@ -90,6 +90,9 @@ class ProcessTree(QTreeWidget):
             add_process_action = menu.addAction("Add New Process")
             add_process_action.triggered.connect(self.create_process)
 
+            exec_process_action = menu.addAction(f"Exec Process {process_name}")
+            exec_process_action.triggered.connect(self.exec_process)
+
             menu.exec_(event.globalPos())
 
     def delete_process(self):
@@ -156,6 +159,18 @@ class ProcessTree(QTreeWidget):
         else:
             self.log('cb_create_process',
                      f"Create Process {msg['record']['process_name']} failed reason: {msg['reason']}")
+
+    def exec_process(self):
+        record = {'process_name': self.selected_process_name}
+        SEND({'cmd': 'exec', 'cb': 'cb_exec_process', 'object': 'process', 'record': record})
+        self.log("exec_process", f"call exec Process({self.selected_process_name})")
+
+    def cb_exec_process(self, msg):
+        if msg['rc'] == 'Okay':
+            self.log('cb_exec_process', f"Process {msg['record']['process_name']} Created")
+        else:
+            self.log('cb_exec_process',
+                     f"Execute Process {msg['record']['process_name']} failed reason: {msg['reason']}")
 
     def rename_process(self):
         self.process_list["New Process"] = []

@@ -8,6 +8,7 @@ from websocket import WebSocketClient
 
 class ComsTab(QWidget):
     def __init__(self, url):
+        self.url = url
         super().__init__()
 
         # Initialize WebSocket client with initial URL

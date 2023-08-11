@@ -1,8 +1,36 @@
+import json
+
+from PySide6.QtGui import QDragEnterEvent, QDropEvent
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QSpacerItem, QSizePolicy, \
     QTextEdit, QMainWindow, QDialog
 
 from websocket import REGISTER_CALLBACK, SEND
 from log_tab import LOG
+
+
+class CustomTextEdit(QTextEdit):
+    def __init__(self, parent=None):
+        super(CustomTextEdit, self).__init__(parent)
+        self.setAcceptDrops(True)
+
+    def log(self, action, message):
+        LOG({'system': 'CustomTextEdit', 'action': action, 'message': message})
+
+    def dragEnterEvent(self, event: QDragEnterEvent):
+        # self.log('dragEnterEvent', f"CustomTextEdit:dragEnterEvent({event})")
+        # if event.mimeData().hasText():
+        event.accept()
+
+    def dragMoveEvent(self, event: QDropEvent):
+        # self.log('dragMoveEvent', f"...")
+        event.accept()
+
+    def dropEvent(self, event: QDropEvent):
+        # self.log('dropEvent', f"dropEvent({event})")
+        from_text = event.mimeData().text()
+        # self.log("dropEvent", f"text:{from_text}")
+        self.insertPlainText(f".include {from_text}\n")
+        event.accept()
 
 
 class PromptEditor(QWidget):
@@ -12,6 +40,7 @@ class PromptEditor(QWidget):
         self.workbench = workbench
         super().__init__()
 
+        self.setAcceptDrops(True)
         # VBox layout
         layout = QVBoxLayout(self)
 
@@ -26,8 +55,9 @@ class PromptEditor(QWidget):
         layout.addLayout(h_box1)
 
         # Second row
-        self.text_edit = QTextEdit()
+        self.text_edit = CustomTextEdit()
         self.text_edit.textChanged.connect(lambda: self.save_button.setEnabled(True))
+        # self.text_edit.setAcceptDrops(True)
         layout.addWidget(self.text_edit)
 
         # Third row
@@ -47,6 +77,11 @@ class PromptEditor(QWidget):
     def log(self, action, message):
         LOG({'system': 'PromptEditor', 'action': action, 'message': message})
 
+    # def dropEvent(self, event):
+    #     text = event.mimeData().text()
+    #     self.text_edit.insertPlainText(f".include {text}")
+    #     event.acceptProposedAction()
+
     def set_prompt(self, prompt_name, contents):
         self.prompt_name = prompt_name
         self.prompt = contents
@@ -57,7 +92,7 @@ class PromptEditor(QWidget):
 
     def memory_update(self, msg):
         self.log('memory_update', f'memory_update({msg})')
-        prompt = '/'.join(msg['record']['path'])+'/'+msg['record']['name']
+        prompt = '/'.join(msg['record']['path']) + '/' + msg['record']['name']
         if self.prompt_name == prompt:
             self.set_prompt(prompt, msg['record']['content'])
             self.save_button.setEnabled(False)

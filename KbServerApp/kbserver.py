@@ -2,6 +2,7 @@ import json
 import os
 import shutil
 import time
+import traceback
 from typing import List
 
 import jsonpickle
@@ -31,6 +32,7 @@ empty_step_json = '''{
         "mode": "chat"
       },
       "storage_path": "",
+      "text_file": "",
       "messages": [],
       "answer": "",
       "files": {},
@@ -204,7 +206,7 @@ class KbServerProtocol(WebSocketServerProtocol):
 
     @inlineCallbacks
     def exec_process(self, msg, isbinary):
-        process_name = msg['record']['process']
+        process_name = msg['record']['process_name']
         if process_name not in ProcessList:
             msg['rc'] = 'Error'
             msg['reason'] = f'Process {process_name} not found.'
@@ -217,9 +219,6 @@ class KbServerProtocol(WebSocketServerProtocol):
         yield self.schedule(process_name, tasklist)
         msg['rc'] = 'Okay'
         msg['reason'] = 'Run Completed'
-        msg['record'] = {'one': 'two'}
-        msg['cmd'] = 'Process'
-        msg['object'] = 'Test'
         self.send_object(msg)
         returnValue('')
 
@@ -458,7 +457,12 @@ class KbServerProtocol(WebSocketServerProtocol):
             try:
                 yield method(msg, isbinary)
             except Exception as err:
-                KbServerProtocol.log.warn("Error calling {method_name}(...): {err}", method_name=method_name, err=err)
+                tb = traceback.extract_tb(err.__traceback__)
+                filename, line_number, function_name, text = tb[-1]
+                print()
+                KbServerProtocol.log.error("Error calling {method_name}(...): {err}", method_name=method_name, err=err)
+                KbServerProtocol.log.error("Error occurred in {filename} on line {line_number}: {text}",
+                                           filename=filename,  line_number=line_number, text=text)
                 msg['rc'] = 'Fail'
                 msg['reason'] = f'{method_name}(...) Failed: {err}'
                 self.send_object(msg)
@@ -520,7 +524,7 @@ def notify(ignored, fp, mask):
     else:
         content = fp.getContent().decode('utf-8')
 
-    print(f"event {', '.join(m)} on {'/'.join(p)}/{n}: {content[:80]}")
+    # print(f"event {', '.join(m)} on {'/'.join(p)}/{n}: {content[:80]}")
     msg = {'cmd': 'memory_update',
            'cb': 'memory_update',
            'rc': 'Okay',

@@ -5,6 +5,7 @@ from PySide6.QtCore import Qt
 from websocket import REGISTER_CALLBACK, SEND
 from log_tab import LOG
 
+
 class StepEditor(QWidget):
     def __init__(self, workbench=None):
         super().__init__()
@@ -12,7 +13,7 @@ class StepEditor(QWidget):
         self.step = None
         self.process_name = None
         self.workbench = workbench
-        self.models = {'gpt-3.5-turbo': {}, 'gpt-3.5-turbo-16k': {}, 'gpt-4': {} }
+        self.models = {'gpt-3.5-turbo': {}, 'gpt-3.5-turbo-16k': {}, 'gpt-4': {}}
         self.layout = QFormLayout(self)
 
         self.name_editor = QLineEdit()
@@ -23,6 +24,9 @@ class StepEditor(QWidget):
 
         self.storage_path_editor = QLineEdit()
         self.layout.addRow("Storage Path:", self.storage_path_editor)
+
+        self.text_file_editor = QLineEdit()
+        self.layout.addRow("Text File:", self.text_file_editor)
 
         self.model_editor = QComboBox()
         # self.model_editor.addItems(self.models.keys())
@@ -61,7 +65,6 @@ class StepEditor(QWidget):
         self.models = msg['record']
         self.model_editor.addItems(self.models.keys())
 
-
     def set_step(self, process_name, step):
         self.log('set_step', f'set_step({process_name}, {step})')
         self.process_name = process_name
@@ -70,6 +73,7 @@ class StepEditor(QWidget):
 
         self.name_editor.setText(self.step["name"])
         self.prompt_name_editor.setText(self.step["prompt_name"])
+        self.text_file_editor.setText(self.step["text_file"])
         self.temperature_editor.setValue(float(self.step["ai"]["temperature"]))
         self.max_tokens_editor.setText(str(self.step["ai"]["max_tokens"]))
         self.model_editor.setCurrentText(self.step["ai"]["model"])
@@ -91,11 +95,11 @@ class StepEditor(QWidget):
         self.step['storage_path'] = name
         self.storage_path_editor.setText(self.step['storage_path'])
 
-
     def connect_signals(self):
         # Connect form field signals to enable the save button
         self.name_editor.textChanged.connect(lambda: self.save_button.setEnabled(True))
         self.prompt_name_editor.textChanged.connect(lambda: self.save_button.setEnabled(True))
+        self.text_file_editor.textChanged.connect(lambda: self.save_button.setEnabled(True))
         self.temperature_editor.valueChanged.connect(lambda: self.save_button.setEnabled(True))
         self.max_tokens_editor.textChanged.connect(lambda: self.save_button.setEnabled(True))
         self.model_editor.currentTextChanged.connect(lambda: self.save_button.setEnabled(True))
@@ -146,6 +150,7 @@ class StepEditor(QWidget):
     def get_step(self):
         self.step["name"] = self.name_editor.text()
         self.step["prompt_name"] = self.prompt_name_editor.text()
+        self.step["text_file"] = self.text_file_editor.text()
         self.step["ai"]["temperature"] = self.temperature_editor.value()
         self.step["ai"]["max_tokens"] = int(self.max_tokens_editor.text())
         self.step["ai"]["model"] = self.model_editor.currentText()
@@ -156,33 +161,34 @@ class StepEditor(QWidget):
 
 if __name__ == "__main__":
     import sys
+
     app = QApplication(sys.argv)
 
     step = {
-      "py/object": "KbServerApp.step.Step",
-      "name": "Step 1",
-      "prompt_name": "Prompts/Test Prompt.pe",
-      "ai": {
-        "py/object": "KbServerApp.ai.AI",
-        "temperature": 0.0,
-        "max_tokens": 3000,
-        "model": "gpt-3.5-turbo-16k",
-        "mode": "chat"
-      },
-      "storage_path": "Dynamic/Requirements",
-      "messages": [],
-      "response": {},
-      "answer": "",
-      "files": {},
-      "e_stats": {
-        "prompt_tokens": 0,
-        "completion_tokens": 0,
-        "total_tokens": 0,
-        "sp_cost": 0.0,
-        "sc_cost": 0.0,
-        "s_total": 0.0,
-        "elapsed_time": 0.0
-      }
+        "py/object": "KbServerApp.step.Step",
+        "name": "Step 1",
+        "prompt_name": "Prompts/Test Prompt.pe",
+        "ai": {
+            "py/object": "KbServerApp.ai.AI",
+            "temperature": 0.0,
+            "max_tokens": 3000,
+            "model": "gpt-3.5-turbo-16k",
+            "mode": "chat"
+        },
+        "storage_path": "Dynamic/Requirements",
+        "text_file": "",
+        "messages": [],
+        "answer": "",
+        "files": {},
+        "e_stats": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0,
+            "sp_cost": 0.0,
+            "sc_cost": 0.0,
+            "s_total": 0.0,
+            "elapsed_time": 0.0
+        }
     }
 
     editor = StepEditor()

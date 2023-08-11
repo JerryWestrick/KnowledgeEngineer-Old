@@ -12,6 +12,7 @@
         "mode": "chat"
       },
       "storage_path": "Dynamic/Requirements",
+      "text_file": "",
       "messages": [
         {
           "role": "system",
@@ -38,216 +39,6 @@
           "content": "### RESPONSE ###"
         }
       ],
-      "response": {
-        "py/object": "openai.openai_object.OpenAIObject",
-        "id": "chatcmpl-7i6DlIMe8yuujUTZfQI4g3FPWLx5W",
-        "object": "chat.completion",
-        "created": 1690744701,
-        "model": "gpt-3.5-turbo-16k-0613",
-        "choices": [
-          {
-            "py/object": "openai.openai_object.OpenAIObject",
-            "index": 0,
-            "message": {
-              "py/object": "openai.openai_object.OpenAIObject",
-              "role": "assistant",
-              "content": "variables\n```\n{ 'actors': [ 'User', 'Admin', 'Operator' ] }\n```\n\nUser\n```\nUser must be able to:\n    - Browse, purchase, and read books\n    - Create a personal account\n    - Maintain a private library\n    - Share reviews on books\n```\n\nAdmin\n```\nAdmin must be able to:\n    - View transactions\n    - Access logs to see failures\n    - Give users access to books\n    - Refund users\n    - Open, close, and block user accounts\n```\n\nOperator\n```\nOperator must be able to:\n    - Schedule backups of entire data\n    - Restore entire data or a specific user's account\n    - Replay transactions of the entire site or of a single user after a restore\n```",
-              "__dict__": {
-                "_response_ms": null,
-                "_retrieve_params": {},
-                "api_key": "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",
-                "api_version": null,
-                "api_type": null,
-                "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
-                "api_base_override": null,
-                "engine": null,
-                "_previous": {
-                  "role": "assistant",
-                  "content": "variables\n```\n{ 'actors': [ 'User', 'Admin', 'Operator' ] }\n```\n\nUser\n```\nUser must be able to:\n    - Browse, purchase, and read books\n    - Create a personal account\n    - Maintain a private library\n    - Share reviews on books\n```\n\nAdmin\n```\nAdmin must be able to:\n    - View transactions\n    - Access logs to see failures\n    - Give users access to books\n    - Refund users\n    - Open, close, and block user accounts\n```\n\nOperator\n```\nOperator must be able to:\n    - Schedule backups of entire data\n    - Restore entire data or a specific user's account\n    - Replay transactions of the entire site or of a single user after a restore\n```"
-                }
-              }
-            },
-            "finish_reason": "stop",
-            "__dict__": {
-              "_response_ms": null,
-              "_retrieve_params": {},
-              "api_key": "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",
-              "api_version": null,
-              "api_type": null,
-              "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
-              "api_base_override": null,
-              "engine": null,
-              "_previous": {
-                "index": 0,
-                "message": {
-                  "role": "assistant",
-                  "content": "variables\n```\n{ 'actors': [ 'User', 'Admin', 'Operator' ] }\n```\n\nUser\n```\nUser must be able to:\n    - Browse, purchase, and read books\n    - Create a personal account\n    - Maintain a private library\n    - Share reviews on books\n```\n\nAdmin\n```\nAdmin must be able to:\n    - View transactions\n    - Access logs to see failures\n    - Give users access to books\n    - Refund users\n    - Open, close, and block user accounts\n```\n\nOperator\n```\nOperator must be able to:\n    - Schedule backups of entire data\n    - Restore entire data or a specific user's account\n    - Replay transactions of the entire site or of a single user after a restore\n```"
-                },
-                "finish_reason": "stop"
-              }
-            }
-          }
-        ],
-        "usage": {
-          "py/object": "openai.openai_object.OpenAIObject",
-          "prompt_tokens": 279,
-          "completion_tokens": 163,
-          "total_tokens": 442,
-          "__dict__": {
-            "_response_ms": null,
-            "_retrieve_params": {},
-            "api_key": "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",
-            "api_version": null,
-            "api_type": null,
-            "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
-            "api_base_override": null,
-            "engine": null,
-            "_previous": {
-              "prompt_tokens": 279,
-              "completion_tokens": 163,
-              "total_tokens": 442
-            }
-          }
-        },
-        "__dict__": {
-          "_response_ms": 2855,
-          "_retrieve_params": {},
-          "api_key": "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",
-          "api_version": null,
-          "api_type": null,
-          "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
-          "api_base_override": null,
-          "engine": null,
-          "_previous": {
-            "id": "chatcmpl-7i6DlIMe8yuujUTZfQI4g3FPWLx5W",
-            "object": "chat.completion",
-            "created": 1690744701,
-            "model": "gpt-3.5-turbo-16k-0613",
-            "choices": [
-              {
-                "index": 0,
-                "message": {
-                  "_response_ms": null,
-                  "_retrieve_params": {
-                    "_response_ms": null,
-                    "_retrieve_params": {
-                      "_response_ms": null,
-                      "_retrieve_params": {
-                        "_response_ms": null,
-                        "_retrieve_params": {
-                          "_response_ms": null,
-                          "_retrieve_params": {
-                            "_response_ms": null,
-                            "_retrieve_params": {
-                              "_response_ms": null,
-                              "_retrieve_params": {
-                                "py/id": 15
-                              },
-                              "api_key": "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",
-                              "api_version": null,
-                              "api_type": null,
-                              "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
-                              "api_base_override": null,
-                              "engine": null,
-                              "_previous": {
-                                "py/id": 16
-                              }
-                            },
-                            "api_key": "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",
-                            "api_version": null,
-                            "api_type": null,
-                            "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
-                            "api_base_override": null,
-                            "engine": null,
-                            "_previous": {
-                              "py/id": 15
-                            }
-                          },
-                          "api_key": "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",
-                          "api_version": null,
-                          "api_type": null,
-                          "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
-                          "api_base_override": null,
-                          "engine": null,
-                          "_previous": {
-                            "py/id": 33
-                          }
-                        },
-                        "api_key": "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",
-                        "api_version": null,
-                        "api_type": null,
-                        "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
-                        "api_base_override": null,
-                        "engine": null,
-                        "_previous": {
-                          "py/id": 28
-                        }
-                      },
-                      "api_key": "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",
-                      "api_version": null,
-                      "api_type": null,
-                      "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
-                      "api_base_override": null,
-                      "engine": null,
-                      "_previous": {
-                        "py/id": 23
-                      }
-                    },
-                    "api_key": "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",
-                    "api_version": null,
-                    "api_type": null,
-                    "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
-                    "api_base_override": null,
-                    "engine": null,
-                    "_previous": {
-                      "_response_ms": 2855,
-                      "_retrieve_params": {
-                        "_response_ms": null,
-                        "_retrieve_params": {
-                          "py/id": 21
-                        },
-                        "api_key": "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",
-                        "api_version": null,
-                        "api_type": null,
-                        "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
-                        "api_base_override": null,
-                        "engine": null,
-                        "_previous": {
-                          "py/id": 22
-                        }
-                      },
-                      "api_key": "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",
-                      "api_version": null,
-                      "api_type": null,
-                      "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
-                      "api_base_override": null,
-                      "engine": null,
-                      "_previous": {
-                        "py/id": 21
-                      }
-                    }
-                  },
-                  "api_key": "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",
-                  "api_version": null,
-                  "api_type": null,
-                  "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
-                  "api_base_override": null,
-                  "engine": null,
-                  "_previous": {
-                    "py/id": 18
-                  }
-                },
-                "finish_reason": "stop"
-              }
-            ],
-            "usage": {
-              "prompt_tokens": 279,
-              "completion_tokens": 163,
-              "total_tokens": 442
-            }
-          }
-        }
-      },
       "answer": "variables\n```\n{ 'actors': [ 'User', 'Admin', 'Operator' ] }\n```\n\nUser\n```\nUser must be able to:\n    - Browse, purchase, and read books\n    - Create a personal account\n    - Maintain a private library\n    - Share reviews on books\n```\n\nAdmin\n```\nAdmin must be able to:\n    - View transactions\n    - Access logs to see failures\n    - Give users access to books\n    - Refund users\n    - Open, close, and block user accounts\n```\n\nOperator\n```\nOperator must be able to:\n    - Schedule backups of entire data\n    - Restore entire data or a specific user's account\n    - Replay transactions of the entire site or of a single user after a restore\n```",
       "files": {
         "variables": "{ 'actors': [ 'User', 'Admin', 'Operator' ] }",
@@ -331,120 +122,7 @@
           "content": "\n--- Please complete the following sections:\nvariables\n```\n{   'components': list of components\n}\n```\n"
         }
       ],
-      "response": {
-        "py/object": "openai.openai_object.OpenAIObject",
-        "id": "chatcmpl-7iA1Wsq4cH2QdJxiUBKfemnIEo32b",
-        "object": "chat.completion",
-        "created": 1690759318,
-        "model": "gpt-3.5-turbo-0613",
-        "choices": [
-          {
-            "py/object": "openai.openai_object.OpenAIObject",
-            "index": 0,
-            "message": {
-              "py/object": "openai.openai_object.OpenAIObject",
-              "role": "assistant",
-              "content": "variables\n```\n{\n  'components': []\n}\n```",
-              "__dict__": {
-                "_response_ms": null,
-                "_retrieve_params": {},
-                "api_key": "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",
-                "api_version": null,
-                "api_type": null,
-                "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
-                "api_base_override": null,
-                "engine": null,
-                "_previous": {
-                  "role": "assistant",
-                  "content": "variables\n```\n{\n  'components': []\n}\n```"
-                }
-              }
-            },
-            "finish_reason": "stop",
-            "__dict__": {
-              "_response_ms": null,
-              "_retrieve_params": {},
-              "api_key": "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",
-              "api_version": null,
-              "api_type": null,
-              "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
-              "api_base_override": null,
-              "engine": null,
-              "_previous": {
-                "index": 0,
-                "message": {
-                  "role": "assistant",
-                  "content": "variables\n```\n{\n  'components': []\n}\n```"
-                },
-                "finish_reason": "stop"
-              }
-            }
-          }
-        ],
-        "usage": {
-          "py/object": "openai.openai_object.OpenAIObject",
-          "prompt_tokens": 575,
-          "completion_tokens": 12,
-          "total_tokens": 587,
-          "__dict__": {
-            "_response_ms": null,
-            "_retrieve_params": {},
-            "api_key": "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",
-            "api_version": null,
-            "api_type": null,
-            "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
-            "api_base_override": null,
-            "engine": null,
-            "_previous": {
-              "prompt_tokens": 575,
-              "completion_tokens": 12,
-              "total_tokens": 587
-            }
-          }
-        },
-        "__dict__": {
-          "_response_ms": 551,
-          "_retrieve_params": {},
-          "api_key": "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",
-          "api_version": null,
-          "api_type": null,
-          "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
-          "api_base_override": null,
-          "engine": null,
-          "_previous": {
-            "id": "chatcmpl-7iA1Wsq4cH2QdJxiUBKfemnIEo32b",
-            "object": "chat.completion",
-            "created": 1690759318,
-            "model": "gpt-3.5-turbo-0613",
-            "choices": [
-              {
-                "index": 0,
-                "message": {
-                  "_response_ms": null,
-                  "_retrieve_params": {
-                    "py/id": 27
-                  },
-                  "api_key": "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",
-                  "api_version": null,
-                  "api_type": null,
-                  "organization": "user-jdrvlyfsallqbsgsgbnmqk85",
-                  "api_base_override": null,
-                  "engine": null,
-                  "_previous": {
-                    "py/id": 30
-                  }
-                },
-                "finish_reason": "stop"
-              }
-            ],
-            "usage": {
-              "prompt_tokens": 575,
-              "completion_tokens": 12,
-              "total_tokens": 587
-            }
-          }
-        }
-      },
+      "text_file": "",
       "answer": "variables\n```\n{\n  'components': []\n}\n```",
       "files": {
         "variables": "{\n  'components': []\n}"
@@ -473,6 +151,7 @@
         "mode": "chat"
       },
       "storage_path": "Dynamic/Requirements",
+      "text_file": "",
       "messages": [
         {
           "role": "user",
@@ -500,6 +179,32 @@
         "s_total": 0.0006925,
         "elapsed_time": 5.466896057128906
       }
+    },
+    {
+      "py/object": "KbServerApp.step.Step",
+      "name": "Second Step",
+      "prompt_name": "",
+      "ai": {
+        "py/object": "KbServerApp.ai.AI",
+        "temperature": 0,
+        "max_tokens": 3000,
+        "model": "gpt-3.5-turbo",
+        "mode": "chat"
+      },
+      "storage_path": "",
+      "text_file": "",
+      "messages": [],
+      "answer": "",
+      "files": {},
+      "e_stats": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0,
+        "sp_cost": 0.0,
+        "sc_cost": 0.0,
+        "s_total": 0.0,
+        "elapsed_time": 0.0
+      }
     }
   ],
   "KEGUI": [
@@ -515,6 +220,7 @@
         "mode": "chat"
       },
       "storage_path": "Dynamic/KEGUI/src",
+      "text_file": "",
       "messages": [
         {
           "role": "system",
@@ -554,6 +260,7 @@
         "mode": "chat"
       },
       "storage_path": "Dynamic/KEGUI/src",
+      "text_file": "",
       "messages": [],
       "answer": "",
       "files": {},
@@ -579,6 +286,7 @@
         "mode": "chat"
       },
       "storage_path": "Dynamic/KEGUI/src",
+      "text_file": "",
       "messages": [],
       "answer": "",
       "files": {},
@@ -606,6 +314,7 @@
         "mode": "chat"
       },
       "storage_path": "Online Book Store/Generated",
+      "text_file": "",
       "messages": [
         {
           "role": "system",
@@ -646,6 +355,7 @@
         "mode": "chat"
       },
       "storage_path": "Online Book Store/Generated",
+      "text_file": "",
       "messages": [],
       "answer": "",
       "files": {},
@@ -663,16 +373,113 @@
   "Snake": [
     {
       "py/object": "KbServerApp.step.Step",
-      "name": "1. Expand  Requirements",
-      "prompt_name": "",
+      "name": "1. Organize  Requirements",
+      "prompt_name": "Snake/Prompts/Make Requirements.pe",
       "ai": {
         "py/object": "KbServerApp.ai.AI",
-        "temperature": 0,
-        "max_tokens": 3000,
-        "model": "gpt-3.5-turbo",
+        "temperature": 0.0,
+        "max_tokens": 5000,
+        "model": "gpt-4",
         "mode": "chat"
       },
-      "storage_path": "",
+      "storage_path": "Snake/Requirements/Components",
+      "text_file": "Components_List.txt",
+      "messages": [
+        {
+          "role": "system",
+          "content": "\nYou are an IT developer.\nDo not explain yourself.\nDo not apologize.\nComplete the tasks given in a way that allows for easy comprehension while not leaving anything out.\nFor comprehension use indented lists with minus signs.\n"
+        },
+        {
+          "role": "system",
+          "content": "\nText blocks will be delineated as follows:\nTEXT_BLOCK_NAME.EXT\n```FILETYPE\ntext block contents\n```"
+        },
+        {
+          "role": "user",
+          "content": "\nimplement a multi user \"Snake\" online game.\n-The rules to the game are the standard \"Snake\" game rules.\n-The Board will be 100 x 100 squares.\n- The game consists of 15 steps per second.\n- each step the server calculates:\n    - the movement of each snake,\n    - what snakes if any (die),\n    - what squares need color changes,\n    - the list of squares that changed is sent to each client.\n\nDescription of Game:\n\n    Before The Game Starts:\n    - clients that connect see a \"Join the game\" pop-up with a countdown to game start.\n    - player is given Yes/No buttons.\n    - The popup is closed when:\n        - a player joins the game,\n        - declines to join the game,\n        - or the game starts (which is an implicit decline).\n\n    Once a player \"joins\":\n    - the Client is assigned a Color and the \"his\" snake is drawn\n    - the player sees the entire game board.\n    - the player sees a count-down to game start.\n    - each client that joined updates the server of any change event to the state of the arrow keys.\n\n    From Game Start to Client Death:\n    - each client updates the server of any change event to the state of the arrow keys.\n    - Each client updates its view of the 100 x 100 square board with the update commands received from the server\n    - the server will also announce to the client if it has died.\n\n    From Client Death to End of Game\n    - Once dead, the client continues to update the screen until end of game\n    - The Game ends with a \"Winner\" message stating the Color of the last surviving snake.\n    - Each client will display the winner until \"ok\" is clicked.\n\n    After End of Game:\n    - each client see the \"Join the Game\" pop-up, but no count dow is initiated until the first client joins.\n    - First client joins starts a 30-second count-down to start of game; and the game goes to \"Before The Game Starts\" mode\n"
+        },
+        {
+          "role": "user",
+          "content": "\nAnalyse the game description.\nDefine 3 text blocks:\n    - Server.lst containing the description of the server requirements\n    - Client.lst containing the description of the client requirements\n    - The Protocol.lst containing a description of the required Protocol."
+        }
+      ],
+      "answer": "Server.lst\n```lst\n- The server calculates the movement of each snake, what snakes if any (die), what squares need color changes, 15 times per second.\n- The server sends the list of squares that changed to each client.\n- The server assigns a color to each client that joins the game and draws the corresponding snake.\n- The server updates the state of the game based on the change events to the state of the arrow keys received from each client.\n- The server announces to the client if it has died.\n- The server determines the winner of the game and sends a \"Winner\" message stating the color of the last surviving snake to each client.\n- The server initiates a 30-second countdown to the start of the game when the first client joins after the end of a game.\n```\n\nClient.lst\n```lst\n- The client sees a \"Join the game\" pop-up with a countdown to game start upon connection.\n- The client is given Yes/No buttons to join or decline to join the game.\n- The client sees the entire game board and a countdown to game start once it joins the game.\n- The client updates the server of any change event to the state of the arrow keys.\n- The client updates its view of the 100 x 100 square board with the update commands received from the server.\n- The client continues to update the screen until the end of the game, even if it has died.\n- The client displays the winner until \"ok\" is clicked.\n- The client sees the \"Join the Game\" pop-up after the end of the game, but no countdown is initiated until the first client joins.\n```\n\nProtocol.lst\n```lst\n- The protocol must support the transmission of the list of squares that changed from the server to each client.\n- The protocol must support the transmission of the state of the arrow keys from each client to the server.\n- The protocol must support the transmission of the \"Winner\" message from the server to each client.\n- The protocol must support the transmission of the countdown to game start from the server to each client.\n- The protocol must support the transmission of the \"Join the Game\" pop-up from the server to each client.\n```",
+      "files": {
+        "Server.lst": "- The server calculates the movement of each snake, what snakes if any (die), what squares need color changes, 15 times per second.\n- The server sends the list of squares that changed to each client.\n- The server assigns a color to each client that joins the game and draws the corresponding snake.\n- The server updates the state of the game based on the change events to the state of the arrow keys received from each client.\n- The server announces to the client if it has died.\n- The server determines the winner of the game and sends a \"Winner\" message stating the color of the last surviving snake to each client.\n- The server initiates a 30-second countdown to the start of the game when the first client joins after the end of a game.",
+        "Client.lst": "- The client sees a \"Join the game\" pop-up with a countdown to game start upon connection.\n- The client is given Yes/No buttons to join or decline to join the game.\n- The client sees the entire game board and a countdown to game start once it joins the game.\n- The client updates the server of any change event to the state of the arrow keys.\n- The client updates its view of the 100 x 100 square board with the update commands received from the server.\n- The client continues to update the screen until the end of the game, even if it has died.\n- The client displays the winner until \"ok\" is clicked.\n- The client sees the \"Join the Game\" pop-up after the end of the game, but no countdown is initiated until the first client joins.",
+        "Protocol.lst": "- The protocol must support the transmission of the list of squares that changed from the server to each client.\n- The protocol must support the transmission of the state of the arrow keys from each client to the server.\n- The protocol must support the transmission of the \"Winner\" message from the server to each client.\n- The protocol must support the transmission of the countdown to game start from the server to each client.\n- The protocol must support the transmission of the \"Join the Game\" pop-up from the server to each client."
+      },
+      "e_stats": {
+        "prompt_tokens": 567,
+        "completion_tokens": 449,
+        "total_tokens": 1016,
+        "sp_cost": 0.017009999999999997,
+        "sc_cost": 0.02694,
+        "s_total": 0.043949999999999996,
+        "elapsed_time": 33.83424091339111
+      }
+    },
+    {
+      "py/object": "KbServerApp.step.Step",
+      "name": "2. Network Protocol",
+      "prompt_name": "Snake/Prompts/Design Network Protocol.pe",
+      "ai": {
+        "py/object": "KbServerApp.ai.AI",
+        "temperature": 0.0,
+        "max_tokens": 3000,
+        "model": "gpt-4",
+        "mode": "chat"
+      },
+      "storage_path": "Snake/Requirements/Protocol",
+      "text_file": "Protocol Description.txt",
+      "messages": [
+        {
+          "role": "system",
+          "content": "\nYou are an IT developer.\nDo not explain yourself.\nDo not apologize.\nComplete the tasks given in a way that allows for easy comprehension while not leaving anything out.\nFor comprehension use indented lists with minus signs.\n"
+        },
+        {
+          "role": "system",
+          "content": "\nText blocks will be delineated as follows:\n\n{text block name}.{ext}\n```{filetype}\n{text block contents}\n```"
+        },
+        {
+          "role": "user",
+          "content": "\nServer.lst\n```txt\n- The server calculates the movement of each snake, what snakes if any (die), and what squares need color changes at a rate of 15 steps per second.\n- The server sends the list of squares that changed to each client.\n- The server assigns a color to each client that joins the game and draws their snake.\n- The server updates the state of the game based on the change events to the arrow keys received from each client.\n- The server announces to the client if it has died.\n- The server determines the winner of the game and sends a \"Winner\" message to each client stating the color of the last surviving snake.\n- The server initiates a 30-second countdown to the start of the game when the first client joins after the end of a game.\n```\n\nClient.lst\n```txt\n- The client sees a \"Join the game\" pop-up with a countdown to game start upon connection.\n- The client is given Yes/No buttons to join or decline to join the game.\n- The client sees the entire game board and a countdown to game start once they join the game.\n- The client updates the server of any change event to the state of the arrow keys.\n- The client updates its view of the 100 x 100 square board with the update commands received from the server.\n- The client continues to update the screen until the end of the game, even if it has died.\n- The client displays the winner until \"ok\" is clicked.\n- The client sees the \"Join the Game\" pop-up after the end of the game, but no countdown is initiated until the first client joins.\n```\n\nProtocol.lst\n```txt\n- The protocol must support the transmission of the list of squares that changed from the server to each client.\n- The protocol must support the transmission of the state of the arrow keys from each client to the server.\n- The protocol must support the transmission of the \"Winner\" message from the server to each client.\n- The protocol must support the transmission of the countdown to game start from the server to each client.\n- The protocol must support the transmission of the \"Join the Game\" pop-up from the server to each client.\n```"
+        },
+        {
+          "role": "user",
+          "content": "\nAnalyze the system described.\nDesign a network protocol based on json messages for the application.\nplace each message in a separte text block with name: msg_type.json\n"
+        }
+      ],
+      "answer": "joinGame.json\n```json\n{\n  \"type\": \"joinGame\",\n  \"data\": {\n    \"clientId\": \"unique_client_id\"\n  }\n}\n```\n\nstartCountdown.json\n```json\n{\n  \"type\": \"startCountdown\",\n  \"data\": {\n    \"countdownSeconds\": 30\n  }\n}\n```\n\ngameState.json\n```json\n{\n  \"type\": \"gameState\",\n  \"data\": {\n    \"squaresChanged\": [\n      {\n        \"x\": 10,\n        \"y\": 20,\n        \"color\": \"#FF0000\"\n      }\n    ],\n    \"snakes\": [\n      {\n        \"clientId\": \"unique_client_id\",\n        \"color\": \"#FF0000\",\n        \"segments\": [\n          {\n            \"x\": 10,\n            \"y\": 20\n          }\n        ]\n      }\n    ],\n    \"deadSnakes\": [\n      \"unique_client_id\"\n    ]\n  }\n}\n```\n\nkeyEvent.json\n```json\n{\n  \"type\": \"keyEvent\",\n  \"data\": {\n    \"clientId\": \"unique_client_id\",\n    \"key\": \"up\"\n  }\n}\n```\n\nwinner.json\n```json\n{\n  \"type\": \"winner\",\n  \"data\": {\n    \"winnerColor\": \"#FF0000\"\n  }\n}\n```",
+      "files": {
+        "joinGame.json": "{\n  \"type\": \"joinGame\",\n  \"data\": {\n    \"clientId\": \"unique_client_id\"\n  }\n}",
+        "startCountdown.json": "{\n  \"type\": \"startCountdown\",\n  \"data\": {\n    \"countdownSeconds\": 30\n  }\n}",
+        "gameState.json": "{\n  \"type\": \"gameState\",\n  \"data\": {\n    \"squaresChanged\": [\n      {\n        \"x\": 10,\n        \"y\": 20,\n        \"color\": \"#FF0000\"\n      }\n    ],\n    \"snakes\": [\n      {\n        \"clientId\": \"unique_client_id\",\n        \"color\": \"#FF0000\",\n        \"segments\": [\n          {\n            \"x\": 10,\n            \"y\": 20\n          }\n        ]\n      }\n    ],\n    \"deadSnakes\": [\n      \"unique_client_id\"\n    ]\n  }\n}",
+        "keyEvent.json": "{\n  \"type\": \"keyEvent\",\n  \"data\": {\n    \"clientId\": \"unique_client_id\",\n    \"key\": \"up\"\n  }\n}",
+        "winner.json": "{\n  \"type\": \"winner\",\n  \"data\": {\n    \"winnerColor\": \"#FF0000\"\n  }\n}"
+      },
+      "e_stats": {
+        "prompt_tokens": 575,
+        "completion_tokens": 279,
+        "total_tokens": 854,
+        "sp_cost": 0.017249999999999998,
+        "sc_cost": 0.01674,
+        "s_total": 0.03399,
+        "elapsed_time": 31.672863960266113
+      }
+    },
+    {
+      "py/object": "KbServerApp.step.Step",
+      "name": "3. Start on Server",
+      "prompt_name": "Snake/Prompts/Start On Server.pe",
+      "ai": {
+        "py/object": "KbServerApp.ai.AI",
+        "temperature": 0.0,
+        "max_tokens": 3000,
+        "model": "gpt-4",
+        "mode": "chat"
+      },
+      "storage_path": "Snake/Server",
+      "text_file": "modules.txt",
       "messages": [],
       "answer": "",
       "files": {},

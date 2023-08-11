@@ -1,10 +1,13 @@
 import asyncio
+import os
 import sys
 
 # This needs to be done ASAP... or one of the twisted libs will define reactor for us
 from twisted.internet import asyncioreactor
 
 asyncioreactor.install(asyncio.get_event_loop())
+
+from KbServerApp.kbserver import KbServerProtocol
 
 from autobahn.twisted import WebSocketServerFactory
 from autobahn.twisted.resource import WebSocketResource
@@ -15,9 +18,9 @@ from twisted.logger import Logger, LogLevel, LogLevelFilterPredicate, FilteringL
     ILogObserver
 from twisted.web.server import Site
 from twisted.web.static import File
-from kbserver import KbServerProtocol
 
-
+print(f"dir {os.getcwd()}")
+print(f"{os.environ.get('PYTHONPATH')}")
 
 # skip database for now...
 # from KbServerApp.sql_datastore import DatabaseStore, PostgresListenService

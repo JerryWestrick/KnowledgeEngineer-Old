@@ -63,7 +63,7 @@ class AI:
             prompt: str = ''
             for message in messages:
                 prompt += f"{message['role']}:\n{message['content']} \n"
-            GptLogger.log("PROMPT", prompt)
+            # GptLogger.log("PROMPT", prompt)
 
         response = yield as_deferred(openai.ChatCompletion.acreate(
             messages=messages,
@@ -71,21 +71,23 @@ class AI:
             temperature=self.temperature,
         ))
 
-        GptLogger.log("RESPONSE", f"{self.model} chat Response: \n{response.choices[0].message.content}")
+        # GptLogger.log("RESPONSE", f"{self.model} chat Response: \n{response.choices[0].message.content}")
+        GptLogger.log("RESPONSE", f"{self.model} chat Response")
         return response
 
     @inlineCallbacks
     def complete(self, prompt: str) -> dict:
 
         GptLogger.log("LLM", f"Calling {self.model} complete with prompt: ")
-        GptLogger.log("PROMPT", f"{prompt}")
+        # GptLogger.log("PROMPT", f"{prompt}")
         completion = yield as_deferred(openai.Completion.acreate(
             model=self.model,
             prompt=prompt,
             max_tokens=self.max_tokens,
             temperature=self.temperature,
         ))
-        GptLogger.log("RESPONSE", f"{self.model} Response: \n{completion.choices[0].text}")
+        # GptLogger.log("RESPONSE", f"{self.model} Response: \n{completion.choices[0].text}")
+        GptLogger.log("RESPONSE", f"{self.model} Response")
         return completion
 
     def to_json(self) -> dict:

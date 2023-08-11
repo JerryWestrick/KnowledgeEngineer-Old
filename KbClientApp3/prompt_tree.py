@@ -1,6 +1,6 @@
 import json
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QIcon, QAction
+from PySide6.QtCore import Qt, QMimeData
+from PySide6.QtGui import QIcon, QAction, QDrag, QDropEvent, QDragEnterEvent
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QSpacerItem, QSizePolicy, \
     QTreeWidget, QTreeWidgetItem, QAbstractItemView, QMenu, QInputDialog
 
@@ -14,16 +14,44 @@ class DragDropTreeWidget(QTreeWidget):
         self.setDragEnabled(True)
         self.setAcceptDrops(True)
         self.viewport().setAcceptDrops(True)
-        self.setDragDropMode(QAbstractItemView.InternalMove)
+        self.setDragDropMode(QAbstractItemView.DragDrop)
+
+    def log(self, action, message):
+        LOG({'system': 'DragDropTreeWidget', 'action': action, 'message': message})
+
+    def startDrag(self, supportedActions):
+        # self.log("startDrag", 'enter')
+        item = self.currentItem()
+        if item:
+            path = self.parent().get_index(item)
+            # from_path = self.parent().get_data(path)
+            from_text = '/'.join(path)
+            drag = QDrag(self)
+            mimeData = QMimeData()
+            mimeData.setText(from_text)
+            drag.setMimeData(mimeData)
+            # self.log("startDrag", f"text:{from_text}")
+            drag.exec_(supportedActions)
+
+    def dragEnterEvent(self, event: QDragEnterEvent):
+        # self.log('dragEnterEvent', f"CustomTextEdit:dragEnterEvent({event})")
+        # if event.mimeData().hasText():
+        event.accept()
+
+    def dragMoveEvent(self, event: QDropEvent):
+        # self.log('dragMoveEvent', f"...")
+        event.accept()
 
     def dropEvent(self, event):
+        # self.log("dropEvent", "...")
         # Item that started the drag.
         source_item = self.currentItem()
         # Use drop position to find target item.
         target_item = self.itemAt(event.pos())
         if source_item is not None and target_item is not None:
             self.parent().drag_n_drop(source_item, target_item)
-        return
+            event.accept()
+
 
 class PromptTree(QWidget):
     def __init__(self, workbench):
@@ -55,7 +83,7 @@ class PromptTree(QWidget):
         hbox.addWidget(self.button)
 
         # Create a tree widget
-        self.tree_widget = DragDropTreeWidget()
+        self.tree_widget = DragDropTreeWidget(self)
         self.tree_widget.setColumnCount(1)
         self.tree_widget.setHeaderLabels(["Prompts and Memory"])
         self.tree_widget.itemClicked.connect(self.handle_click)
@@ -281,7 +309,8 @@ class PromptTree(QWidget):
 
     def cb_delete_memory(self, msg):
         if msg['rc'] != 'Okay':
-            self.log('cb_delete_memory', f"Error: delete_memory({msg['record']['full_path_name']}) reason {msg['reason']}")
+            self.log('cb_delete_memory',
+                     f"Error: delete_memory({msg['record']['full_path_name']}) reason {msg['reason']}")
             return
         self.log('cb_delete_memory', f"delete_memory({msg['record']['full_path_name']}) complete")
 
@@ -290,7 +319,7 @@ class PromptTree(QWidget):
         path = self.get_index(current_item)
         ele = self.get_data(path)
         if type(ele) is not dict:
-            path.pop()      # Dump file name
+            path.pop()  # Dump file name
         full_path = '/'.join(path)
         name, ok = QInputDialog.getText(self, "Directory Name", "Enter Name of new folder:")
         if ok:
@@ -304,14 +333,15 @@ class PromptTree(QWidget):
         if msg['rc'] == 'Okay':
             self.log('cb_create_directory', f"cb_create_directory({msg['record']['prompt_name']}) successful")
         else:
-            self.log('cb_create_directory', f"cb_create_directory({msg['record']['prompt_name']}) failed reason: {msg['reason']}")
+            self.log('cb_create_directory',
+                     f"cb_create_directory({msg['record']['prompt_name']}) failed reason: {msg['reason']}")
 
     def create_new_prompt(self):
         current_item = self.tree_widget.currentItem()
         path = self.get_index(current_item)
         ele = self.get_data(path)
         if type(ele) is not dict:
-            path.pop()      # Dump file name
+            path.pop()  # Dump file name
         full_path = '/'.join(path)
         name, ok = QInputDialog.getText(self, "File Name", "Enter Name of new file:")
         if ok:
@@ -325,8 +355,8 @@ class PromptTree(QWidget):
         if msg['rc'] == 'Okay':
             self.log('cb_write_memory', f"cb_write_memory({msg['record']['prompt_name']}) successful")
         else:
-            self.log('cb_write_memory', f"cb_write_memory({msg['record']['prompt_name']}) failed reason: {msg['reason']}")
-
+            self.log('cb_write_memory',
+                     f"cb_write_memory({msg['record']['prompt_name']}) failed reason: {msg['reason']}")
 
     def memory_update(self, msg):
         self.log('memory_update', f'memory_update({msg})')
@@ -352,7 +382,6 @@ class PromptTree(QWidget):
             self.log('memory_update', f"memory_update({mask}, {path}/{name}) modified")
         # Update GUI
         self.reload_data(self.data)
-
 
 
 if __name__ == "__main__":
