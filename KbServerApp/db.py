@@ -84,11 +84,23 @@ class DB:
         except KeyError:
             return default
 
+    def backup_file(self, full_path):
+        if os.path.exists(full_path):
+            counter = 1
+            new_file_name = f"{full_path}.~{counter:02}"
+
+            while os.path.exists(new_file_name):
+                counter += 1
+                new_file_name = f"{full_path}.~{counter:02}"
+
+            os.rename(full_path, new_file_name)
+
     def __setitem__(self, key, val):
         full_path = self.path / key
         full_path.parent.mkdir(parents=True, exist_ok=True)
 
         if isinstance(val, str):
+            self.backup_file(full_path)  # make backup
             full_path.write_text(val, encoding="utf-8")
         # If val is not str assume it was a directory...
 
