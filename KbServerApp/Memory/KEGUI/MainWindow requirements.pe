@@ -1,8 +1,0 @@
-.include KEGUI/persona.pe
-.user
-Generate main_window.py which will consist of 3 tabs.
-  "WorkBench" (loaded from workbench_tab.py)
-  "Log" (Loaded from log_tab.py)
-  "Coms" (loaded from coms_tab.py)
-
- Generate all 4 files.

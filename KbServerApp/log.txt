@@ -1,0 +1,121 @@
+[2023-08-11 09:44:36] Create: Creation of Log File log.txt
+[2023-08-11 09:44:36] STEP: Reading>>Snake/Prompts/Make Requirements.pe
+[2023-08-11 09:44:36] STEP: Reading>>Snake/Prompts/Actor.pe
+[2023-08-11 09:44:36] STEP: Reading>>Snake/Prompts/Text Block.pe
+[2023-08-11 09:44:36] STEP: Reading>>Snake/Requirements/Game Description.pe
+[2023-08-11 09:47:45] STEP: ==================================================
+                            Begin Step: 1. Organize  Requirements
+                            Snake/Prompts/Make Requirements.pe
+[2023-08-11 09:47:45] STEP: Reading>>Snake/Prompts/Make Requirements.pe
+[2023-08-11 09:47:45] STEP: Reading>>Snake/Prompts/Actor.pe
+[2023-08-11 09:47:45] STEP: Reading>>Snake/Prompts/Text Block.pe
+[2023-08-11 09:47:45] STEP: Reading>>Snake/Requirements/Game Description.pe
+[2023-08-11 09:47:45] LLM: Calling gpt-4 chat with messages: 
+[2023-08-11 09:48:47] RESPONSE: gpt-4 chat Response
+[2023-08-11 09:48:47] STEP: Call gpt-4 Elapsed: 61.21s Token Usage: Total:1131 (Prompt:588, Completion:543)
+[2023-08-11 09:48:47] STEP: Writing Snake/Requirements/Components/Server.md
+[2023-08-11 09:48:47] STEP: Writing Snake/Requirements/Components/Client.md
+[2023-08-11 09:48:47] STEP: Writing Snake/Requirements/Components/Protocol.md
+[2023-08-11 09:48:47] STEP: Writing Snake/Requirements/Components/Components_List.md
+[2023-08-11 09:48:47] STEP: Cost Estimate: Total: 0.0502 ( Prompt: 0.0176 Completion: 0.0326)
+[2023-08-11 09:48:47] RUN: Elapsed: 61.22s Cost Estimate: Total: 0.0502 ( Prompt: 0.0176 Completion: 0.0326)
+[2023-08-11 09:56:41] STEP: ==================================================
+                            Begin Step: 2. Network Protocol
+                            Snake/Prompts/Design Network Protocol.pe
+[2023-08-11 09:56:41] STEP: Reading>>Snake/Prompts/Design Network Protocol.pe
+[2023-08-11 09:56:41] STEP: Reading>>Snake/Prompts/Actor.pe
+[2023-08-11 09:56:41] STEP: Reading>>Snake/Prompts/Text Block.pe
+[2023-08-11 09:56:41] STEP: Reading>>Snake/Requirements/Components/Components_List.md
+[2023-08-11 09:56:41] LLM: Calling gpt-4 chat with messages: 
+[2023-08-11 09:57:38] RESPONSE: gpt-4 chat Response
+[2023-08-11 09:57:38] STEP: Call gpt-4 Elapsed: 57.65s Token Usage: Total:1298 (Prompt:694, Completion:604)
+[2023-08-11 09:57:38] STEP: Writing Snake/Requirements/Protocol/GameState.json
+[2023-08-11 09:57:38] STEP: Writing Snake/Requirements/Protocol/PlayerInput.json
+[2023-08-11 09:57:38] STEP: Writing Snake/Requirements/Protocol/GameStart.json
+[2023-08-11 09:57:38] STEP: Writing Snake/Requirements/Protocol/GameOver.json
+[2023-08-11 09:57:38] STEP: Writing Snake/Requirements/Protocol/Protocol Description.md
+[2023-08-11 09:57:38] STEP: Cost Estimate: Total: 0.0571 ( Prompt: 0.0208 Completion: 0.0362)
+[2023-08-11 09:57:38] RUN: Elapsed: 57.66s Cost Estimate: Total: 0.0571 ( Prompt: 0.0208 Completion: 0.0362)
+[2023-08-11 10:04:12] STEP: ==================================================
+                            Begin Step: 1. Organize  Requirements
+                            Snake/Prompts/Make Requirements.pe
+[2023-08-11 10:04:12] STEP: Reading>>Snake/Prompts/Make Requirements.pe
+[2023-08-11 10:04:12] STEP: Reading>>Snake/Prompts/Actor.pe
+[2023-08-11 10:04:12] STEP: Reading>>Snake/Prompts/Text Block.pe
+[2023-08-11 10:04:12] STEP: Reading>>Snake/Requirements/Game Description.pe
+[2023-08-11 10:04:12] LLM: Calling gpt-4 chat with messages: 
+[2023-08-11 10:05:16] RESPONSE: gpt-4 chat Response
+[2023-08-11 10:05:16] STEP: Call gpt-4 Elapsed: 63.89s Token Usage: Total:1179 (Prompt:593, Completion:586)
+[2023-08-11 10:05:16] STEP: Writing Snake/Requirements/Components/Server.md
+[2023-08-11 10:05:16] STEP: Writing Snake/Requirements/Components/Client.md
+[2023-08-11 10:05:16] STEP: Writing Snake/Requirements/Components/Protocol.md
+[2023-08-11 10:05:16] STEP: Writing Snake/Requirements/Components/Components_List.md
+[2023-08-11 10:05:16] STEP: Cost Estimate: Total: 0.0529 ( Prompt: 0.0178 Completion: 0.0352)
+[2023-08-11 10:05:16] RUN: Elapsed: 63.90s Cost Estimate: Total: 0.0529 ( Prompt: 0.0178 Completion: 0.0352)
+[2023-08-11 10:07:43] STEP: Reading>>Snake/Prompts/Design Network Protocol.pe
+[2023-08-11 10:07:43] STEP: Reading>>Snake/Prompts/Actor.pe
+[2023-08-11 10:07:43] STEP: Reading>>Snake/Prompts/Text Block.pe
+[2023-08-11 10:07:43] STEP: Reading>>Snake/Requirements/Components/Components_List.md
+[2023-08-11 10:08:13] STEP: ==================================================
+                            Begin Step: 2. Network Protocol
+                            Snake/Prompts/Design Network Protocol.pe
+[2023-08-11 10:08:13] STEP: Reading>>Snake/Prompts/Design Network Protocol.pe
+[2023-08-11 10:08:13] STEP: Reading>>Snake/Prompts/Actor.pe
+[2023-08-11 10:08:13] STEP: Reading>>Snake/Prompts/Text Block.pe
+[2023-08-11 10:08:13] STEP: Reading>>Snake/Requirements/Components/Components_List.md
+[2023-08-11 10:08:13] LLM: Calling gpt-4 chat with messages: 
+[2023-08-11 10:09:13] RESPONSE: gpt-4 chat Response
+[2023-08-11 10:09:13] STEP: Call gpt-4 Elapsed: 59.78s Token Usage: Total:1328 (Prompt:737, Completion:591)
+[2023-08-11 10:09:13] STEP: Writing Snake/Requirements/Protocol/AssignColor.json
+[2023-08-11 10:09:13] STEP: Writing Snake/Requirements/Protocol/UpdateBoard.json
+[2023-08-11 10:09:13] STEP: Writing Snake/Requirements/Protocol/DeathNotification.json
+[2023-08-11 10:09:13] STEP: Writing Snake/Requirements/Protocol/WinnerAnnouncement.json
+[2023-08-11 10:09:13] STEP: Writing Snake/Requirements/Protocol/GameStartCountdown.json
+[2023-08-11 10:09:13] STEP: Writing Snake/Requirements/Protocol/JoinGame.json
+[2023-08-11 10:09:13] STEP: Writing Snake/Requirements/Protocol/ArrowKeyEvent.json
+[2023-08-11 10:09:13] STEP: Writing Snake/Requirements/Protocol/Protocol Description.md
+[2023-08-11 10:09:13] STEP: Cost Estimate: Total: 0.0576 ( Prompt: 0.0221 Completion: 0.0355)
+[2023-08-11 10:09:13] RUN: Elapsed: 59.79s Cost Estimate: Total: 0.0576 ( Prompt: 0.0221 Completion: 0.0355)
+[2023-08-11 10:22:59] STEP: Reading>>Snake/Prompts/Start On Server.pe
+[2023-08-11 10:22:59] STEP: Reading>>Snake/Prompts/Actor.pe
+[2023-08-11 10:22:59] STEP: Reading>>Snake/Prompts/Text Block.pe
+[2023-08-11 10:22:59] ERROR: Invalid Memory Item.  
+Path not found: /home/jerry/PycharmProjects/KnowledgeEngineer/KbServerApp/Memory/Snake/Requirements/Components/Server.lst
+[2023-08-11 10:23:43] STEP: Reading>>Snake/Prompts/Start On Server.pe
+[2023-08-11 10:23:43] STEP: Reading>>Snake/Prompts/Actor.pe
+[2023-08-11 10:23:43] STEP: Reading>>Snake/Prompts/Text Block.pe
+[2023-08-11 10:23:43] STEP: Reading>>Snake/Requirements/Components/Server.md
+[2023-08-11 10:23:43] STEP: Reading>>Snake/Requirements/Protocol/Protocol Description.md
+[2023-08-11 10:33:08] STEP: Reading>>Snake/Prompts/Start On Server.pe
+[2023-08-11 10:33:08] STEP: Reading>>Snake/Prompts/Actor.pe
+[2023-08-11 10:33:08] STEP: Reading>>Snake/Prompts/Text Block.pe
+[2023-08-11 10:33:08] STEP: Reading>>Snake/Requirements/Components/Server.md
+[2023-08-11 10:33:08] STEP: Reading>>Snake/Requirements/Protocol/Protocol Description.md
+[2023-08-11 10:33:08] STEP: Reading>>Snake/Requirements/Architecture.pe
+[2023-08-11 10:33:57] STEP: ==================================================
+                            Begin Step: 3. Start on Server
+                            Snake/Prompts/Start On Server.pe
+[2023-08-11 10:33:57] STEP: Reading>>Snake/Prompts/Start On Server.pe
+[2023-08-11 10:33:57] STEP: Reading>>Snake/Prompts/Actor.pe
+[2023-08-11 10:33:57] STEP: Reading>>Snake/Prompts/Text Block.pe
+[2023-08-11 10:33:57] STEP: Reading>>Snake/Requirements/Components/Server.md
+[2023-08-11 10:33:57] STEP: Reading>>Snake/Requirements/Protocol/Protocol Description.md
+[2023-08-11 10:33:57] STEP: Reading>>Snake/Requirements/Architecture.pe
+[2023-08-11 10:33:57] LLM: Calling gpt-4 chat with messages: 
+[2023-08-11 10:34:29] RESPONSE: gpt-4 chat Response
+[2023-08-11 10:34:29] STEP: Call gpt-4 Elapsed: 31.30s Token Usage: Total:1385 (Prompt:960, Completion:425)
+[2023-08-11 10:34:29] STEP: Writing Snake/Server/Server_Plan.md
+[2023-08-11 10:34:29] STEP: Cost Estimate: Total: 0.0543 ( Prompt: 0.0288 Completion: 0.0255)
+[2023-08-11 10:34:29] RUN: Elapsed: 31.33s Cost Estimate: Total: 0.0543 ( Prompt: 0.0288 Completion: 0.0255)
+[2023-08-11 12:23:09] STEP: Reading>>Snake/Prompts/Build Server Modules.pe
+[2023-08-11 12:23:09] STEP: Reading>>Snake/Prompts/Actor.pe
+[2023-08-11 12:23:09] STEP: Reading>>Snake/Prompts/Text Block.pe
+[2023-08-11 12:23:09] STEP: Reading>>Snake/Requirements/Components/Server.md
+[2023-08-11 12:23:09] ERROR: Invalid Memory Item.  
+Path not found: /home/jerry/PycharmProjects/KnowledgeEngineer/KbServerApp/Memory/Snake/Server/server_overview.txt
+[2023-08-11 12:24:07] STEP: Reading>>Snake/Prompts/Start On Server.pe
+[2023-08-11 12:24:07] STEP: Reading>>Snake/Prompts/Actor.pe
+[2023-08-11 12:24:07] STEP: Reading>>Snake/Prompts/Text Block.pe
+[2023-08-11 12:24:07] STEP: Reading>>Snake/Requirements/Components/Server.md
+[2023-08-11 12:24:07] STEP: Reading>>Snake/Requirements/Protocol/Protocol Description.md
+[2023-08-11 12:24:07] STEP: Reading>>Snake/Requirements/Architecture.pe

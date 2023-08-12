@@ -1,0 +1,9 @@
+.include Snake/Prompts/Actor.pe
+.include Snake/Prompts/Text Block.pe
+.include Snake/Requirements/Components/Server.md
+.include Snake/Requirements/Protocol/Protocol Description.md
+.user Use the Archetecture:
+.include Snake/Requirements/Architecture.pe
+.user 
+Analyze the included information.
+Write a plan to implement the SnakeServer.py

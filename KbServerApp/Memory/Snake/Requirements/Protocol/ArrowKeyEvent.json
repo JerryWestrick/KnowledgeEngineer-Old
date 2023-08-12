@@ -1,0 +1,6 @@
+{
+  "type": "ArrowKeyEvent",
+  "payload": {
+    "key": "up"
+  }
+}

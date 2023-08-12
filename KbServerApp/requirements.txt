@@ -1,0 +1,13 @@
+autobahn_rce==0.6.0.5
+colorama==0.4.6
+Flask==2.3.2
+jsonpickle==3.0.1
+lark==1.1.5
+openai==0.27.8
+psycopg==3.1.9
+PySide6==6.5.1.1
+PySide6==6.5.2
+PySide6_Addons==6.5.1.1
+PySide6_Essentials==6.5.1.1
+python-dotenv==1.0.0
+Twisted==22.10.0

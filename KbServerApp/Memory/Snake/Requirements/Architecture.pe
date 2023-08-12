@@ -1,0 +1,5 @@
+- Python 3.
+- http server with websockets
+- client/server architecture.
+- allows multiple clients to join/play
+- WebBrowser to localhost:8090.

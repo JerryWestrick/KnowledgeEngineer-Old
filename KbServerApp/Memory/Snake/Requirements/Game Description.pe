@@ -1,0 +1,41 @@
+.user
+implement a multi user "Snake" online game.
+-The rules to the game are the standard "Snake" game rules.
+-The Board will be 100 x 100 squares.
+- The game consists of 15 steps per second.
+- each step the server calculates:
+    - the movement of each snake,
+    - what snakes if any (die),
+    - what squares need color changes,
+    - the list of squares that changed, and the new color is sent to each client.
+
+Description of Game:
+
+    Before The Game Starts:
+    - clients that connect see a "Join the game" pop-up with a countdown to game start.
+    - player is given Yes/No buttons.
+    - The popup is closed when:
+        - a player joins the game,
+        - declines to join the game,
+        - or the game starts (which is an implicit decline).
+
+    Once a player "joins":
+    - the Client is assigned a Color and the "his" snake is drawn
+    - the player sees the entire game board.
+    - the player sees a count-down to game start.
+    - each client that joined updates the server of any change event to the state of the arrow keys.
+
+    From Game Start to Client Death:
+    - each client updates the server of any change event to the state of the arrow keys.
+    - Each client updates its view of the 100 x 100 square board with the update commands received from the server
+    - the server will also announce to the client if it has died.
+
+    From Client Death to End of Game
+    - Once dead, the client continues to update the screen until end of game
+    - The Game ends with a "Winner" message stating the Color of the last surviving snake.
+    - Each client will display the winner until "ok" is clicked.
+
+    After End of Game:
+    - each client see the "Join the Game" pop-up, but no count dow is initiated until the first client joins.
+    - First client joins starts a 30-second count-down to start of game; and the game goes to "Before The Game Starts" mode
+

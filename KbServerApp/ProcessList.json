@@ -1,375 +1,4 @@
 {
-  "test": [
-    {
-      "py/object": "KbServerApp.step.Step",
-      "name": "Step 1",
-      "prompt_name": "Prompts/Test Prompt.pe",
-      "ai": {
-        "py/object": "KbServerApp.ai.AI",
-        "temperature": 0,
-        "max_tokens": 3000,
-        "model": "gpt-3.5-turbo-16k",
-        "mode": "chat"
-      },
-      "storage_path": "Dynamic/Requirements",
-      "text_file": "",
-      "messages": [
-        {
-          "role": "system",
-          "content": "\nThis is version 1.0\nYour answers will be concise and short.\nText blocks will be delineated as follows:\nTEXT_BLOCK_NAME.EXT\n```\ntext block contents\n```"
-        },
-        {
-          "role": "user",
-          "content": "\nYou will receive a Product Description as a text block.\nYou will analyze it.\nYou will identify each Actor described and what his requirements are."
-        },
-        {
-          "role": "user",
-          "content": "### DATA ###"
-        },
-        {
-          "role": "user",
-          "content": "Product Description.pe\n```\n\nThe System will provide an intuitive and easy-to-use interface for users to browse, purchase, and read books.\nIt will allow users to create personal accounts, maintain a private library, and share reviews on books.\n\nAdmins and Operators can view transactions, and access logs to see failures.\nAdmins can give users access to books. Admins can refund Users. Admin can open, close, and block user accounts.\n\nOperators can schedule backups of entire data.\nOperators can restore entire data or a specific user's account.\nOperators can replay transactions of the entire site or of a single user after a restore.\n\n```"
-        },
-        {
-          "role": "system",
-          "content": "\n### Complete the following json list:\nvariables\n```\n{ 'actors': [ 'actor', ... ] }\n```\n### Complete the following for each actor identified\nActor\n```\nActor must be able to:\n    [list of requirements]\n```"
-        },
-        {
-          "role": "system",
-          "content": "### RESPONSE ###"
-        }
-      ],
-      "answer": "variables\n```\n{ 'actors': [ 'User', 'Admin', 'Operator' ] }\n```\n\nUser\n```\nUser must be able to:\n    - Browse, purchase, and read books\n    - Create a personal account\n    - Maintain a private library\n    - Share reviews on books\n```\n\nAdmin\n```\nAdmin must be able to:\n    - View transactions\n    - Access logs to see failures\n    - Give users access to books\n    - Refund users\n    - Open, close, and block user accounts\n```\n\nOperator\n```\nOperator must be able to:\n    - Schedule backups of entire data\n    - Restore entire data or a specific user's account\n    - Replay transactions of the entire site or of a single user after a restore\n```",
-      "files": {
-        "variables": "{ 'actors': [ 'User', 'Admin', 'Operator' ] }",
-        "User": "User must be able to:\n    - Browse, purchase, and read books\n    - Create a personal account\n    - Maintain a private library\n    - Share reviews on books",
-        "Admin": "Admin must be able to:\n    - View transactions\n    - Access logs to see failures\n    - Give users access to books\n    - Refund users\n    - Open, close, and block user accounts",
-        "Operator": "Operator must be able to:\n    - Schedule backups of entire data\n    - Restore entire data or a specific user's account\n    - Replay transactions of the entire site or of a single user after a restore"
-      },
-      "e_stats": {
-        "prompt_tokens": 279,
-        "completion_tokens": 163,
-        "total_tokens": 442,
-        "sp_cost": 0.0008370000000000001,
-        "sc_cost": 0.000652,
-        "s_total": 0.001489,
-        "elapsed_time": 3.5557117462158203
-      }
-    },
-    {
-      "py/object": "KbServerApp.step.Step",
-      "name": "Step 2",
-      "prompt_name": "Prompts/Test Prompt 2.pe",
-      "ai": {
-        "py/object": "KbServerApp.ai.AI",
-        "temperature": 0.0,
-        "max_tokens": 3000,
-        "model": "gpt-3.5-turbo",
-        "mode": "chat"
-      },
-      "storage_path": "Dynamic/Components",
-      "messages": [
-        {
-          "role": "system",
-          "content": "--- INSTRUCTIONS ---"
-        },
-        {
-          "role": "system",
-          "content": "\nYour answers will be concise and short.\nText blocks will be delineated as follows:\nTEXT_BLOCK_NAME.EXT\n```FILETYPE\ntext block contents\n```"
-        },
-        {
-          "role": "system",
-          "content": "You are a systems engineer.  You will define major components of a system to be built."
-        },
-        {
-          "role": "user",
-          "content": "\nHere are the actors of the system:"
-        },
-        {
-          "role": "user",
-          "content": "variables\n```\n\n{ 'actors': [ 'User', 'Admin', 'Operator' ] }\n```"
-        },
-        {
-          "role": "user",
-          "content": "Admin\n```\n\nAdmin must be able to:\n    - View transactions\n    - Access logs to see failures\n    - Give users access to books\n    - Refund users\n    - Open, close, and block user accounts\n```"
-        },
-        {
-          "role": "user",
-          "content": "Admin Requirements.pe\n```\n\n- View transactions\n- Access logs\n- Give users access to books\n- Refund users\n- Open, close, and block user accounts\n```"
-        },
-        {
-          "role": "user",
-          "content": "User\n```\n\nUser must be able to:\n    - Browse, purchase, and read books\n    - Create a personal account\n    - Maintain a private library\n    - Share reviews on books\n```"
-        },
-        {
-          "role": "user",
-          "content": "Operator Requirements.pe\n```\n\n- Schedule backups of entire data\n- Restore entire data or a specific user's account\n- Replay transactions of the entire site or of a single user after a restore\n```"
-        },
-        {
-          "role": "user",
-          "content": "Operator\n```\n\nOperator must be able to:\n    - Schedule backups of entire data\n    - Restore entire data or a specific user's account\n    - Replay transactions of the entire site or of a single user after a restore\n```"
-        },
-        {
-          "role": "user",
-          "content": "Actors.json\n```\n\n{\n  \"Actors\": {\n    \"User\": {\n      \"name\": \"User\",\n      \"requirements\": [\n        \"Browse books\",\n        \"Purchase books\",\n        \"Read books\",\n        \"Create personal account\",\n        \"Maintain private library\",\n        \"Share book reviews\"\n      ]\n    },\n    \"Admin\": {\n      \"name\": \"Admin\",\n      \"requirements\": [\n        \"View transactions\",\n        \"Access logs\",\n        \"Give users access to books\",\n        \"Refund users\",\n        \"Open user accounts\",\n        \"Close user accounts\",\n        \"Block user accounts\"\n      ]\n    },\n    \"Operator\": {\n      \"name\": \"Operator\",\n      \"requirements\": [\n        \"Schedule backups of entire data\",\n        \"Restore entire data or specific user's account\",\n        \"Replay transactions of entire site or single user after a restore\"\n      ]\n    }\n  }\n}\n```"
-        },
-        {
-          "role": "system",
-          "content": "--- DATA ---"
-        },
-        {
-          "role": "user",
-          "content": "\n--- Please complete the following sections:\nvariables\n```\n{   'components': list of components\n}\n```\n"
-        }
-      ],
-      "text_file": "",
-      "answer": "variables\n```\n{\n  'components': []\n}\n```",
-      "files": {
-        "variables": "{\n  'components': []\n}"
-      },
-      "e_stats": {
-        "prompt_tokens": 575,
-        "completion_tokens": 12,
-        "total_tokens": 587,
-        "sp_cost": 0.0008625,
-        "sc_cost": 2.4e-05,
-        "s_total": 0.0008865,
-        "elapsed_time": 1.1213171482086182
-      }
-    }
-  ],
-  "Second Test": [
-    {
-      "py/object": "KbServerApp.step.Step",
-      "name": "First Step",
-      "prompt_name": "Prompts/PHP/Use Case Description to Requirements.pe",
-      "ai": {
-        "py/object": "KbServerApp.ai.AI",
-        "temperature": 0.0,
-        "max_tokens": 3000,
-        "model": "gpt-3.5-turbo",
-        "mode": "chat"
-      },
-      "storage_path": "Dynamic/Requirements",
-      "text_file": "",
-      "messages": [
-        {
-          "role": "user",
-          "content": "\nHere is a product Description:"
-        },
-        {
-          "role": "user",
-          "content": "\nThe System will provide an intuitive and easy-to-use interface for users to browse, purchase, and read books.\nIt will allow users to create personal accounts, maintain a private library, and share reviews on books.\n\nAdmins and Operators can view transactions, and access logs to see failures.\nAdmins can give users access to books. Admins can refund Users. Admin can open, close, and block user accounts.\n\nOperators can schedule backups of entire data.\nOperators can restore entire data or a specific user's account.\nOperators can replay transactions of the entire site or of a single user after a restore.\n"
-        },
-        {
-          "role": "user",
-          "content": "\nIdentify each Actor described, and what his requirements are.\n### Complete the following list of actors:\nActors.json\n```json\n{'Actors' :\n    { '<actor>': { 'name': '<actor>', 'requirements': [ '<first requirement>', '<second requirement>', ... ]}\n    }\n}\n```"
-        }
-      ],
-      "answer": "Actors.json\n```json\n{\n  \"Actors\": {\n    \"User\": {\n      \"name\": \"User\",\n      \"requirements\": [\n        \"Browse books\",\n        \"Purchase books\",\n        \"Read books\",\n        \"Create personal account\",\n        \"Maintain private library\",\n        \"Share book reviews\"\n      ]\n    },\n    \"Admin\": {\n      \"name\": \"Admin\",\n      \"requirements\": [\n        \"View transactions\",\n        \"Access logs\",\n        \"Give users access to books\",\n        \"Refund users\",\n        \"Open user accounts\",\n        \"Close user accounts\",\n        \"Block user accounts\"\n      ]\n    },\n    \"Operator\": {\n      \"name\": \"Operator\",\n      \"requirements\": [\n        \"Schedule backups of entire data\",\n        \"Restore entire data or specific user's account\",\n        \"Replay transactions of entire site or single user after a restore\"\n      ]\n    }\n  }\n}\n```",
-      "files": {
-        "Actors.json": "{\n  \"Actors\": {\n    \"User\": {\n      \"name\": \"User\",\n      \"requirements\": [\n        \"Browse books\",\n        \"Purchase books\",\n        \"Read books\",\n        \"Create personal account\",\n        \"Maintain private library\",\n        \"Share book reviews\"\n      ]\n    },\n    \"Admin\": {\n      \"name\": \"Admin\",\n      \"requirements\": [\n        \"View transactions\",\n        \"Access logs\",\n        \"Give users access to books\",\n        \"Refund users\",\n        \"Open user accounts\",\n        \"Close user accounts\",\n        \"Block user accounts\"\n      ]\n    },\n    \"Operator\": {\n      \"name\": \"Operator\",\n      \"requirements\": [\n        \"Schedule backups of entire data\",\n        \"Restore entire data or specific user's account\",\n        \"Replay transactions of entire site or single user after a restore\"\n      ]\n    }\n  }\n}"
-      },
-      "e_stats": {
-        "prompt_tokens": 207,
-        "completion_tokens": 191,
-        "total_tokens": 398,
-        "sp_cost": 0.0003105,
-        "sc_cost": 0.000382,
-        "s_total": 0.0006925,
-        "elapsed_time": 5.466896057128906
-      }
-    },
-    {
-      "py/object": "KbServerApp.step.Step",
-      "name": "Second Step",
-      "prompt_name": "",
-      "ai": {
-        "py/object": "KbServerApp.ai.AI",
-        "temperature": 0,
-        "max_tokens": 3000,
-        "model": "gpt-3.5-turbo",
-        "mode": "chat"
-      },
-      "storage_path": "",
-      "text_file": "",
-      "messages": [],
-      "answer": "",
-      "files": {},
-      "e_stats": {
-        "prompt_tokens": 0,
-        "completion_tokens": 0,
-        "total_tokens": 0,
-        "sp_cost": 0.0,
-        "sc_cost": 0.0,
-        "s_total": 0.0,
-        "elapsed_time": 0.0
-      }
-    }
-  ],
-  "KEGUI": [
-    {
-      "py/object": "KbServerApp.step.Step",
-      "name": "1. Generate window structure",
-      "prompt_name": "KEGUI/MainWindow requirements.pe",
-      "ai": {
-        "py/object": "KbServerApp.ai.AI",
-        "temperature": 0.0,
-        "max_tokens": 2000,
-        "model": "gpt-3.5-turbo",
-        "mode": "chat"
-      },
-      "storage_path": "Dynamic/KEGUI/src",
-      "text_file": "",
-      "messages": [
-        {
-          "role": "system",
-          "content": "\nYou are a python programmer.\nYou will use the pyside6 toolkit for GUI.\nYou will write functional code for each iteration.\nFiles will be delineated in the following format:\n\nfilename\n```python\n[actual code]\n```"
-        },
-        {
-          "role": "user",
-          "content": "\nGenerate main_window.py which will consist of 3 tabs.\n  \"WorkBench\" (loaded from workbench_tab.py)\n  \"Log\" (Loaded from log_tab.py)\n  \"Coms\" (loaded from coms_tab.py)\n\n Generate all 4 files."
-        }
-      ],
-      "answer": "main_window.py\n```python\nfrom PySide6.QtWidgets import QApplication, QMainWindow, QTabWidget\n\nfrom workbench_tab import WorkBenchTab\nfrom log_tab import LogTab\nfrom coms_tab import ComsTab\n\n\nclass MainWindow(QMainWindow):\n    def __init__(self):\n        super().__init__()\n\n        self.setWindowTitle(\"Main Window\")\n\n        self.tab_widget = QTabWidget()\n        self.setCentralWidget(self.tab_widget)\n\n        self.workbench_tab = WorkBenchTab()\n        self.log_tab = LogTab()\n        self.coms_tab = ComsTab()\n\n        self.tab_widget.addTab(self.workbench_tab, \"WorkBench\")\n        self.tab_widget.addTab(self.log_tab, \"Log\")\n        self.tab_widget.addTab(self.coms_tab, \"Coms\")\n\n\nif __name__ == \"__main__\":\n    app = QApplication([])\n    window = MainWindow()\n    window.show()\n    app.exec()\n```\n\nworkbench_tab.py\n```python\nfrom PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel\n\n\nclass WorkBenchTab(QWidget):\n    def __init__(self):\n        super().__init__()\n\n        layout = QVBoxLayout()\n        label = QLabel(\"WorkBench Tab\")\n        layout.addWidget(label)\n\n        self.setLayout(layout)\n```\n\nlog_tab.py\n```python\nfrom PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel\n\n\nclass LogTab(QWidget):\n    def __init__(self):\n        super().__init__()\n\n        layout = QVBoxLayout()\n        label = QLabel(\"Log Tab\")\n        layout.addWidget(label)\n\n        self.setLayout(layout)\n```\n\ncoms_tab.py\n```python\nfrom PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel\n\n\nclass ComsTab(QWidget):\n    def __init__(self):\n        super().__init__()\n\n        layout = QVBoxLayout()\n        label = QLabel(\"Coms Tab\")\n        layout.addWidget(label)\n\n        self.setLayout(layout)\n```",
-      "files": {
-        "main_window.py": "from PySide6.QtWidgets import QApplication, QMainWindow, QTabWidget\n\nfrom workbench_tab import WorkBenchTab\nfrom log_tab import LogTab\nfrom coms_tab import ComsTab\n\n\nclass MainWindow(QMainWindow):\n    def __init__(self):\n        super().__init__()\n\n        self.setWindowTitle(\"Main Window\")\n\n        self.tab_widget = QTabWidget()\n        self.setCentralWidget(self.tab_widget)\n\n        self.workbench_tab = WorkBenchTab()\n        self.log_tab = LogTab()\n        self.coms_tab = ComsTab()\n\n        self.tab_widget.addTab(self.workbench_tab, \"WorkBench\")\n        self.tab_widget.addTab(self.log_tab, \"Log\")\n        self.tab_widget.addTab(self.coms_tab, \"Coms\")\n\n\nif __name__ == \"__main__\":\n    app = QApplication([])\n    window = MainWindow()\n    window.show()\n    app.exec()",
-        "workbench_tab.py": "from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel\n\n\nclass WorkBenchTab(QWidget):\n    def __init__(self):\n        super().__init__()\n\n        layout = QVBoxLayout()\n        label = QLabel(\"WorkBench Tab\")\n        layout.addWidget(label)\n\n        self.setLayout(layout)",
-        "log_tab.py": "from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel\n\n\nclass LogTab(QWidget):\n    def __init__(self):\n        super().__init__()\n\n        layout = QVBoxLayout()\n        label = QLabel(\"Log Tab\")\n        layout.addWidget(label)\n\n        self.setLayout(layout)",
-        "coms_tab.py": "from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel\n\n\nclass ComsTab(QWidget):\n    def __init__(self):\n        super().__init__()\n\n        layout = QVBoxLayout()\n        label = QLabel(\"Coms Tab\")\n        layout.addWidget(label)\n\n        self.setLayout(layout)"
-      },
-      "e_stats": {
-        "prompt_tokens": 115,
-        "completion_tokens": 381,
-        "total_tokens": 496,
-        "sp_cost": 0.00017250000000000002,
-        "sc_cost": 0.000762,
-        "s_total": 0.0009345,
-        "elapsed_time": 13.052231311798096
-      }
-    },
-    {
-      "py/object": "KbServerApp.step.Step",
-      "name": "2. Generate log_tab.py",
-      "prompt_name": "KEGUI/Generate log_tab.pe",
-      "ai": {
-        "py/object": "KbServerApp.ai.AI",
-        "temperature": 0.0,
-        "max_tokens": "10000",
-        "model": "gpt-3.5-turbo-16k",
-        "mode": "chat"
-      },
-      "storage_path": "Dynamic/KEGUI/src",
-      "text_file": "",
-      "messages": [],
-      "answer": "",
-      "files": {},
-      "e_stats": {
-        "prompt_tokens": 0.0,
-        "completion_tokens": 0.0,
-        "total_tokens": 0.0,
-        "sp_cost": 0.0,
-        "sc_cost": 0.0,
-        "s_total": 0.0,
-        "elapsed_time": 0.0
-      }
-    },
-    {
-      "py/object": "KbServerApp.step.Step",
-      "name": "3. Test Rename Step",
-      "prompt_name": "Prompts/Python_GUI/1-BasicFrame.pe",
-      "ai": {
-        "py/object": "KbServerApp.ai.AI",
-        "temperature": 0.0,
-        "max_tokens": 4000,
-        "model": "gpt-4",
-        "mode": "chat"
-      },
-      "storage_path": "Dynamic/KEGUI/src",
-      "text_file": "",
-      "messages": [],
-      "answer": "",
-      "files": {},
-      "e_stats": {
-        "prompt_tokens": 0.0,
-        "completion_tokens": 0.0,
-        "total_tokens": 0.0,
-        "sp_cost": 0.0,
-        "sc_cost": 0.0,
-        "s_total": 0.0,
-        "elapsed_time": 0.0
-      }
-    }
-  ],
-  "Online Book Store": [
-    {
-      "py/object": "KbServerApp.step.Step",
-      "name": "1. Create Actors and Requirements",
-      "prompt_name": "Online Book Store/Prompts/1. Use Case to Requirements",
-      "ai": {
-        "py/object": "KbServerApp.ai.AI",
-        "temperature": 0.0,
-        "max_tokens": 3000,
-        "model": "gpt-3.5-turbo",
-        "mode": "chat"
-      },
-      "storage_path": "Online Book Store/Generated",
-      "text_file": "",
-      "messages": [
-        {
-          "role": "system",
-          "content": "\nYour answers will be concise and short.\nText blocks will be delineated as follows:\nTEXT_BLOCK_NAME.EXT\n```FILETYPE\ntext block contents\n```"
-        },
-        {
-          "role": "user",
-          "content": "\nThe System will provide an intuitive and easy-to-use interface for users to browse, purchase, and read books.\nIt will allow users to create personal accounts, maintain a private library, and share reviews on books.\n\nAdmins and Operators can view transactions, and access logs to see failures.\nAdmins can give users access to books. Admins can refund Users. Admin can open, close, and block user accounts.\n\nOperators can schedule backups of entire data.\nOperators can restore entire data or a specific user's account.\nOperators can replay transactions of the entire site or of a single user after a restore."
-        },
-        {
-          "role": "user",
-          "content": "\nIdentify each Actor, along with its requirements .\n### Complete the following list of actors:\nActors.json\n```json\n{'Actors' :\n    { '<actor>': { 'name': '<actor>', 'requirements': [ '<first requirement>', '<second requirement>', ... ]}\n    }\n}\n```\n\n"
-        }
-      ],
-      "answer": "Actors.json\n```json\n{\n  \"Actors\": {\n    \"User\": {\n      \"name\": \"User\",\n      \"requirements\": [\n        \"Browse books\",\n        \"Purchase books\",\n        \"Read books\",\n        \"Create personal account\",\n        \"Maintain private library\",\n        \"Share book reviews\"\n      ]\n    },\n    \"Admin\": {\n      \"name\": \"Admin\",\n      \"requirements\": [\n        \"View transactions\",\n        \"Access logs\",\n        \"Give users access to books\",\n        \"Refund users\",\n        \"Open/close/block user accounts\"\n      ]\n    },\n    \"Operator\": {\n      \"name\": \"Operator\",\n      \"requirements\": [\n        \"Schedule backups of entire data\",\n        \"Restore entire data or specific user's account\",\n        \"Replay transactions of entire site or single user after restore\"\n      ]\n    }\n  }\n}\n```",
-      "files": {
-        "Actors.json": "{\n  \"Actors\": {\n    \"User\": {\n      \"name\": \"User\",\n      \"requirements\": [\n        \"Browse books\",\n        \"Purchase books\",\n        \"Read books\",\n        \"Create personal account\",\n        \"Maintain private library\",\n        \"Share book reviews\"\n      ]\n    },\n    \"Admin\": {\n      \"name\": \"Admin\",\n      \"requirements\": [\n        \"View transactions\",\n        \"Access logs\",\n        \"Give users access to books\",\n        \"Refund users\",\n        \"Open/close/block user accounts\"\n      ]\n    },\n    \"Operator\": {\n      \"name\": \"Operator\",\n      \"requirements\": [\n        \"Schedule backups of entire data\",\n        \"Restore entire data or specific user's account\",\n        \"Replay transactions of entire site or single user after restore\"\n      ]\n    }\n  }\n}"
-      },
-      "e_stats": {
-        "prompt_tokens": 232,
-        "completion_tokens": 180,
-        "total_tokens": 412,
-        "sp_cost": 0.000348,
-        "sc_cost": 0.00035999999999999997,
-        "s_total": 0.000708,
-        "elapsed_time": 8.002811193466187
-      }
-    },
-    {
-      "py/object": "KbServerApp.step.Step",
-      "name": "2. Expand on Actor Requirements",
-      "prompt_name": "Online Book Store/Prompts/2. Expand on Actor Requirements",
-      "ai": {
-        "py/object": "KbServerApp.ai.AI",
-        "temperature": 0.0,
-        "max_tokens": 3000,
-        "model": "gpt-3.5-turbo",
-        "mode": "chat"
-      },
-      "storage_path": "Online Book Store/Generated",
-      "text_file": "",
-      "messages": [],
-      "answer": "",
-      "files": {},
-      "e_stats": {
-        "prompt_tokens": 0,
-        "completion_tokens": 0,
-        "total_tokens": 0,
-        "sp_cost": 0.0,
-        "sc_cost": 0.0,
-        "s_total": 0.0,
-        "elapsed_time": 0.0
-      }
-    }
-  ],
   "Snake": [
     {
       "py/object": "KbServerApp.step.Step",
@@ -378,44 +7,44 @@
       "ai": {
         "py/object": "KbServerApp.ai.AI",
         "temperature": 0.0,
-        "max_tokens": 5000,
+        "max_tokens": 3000,
         "model": "gpt-4",
         "mode": "chat"
       },
       "storage_path": "Snake/Requirements/Components",
-      "text_file": "Components_List.txt",
+      "text_file": "Components_List.md",
       "messages": [
         {
           "role": "system",
-          "content": "\nYou are an IT developer.\nDo not explain yourself.\nDo not apologize.\nComplete the tasks given in a way that allows for easy comprehension while not leaving anything out.\nFor comprehension use indented lists with minus signs.\n"
+          "content": "\nYou are an IT developer.\nDo not explain yourself.\nDo not apologize.\nWhen possible, do not talk to me.\nComplete the tasks given in a way that allows for easy comprehension while not leaving anything out.\nwhen using lists use minus signs.\nUse indentation.\n\n"
         },
         {
           "role": "system",
-          "content": "\nText blocks will be delineated as follows:\nTEXT_BLOCK_NAME.EXT\n```FILETYPE\ntext block contents\n```"
+          "content": "\nUse Text Blocks to write Files.  Text blocks are formated as follows:\n\n{text block name}.{ext}\n```{filetype}\n{text block contents}\n```"
         },
         {
           "role": "user",
-          "content": "\nimplement a multi user \"Snake\" online game.\n-The rules to the game are the standard \"Snake\" game rules.\n-The Board will be 100 x 100 squares.\n- The game consists of 15 steps per second.\n- each step the server calculates:\n    - the movement of each snake,\n    - what snakes if any (die),\n    - what squares need color changes,\n    - the list of squares that changed is sent to each client.\n\nDescription of Game:\n\n    Before The Game Starts:\n    - clients that connect see a \"Join the game\" pop-up with a countdown to game start.\n    - player is given Yes/No buttons.\n    - The popup is closed when:\n        - a player joins the game,\n        - declines to join the game,\n        - or the game starts (which is an implicit decline).\n\n    Once a player \"joins\":\n    - the Client is assigned a Color and the \"his\" snake is drawn\n    - the player sees the entire game board.\n    - the player sees a count-down to game start.\n    - each client that joined updates the server of any change event to the state of the arrow keys.\n\n    From Game Start to Client Death:\n    - each client updates the server of any change event to the state of the arrow keys.\n    - Each client updates its view of the 100 x 100 square board with the update commands received from the server\n    - the server will also announce to the client if it has died.\n\n    From Client Death to End of Game\n    - Once dead, the client continues to update the screen until end of game\n    - The Game ends with a \"Winner\" message stating the Color of the last surviving snake.\n    - Each client will display the winner until \"ok\" is clicked.\n\n    After End of Game:\n    - each client see the \"Join the Game\" pop-up, but no count dow is initiated until the first client joins.\n    - First client joins starts a 30-second count-down to start of game; and the game goes to \"Before The Game Starts\" mode\n"
+          "content": "\nimplement a multi user \"Snake\" online game.\n-The rules to the game are the standard \"Snake\" game rules.\n-The Board will be 100 x 100 squares.\n- The game consists of 15 steps per second.\n- each step the server calculates:\n    - the movement of each snake,\n    - what snakes if any (die),\n    - what squares need color changes,\n    - the list of squares that changed, and the new color is sent to each client.\n\nDescription of Game:\n\n    Before The Game Starts:\n    - clients that connect see a \"Join the game\" pop-up with a countdown to game start.\n    - player is given Yes/No buttons.\n    - The popup is closed when:\n        - a player joins the game,\n        - declines to join the game,\n        - or the game starts (which is an implicit decline).\n\n    Once a player \"joins\":\n    - the Client is assigned a Color and the \"his\" snake is drawn\n    - the player sees the entire game board.\n    - the player sees a count-down to game start.\n    - each client that joined updates the server of any change event to the state of the arrow keys.\n\n    From Game Start to Client Death:\n    - each client updates the server of any change event to the state of the arrow keys.\n    - Each client updates its view of the 100 x 100 square board with the update commands received from the server\n    - the server will also announce to the client if it has died.\n\n    From Client Death to End of Game\n    - Once dead, the client continues to update the screen until end of game\n    - The Game ends with a \"Winner\" message stating the Color of the last surviving snake.\n    - Each client will display the winner until \"ok\" is clicked.\n\n    After End of Game:\n    - each client see the \"Join the Game\" pop-up, but no count dow is initiated until the first client joins.\n    - First client joins starts a 30-second count-down to start of game; and the game goes to \"Before The Game Starts\" mode\n"
         },
         {
           "role": "user",
-          "content": "\nAnalyse the game description.\nDefine 3 text blocks:\n    - Server.lst containing the description of the server requirements\n    - Client.lst containing the description of the client requirements\n    - The Protocol.lst containing a description of the required Protocol."
+          "content": "\nAnalyse the game description.\nWrite 3 files:\n    - Server.md containing the description of the server and it's requirements\n    - Client.md containing the description of the client and it's requirements\n    - Protocol.md containing a description of the required Protocol."
         }
       ],
-      "answer": "Server.lst\n```lst\n- The server calculates the movement of each snake, what snakes if any (die), what squares need color changes, 15 times per second.\n- The server sends the list of squares that changed to each client.\n- The server assigns a color to each client that joins the game and draws the corresponding snake.\n- The server updates the state of the game based on the change events to the state of the arrow keys received from each client.\n- The server announces to the client if it has died.\n- The server determines the winner of the game and sends a \"Winner\" message stating the color of the last surviving snake to each client.\n- The server initiates a 30-second countdown to the start of the game when the first client joins after the end of a game.\n```\n\nClient.lst\n```lst\n- The client sees a \"Join the game\" pop-up with a countdown to game start upon connection.\n- The client is given Yes/No buttons to join or decline to join the game.\n- The client sees the entire game board and a countdown to game start once it joins the game.\n- The client updates the server of any change event to the state of the arrow keys.\n- The client updates its view of the 100 x 100 square board with the update commands received from the server.\n- The client continues to update the screen until the end of the game, even if it has died.\n- The client displays the winner until \"ok\" is clicked.\n- The client sees the \"Join the Game\" pop-up after the end of the game, but no countdown is initiated until the first client joins.\n```\n\nProtocol.lst\n```lst\n- The protocol must support the transmission of the list of squares that changed from the server to each client.\n- The protocol must support the transmission of the state of the arrow keys from each client to the server.\n- The protocol must support the transmission of the \"Winner\" message from the server to each client.\n- The protocol must support the transmission of the countdown to game start from the server to each client.\n- The protocol must support the transmission of the \"Join the Game\" pop-up from the server to each client.\n```",
+      "answer": "Server.md\n```markdown\n# Server\n\nThe server is responsible for managing the game state and communicating with the clients. It performs the following tasks:\n\n- Manages the game board of 100 x 100 squares.\n- Calculates the game at a rate of 15 steps per second.\n- Each step, the server calculates:\n    - The movement of each snake.\n    - Determines if any snakes die.\n    - Determines what squares need color changes.\n- Sends a list of squares that changed and their new color to each client.\n- Assigns a color to each client that joins the game and draws their snake.\n- Updates the state of the game based on the arrow key events received from each client.\n- Announces to the client if it has died.\n- Announces the color of the last surviving snake as the winner at the end of the game.\n- Initiates a 30-second countdown to the start of the game when the first client joins after the end of a game.\n```\n\nClient.md\n```markdown\n# Client\n\nThe client is responsible for interacting with the user and communicating with the server. It performs the following tasks:\n\n- Displays a \"Join the game\" pop-up with a countdown to game start when connected.\n- Provides Yes/No buttons for the user to join or decline to join the game.\n- Closes the pop-up when the user joins the game, declines to join, or when the game starts.\n- Displays the entire game board to the user.\n- Displays a countdown to game start once the user has joined the game.\n- Sends any change event to the state of the arrow keys to the server.\n- Updates its view of the game board with the update commands received from the server.\n- Continues to update the screen until the end of the game, even if the client has died.\n- Displays a \"Winner\" message stating the color of the last surviving snake at the end of the game until \"ok\" is clicked.\n- Displays the \"Join the Game\" pop-up after the end of the game, but does not initiate a countdown until the first client joins.\n```\n\nProtocol.md\n```markdown\n# Protocol\n\nThe protocol is responsible for defining the communication between the server and the clients. It should support the following operations:\n\n- Server to client:\n    - Send the color assigned to the client and draw their snake.\n    - Send a list of squares that changed and their new color.\n    - Announce to the client if it has died.\n    - Announce the color of the last surviving snake as the winner at the end of the game.\n    - Initiate a 30-second countdown to the start of the game when the first client joins after the end of a game.\n\n- Client to server:\n    - Send a join or decline to join the game command.\n    - Send any change event to the state of the arrow keys.\n```",
       "files": {
-        "Server.lst": "- The server calculates the movement of each snake, what snakes if any (die), what squares need color changes, 15 times per second.\n- The server sends the list of squares that changed to each client.\n- The server assigns a color to each client that joins the game and draws the corresponding snake.\n- The server updates the state of the game based on the change events to the state of the arrow keys received from each client.\n- The server announces to the client if it has died.\n- The server determines the winner of the game and sends a \"Winner\" message stating the color of the last surviving snake to each client.\n- The server initiates a 30-second countdown to the start of the game when the first client joins after the end of a game.",
-        "Client.lst": "- The client sees a \"Join the game\" pop-up with a countdown to game start upon connection.\n- The client is given Yes/No buttons to join or decline to join the game.\n- The client sees the entire game board and a countdown to game start once it joins the game.\n- The client updates the server of any change event to the state of the arrow keys.\n- The client updates its view of the 100 x 100 square board with the update commands received from the server.\n- The client continues to update the screen until the end of the game, even if it has died.\n- The client displays the winner until \"ok\" is clicked.\n- The client sees the \"Join the Game\" pop-up after the end of the game, but no countdown is initiated until the first client joins.",
-        "Protocol.lst": "- The protocol must support the transmission of the list of squares that changed from the server to each client.\n- The protocol must support the transmission of the state of the arrow keys from each client to the server.\n- The protocol must support the transmission of the \"Winner\" message from the server to each client.\n- The protocol must support the transmission of the countdown to game start from the server to each client.\n- The protocol must support the transmission of the \"Join the Game\" pop-up from the server to each client."
+        "Server.md": "# Server\n\nThe server is responsible for managing the game state and communicating with the clients. It performs the following tasks:\n\n- Manages the game board of 100 x 100 squares.\n- Calculates the game at a rate of 15 steps per second.\n- Each step, the server calculates:\n    - The movement of each snake.\n    - Determines if any snakes die.\n    - Determines what squares need color changes.\n- Sends a list of squares that changed and their new color to each client.\n- Assigns a color to each client that joins the game and draws their snake.\n- Updates the state of the game based on the arrow key events received from each client.\n- Announces to the client if it has died.\n- Announces the color of the last surviving snake as the winner at the end of the game.\n- Initiates a 30-second countdown to the start of the game when the first client joins after the end of a game.",
+        "Client.md": "# Client\n\nThe client is responsible for interacting with the user and communicating with the server. It performs the following tasks:\n\n- Displays a \"Join the game\" pop-up with a countdown to game start when connected.\n- Provides Yes/No buttons for the user to join or decline to join the game.\n- Closes the pop-up when the user joins the game, declines to join, or when the game starts.\n- Displays the entire game board to the user.\n- Displays a countdown to game start once the user has joined the game.\n- Sends any change event to the state of the arrow keys to the server.\n- Updates its view of the game board with the update commands received from the server.\n- Continues to update the screen until the end of the game, even if the client has died.\n- Displays a \"Winner\" message stating the color of the last surviving snake at the end of the game until \"ok\" is clicked.\n- Displays the \"Join the Game\" pop-up after the end of the game, but does not initiate a countdown until the first client joins.",
+        "Protocol.md": "# Protocol\n\nThe protocol is responsible for defining the communication between the server and the clients. It should support the following operations:\n\n- Server to client:\n    - Send the color assigned to the client and draw their snake.\n    - Send a list of squares that changed and their new color.\n    - Announce to the client if it has died.\n    - Announce the color of the last surviving snake as the winner at the end of the game.\n    - Initiate a 30-second countdown to the start of the game when the first client joins after the end of a game.\n\n- Client to server:\n    - Send a join or decline to join the game command.\n    - Send any change event to the state of the arrow keys."
       },
       "e_stats": {
-        "prompt_tokens": 567,
-        "completion_tokens": 449,
-        "total_tokens": 1016,
-        "sp_cost": 0.017009999999999997,
-        "sc_cost": 0.02694,
-        "s_total": 0.043949999999999996,
-        "elapsed_time": 33.83424091339111
+        "prompt_tokens": 593,
+        "completion_tokens": 586,
+        "total_tokens": 1179,
+        "sp_cost": 0.017789999999999997,
+        "sc_cost": 0.03516,
+        "s_total": 0.05295,
+        "elapsed_time": 63.88688850402832
       }
     },
     {
@@ -430,41 +59,43 @@
         "mode": "chat"
       },
       "storage_path": "Snake/Requirements/Protocol",
-      "text_file": "Protocol Description.txt",
+      "text_file": "Protocol Description.md",
       "messages": [
         {
           "role": "system",
-          "content": "\nYou are an IT developer.\nDo not explain yourself.\nDo not apologize.\nComplete the tasks given in a way that allows for easy comprehension while not leaving anything out.\nFor comprehension use indented lists with minus signs.\n"
+          "content": "\nYou are an IT developer.\nDo not explain yourself.\nDo not apologize.\nWhen possible, do not talk to me.\nComplete the tasks given in a way that allows for easy comprehension while not leaving anything out.\nwhen using lists use minus signs.\nUse indentation.\n\n"
         },
         {
           "role": "system",
-          "content": "\nText blocks will be delineated as follows:\n\n{text block name}.{ext}\n```{filetype}\n{text block contents}\n```"
+          "content": "\nUse Text Blocks to write Files.  Text blocks are formated as follows:\n\n{text block name}.{ext}\n```{filetype}\n{text block contents}\n```"
         },
         {
           "role": "user",
-          "content": "\nServer.lst\n```txt\n- The server calculates the movement of each snake, what snakes if any (die), and what squares need color changes at a rate of 15 steps per second.\n- The server sends the list of squares that changed to each client.\n- The server assigns a color to each client that joins the game and draws their snake.\n- The server updates the state of the game based on the change events to the arrow keys received from each client.\n- The server announces to the client if it has died.\n- The server determines the winner of the game and sends a \"Winner\" message to each client stating the color of the last surviving snake.\n- The server initiates a 30-second countdown to the start of the game when the first client joins after the end of a game.\n```\n\nClient.lst\n```txt\n- The client sees a \"Join the game\" pop-up with a countdown to game start upon connection.\n- The client is given Yes/No buttons to join or decline to join the game.\n- The client sees the entire game board and a countdown to game start once they join the game.\n- The client updates the server of any change event to the state of the arrow keys.\n- The client updates its view of the 100 x 100 square board with the update commands received from the server.\n- The client continues to update the screen until the end of the game, even if it has died.\n- The client displays the winner until \"ok\" is clicked.\n- The client sees the \"Join the Game\" pop-up after the end of the game, but no countdown is initiated until the first client joins.\n```\n\nProtocol.lst\n```txt\n- The protocol must support the transmission of the list of squares that changed from the server to each client.\n- The protocol must support the transmission of the state of the arrow keys from each client to the server.\n- The protocol must support the transmission of the \"Winner\" message from the server to each client.\n- The protocol must support the transmission of the countdown to game start from the server to each client.\n- The protocol must support the transmission of the \"Join the Game\" pop-up from the server to each client.\n```"
+          "content": "\nServer.md\n```markdown\n# Server\n\nThe server is responsible for managing the game state and communicating with the clients. It performs the following tasks:\n\n- Manages the game board of 100 x 100 squares.\n- Calculates the game at a rate of 15 steps per second.\n- Each step, the server calculates:\n    - The movement of each snake.\n    - Determines if any snakes die.\n    - Determines what squares need color changes.\n- Sends a list of squares that changed and their new color to each client.\n- Assigns a color to each client that joins the game and draws their snake.\n- Updates the state of the game based on the arrow key events received from each client.\n- Announces to the client if it has died.\n- Announces the color of the last surviving snake as the winner at the end of the game.\n- Initiates a 30-second countdown to the start of the game when the first client joins after the end of a game.\n```\n\nClient.md\n```markdown\n# Client\n\nThe client is responsible for interacting with the user and communicating with the server. It performs the following tasks:\n\n- Displays a \"Join the game\" pop-up with a countdown to game start when connected.\n- Provides Yes/No buttons for the user to join or decline to join the game.\n- Closes the pop-up when the user joins the game, declines to join, or when the game starts.\n- Displays the entire game board to the user.\n- Displays a countdown to game start once the user has joined the game.\n- Sends any change event to the state of the arrow keys to the server.\n- Updates its view of the game board with the update commands received from the server.\n- Continues to update the screen until the end of the game, even if the client has died.\n- Displays a \"Winner\" message stating the color of the last surviving snake at the end of the game until \"ok\" is clicked.\n- Displays the \"Join the Game\" pop-up after the end of the game, but does not initiate a countdown until the first client joins.\n```\n\nProtocol.md\n```markdown\n# Protocol\n\nThe protocol is responsible for defining the communication between the server and the clients. It should support the following operations:\n\n- Server to client:\n    - Send the color assigned to the client and draw their snake.\n    - Send a list of squares that changed and their new color.\n    - Announce to the client if it has died.\n    - Announce the color of the last surviving snake as the winner at the end of the game.\n    - Initiate a 30-second countdown to the start of the game when the first client joins after the end of a game.\n\n- Client to server:\n    - Send a join or decline to join the game command.\n    - Send any change event to the state of the arrow keys.\n```"
         },
         {
           "role": "user",
-          "content": "\nAnalyze the system described.\nDesign a network protocol based on json messages for the application.\nplace each message in a separte text block with name: msg_type.json\n"
+          "content": "\nAnalyze the system described.\nDesign a network protocol based on json messages for the application.\nDescribe each msg  type and its usage in a paragraph, followed by\na file with name: {msg_type}.json\n"
         }
       ],
-      "answer": "joinGame.json\n```json\n{\n  \"type\": \"joinGame\",\n  \"data\": {\n    \"clientId\": \"unique_client_id\"\n  }\n}\n```\n\nstartCountdown.json\n```json\n{\n  \"type\": \"startCountdown\",\n  \"data\": {\n    \"countdownSeconds\": 30\n  }\n}\n```\n\ngameState.json\n```json\n{\n  \"type\": \"gameState\",\n  \"data\": {\n    \"squaresChanged\": [\n      {\n        \"x\": 10,\n        \"y\": 20,\n        \"color\": \"#FF0000\"\n      }\n    ],\n    \"snakes\": [\n      {\n        \"clientId\": \"unique_client_id\",\n        \"color\": \"#FF0000\",\n        \"segments\": [\n          {\n            \"x\": 10,\n            \"y\": 20\n          }\n        ]\n      }\n    ],\n    \"deadSnakes\": [\n      \"unique_client_id\"\n    ]\n  }\n}\n```\n\nkeyEvent.json\n```json\n{\n  \"type\": \"keyEvent\",\n  \"data\": {\n    \"clientId\": \"unique_client_id\",\n    \"key\": \"up\"\n  }\n}\n```\n\nwinner.json\n```json\n{\n  \"type\": \"winner\",\n  \"data\": {\n    \"winnerColor\": \"#FF0000\"\n  }\n}\n```",
+      "answer": "# System Analysis\n\nThe system is a multiplayer game with a server-client architecture. The server manages the game state, calculates game steps, and communicates with the clients. The clients interact with the users and send user inputs to the server. The server and clients communicate using a protocol that needs to be defined.\n\n# Network Protocol Design\n\nThe network protocol will be based on JSON messages. Each message will have a type and a payload. The type will indicate the purpose of the message, and the payload will contain the data associated with that message.\n\n## Message Types\n\n1. **AssignColor**: This message is sent from the server to the client when a client joins the game. The payload will contain the color assigned to the client's snake.\n\n2. **UpdateBoard**: This message is sent from the server to the client to update the game board. The payload will contain a list of squares that changed and their new color.\n\n3. **DeathNotification**: This message is sent from the server to the client to notify the client if its snake has died.\n\n4. **WinnerAnnouncement**: This message is sent from the server to the client to announce the winner of the game. The payload will contain the color of the last surviving snake.\n\n5. **GameStartCountdown**: This message is sent from the server to the client to initiate a countdown to the start of the game.\n\n6. **JoinGame**: This message is sent from the client to the server when the user decides to join the game.\n\n7. **ArrowKeyEvent**: This message is sent from the client to the server when there is a change in the state of the arrow keys.\n\nAssignColor.json\n```json\n{\n  \"type\": \"AssignColor\",\n  \"payload\": {\n    \"color\": \"red\"\n  }\n}\n```\n\nUpdateBoard.json\n```json\n{\n  \"type\": \"UpdateBoard\",\n  \"payload\": {\n    \"changes\": [\n      {\n        \"square\": [5, 7],\n        \"color\": \"blue\"\n      },\n      {\n        \"square\": [8, 9],\n        \"color\": \"green\"\n      }\n    ]\n  }\n}\n```\n\nDeathNotification.json\n```json\n{\n  \"type\": \"DeathNotification\",\n  \"payload\": {}\n}\n```\n\nWinnerAnnouncement.json\n```json\n{\n  \"type\": \"WinnerAnnouncement\",\n  \"payload\": {\n    \"color\": \"blue\"\n  }\n}\n```\n\nGameStartCountdown.json\n```json\n{\n  \"type\": \"GameStartCountdown\",\n  \"payload\": {\n    \"seconds\": 30\n  }\n}\n```\n\nJoinGame.json\n```json\n{\n  \"type\": \"JoinGame\",\n  \"payload\": {}\n}\n```\n\nArrowKeyEvent.json\n```json\n{\n  \"type\": \"ArrowKeyEvent\",\n  \"payload\": {\n    \"key\": \"up\"\n  }\n}\n```",
       "files": {
-        "joinGame.json": "{\n  \"type\": \"joinGame\",\n  \"data\": {\n    \"clientId\": \"unique_client_id\"\n  }\n}",
-        "startCountdown.json": "{\n  \"type\": \"startCountdown\",\n  \"data\": {\n    \"countdownSeconds\": 30\n  }\n}",
-        "gameState.json": "{\n  \"type\": \"gameState\",\n  \"data\": {\n    \"squaresChanged\": [\n      {\n        \"x\": 10,\n        \"y\": 20,\n        \"color\": \"#FF0000\"\n      }\n    ],\n    \"snakes\": [\n      {\n        \"clientId\": \"unique_client_id\",\n        \"color\": \"#FF0000\",\n        \"segments\": [\n          {\n            \"x\": 10,\n            \"y\": 20\n          }\n        ]\n      }\n    ],\n    \"deadSnakes\": [\n      \"unique_client_id\"\n    ]\n  }\n}",
-        "keyEvent.json": "{\n  \"type\": \"keyEvent\",\n  \"data\": {\n    \"clientId\": \"unique_client_id\",\n    \"key\": \"up\"\n  }\n}",
-        "winner.json": "{\n  \"type\": \"winner\",\n  \"data\": {\n    \"winnerColor\": \"#FF0000\"\n  }\n}"
+        "AssignColor.json": "{\n  \"type\": \"AssignColor\",\n  \"payload\": {\n    \"color\": \"red\"\n  }\n}",
+        "UpdateBoard.json": "{\n  \"type\": \"UpdateBoard\",\n  \"payload\": {\n    \"changes\": [\n      {\n        \"square\": [5, 7],\n        \"color\": \"blue\"\n      },\n      {\n        \"square\": [8, 9],\n        \"color\": \"green\"\n      }\n    ]\n  }\n}",
+        "DeathNotification.json": "{\n  \"type\": \"DeathNotification\",\n  \"payload\": {}\n}",
+        "WinnerAnnouncement.json": "{\n  \"type\": \"WinnerAnnouncement\",\n  \"payload\": {\n    \"color\": \"blue\"\n  }\n}",
+        "GameStartCountdown.json": "{\n  \"type\": \"GameStartCountdown\",\n  \"payload\": {\n    \"seconds\": 30\n  }\n}",
+        "JoinGame.json": "{\n  \"type\": \"JoinGame\",\n  \"payload\": {}\n}",
+        "ArrowKeyEvent.json": "{\n  \"type\": \"ArrowKeyEvent\",\n  \"payload\": {\n    \"key\": \"up\"\n  }\n}"
       },
       "e_stats": {
-        "prompt_tokens": 575,
-        "completion_tokens": 279,
-        "total_tokens": 854,
-        "sp_cost": 0.017249999999999998,
-        "sc_cost": 0.01674,
-        "s_total": 0.03399,
-        "elapsed_time": 31.672863960266113
+        "prompt_tokens": 737,
+        "completion_tokens": 591,
+        "total_tokens": 1328,
+        "sp_cost": 0.022109999999999998,
+        "sc_cost": 0.03546,
+        "s_total": 0.057569999999999996,
+        "elapsed_time": 59.78071904182434
       }
     },
     {
@@ -479,7 +110,112 @@
         "mode": "chat"
       },
       "storage_path": "Snake/Server",
-      "text_file": "modules.txt",
+      "text_file": "Server_Plan.md",
+      "messages": [
+        {
+          "role": "system",
+          "content": "\nYou are an IT developer.\nDo not explain yourself.\nDo not apologize.\nComplete the tasks given in a way that allows for easy comprehension while not leaving anything out.\nFor comprehension use indented lists with minus signs.\n"
+        },
+        {
+          "role": "system",
+          "content": "\nText blocks will be delineated as follows:\n\n{text block name}.{ext}\n```{filetype}\n{text block contents}\n```"
+        },
+        {
+          "role": "user",
+          "content": "and here a description of the requirements for the server:"
+        },
+        {
+          "role": "user",
+          "content": "\n- The server calculates the movement of each snake, what snakes if any (die), and what squares need color changes at a rate of 15 steps per second.\n- The server sends the list of squares that changed to each client.\n- The server assigns a color to each client that joins the game and draws their snake.\n- The server updates the state of the game based on the change events to the arrow keys received from each client.\n- The server announces to the client if it has died.\n- The server determines the winner of the game and sends a \"Winner\" message to each client stating the color of the last surviving snake.\n- The server initiates a 30-second countdown to the start of the game when the first client joins after the end of a game."
+        },
+        {
+          "role": "user",
+          "content": "This is the protocol to be used:"
+        },
+        {
+          "role": "user",
+          "content": "\njoinGame.json\n```json\n{\n  \"type\": \"joinGame\",\n  \"data\": {\n    \"clientId\": \"unique_client_id\"\n  }\n}\n```\n\nstartCountdown.json\n```json\n{\n  \"type\": \"startCountdown\",\n  \"data\": {\n    \"countdownSeconds\": 30\n  }\n}\n```\n\ngameState.json\n```json\n{\n  \"type\": \"gameState\",\n  \"data\": {\n    \"squaresChanged\": [\n      {\n        \"x\": 10,\n        \"y\": 20,\n        \"color\": \"#FF0000\"\n      }\n    ],\n    \"snakes\": [\n      {\n        \"clientId\": \"unique_client_id\",\n        \"color\": \"#FF0000\",\n        \"segments\": [\n          {\n            \"x\": 10,\n            \"y\": 20\n          }\n        ]\n      }\n    ],\n    \"deadSnakes\": [\n      \"unique_client_id\"\n    ]\n  }\n}\n```\n\nkeyEvent.json\n```json\n{\n  \"type\": \"keyEvent\",\n  \"data\": {\n    \"clientId\": \"unique_client_id\",\n    \"key\": \"up\"\n  }\n}\n```\n\nwinner.json\n```json\n{\n  \"type\": \"winner\",\n  \"data\": {\n    \"winnerColor\": \"#FF0000\"\n  }\n}\n```"
+        },
+        {
+          "role": "user",
+          "content": "\nAnalyze the included information.\nDescribe the modules and structure of SnakeServer.py"
+        }
+      ],
+      "answer": "SnakeServer.py should be structured into several modules to handle different aspects of the game. Here's a possible structure:\n\n1. **Main Module**\n    - This is the entry point of the server. It initializes the game state and starts the server.\n\n2. **Client Handler Module**\n    - This module handles all client-related tasks. It assigns a color to each client that joins the game and sends the game state to each client.\n\n3. **Game Logic Module**\n    - This module calculates the movement of each snake, determines what snakes, if any, die, and what squares need color changes. It also updates the game state based on the change events to the arrow keys received from each client.\n\n4. **Countdown Module**\n    - This module initiates a 30-second countdown to the start of the game when the first client joins after the end of a game.\n\n5. **Winner Determination Module**\n    - This module determines the winner of the game and sends a \"Winner\" message to each client stating the color of the last surviving snake.\n\n6. **Communication Module**\n    - This module handles all the communication with the clients. It sends and receives messages using the specified protocol.\n\nThe structure of the server should be modular to allow for easy maintenance and updates. Each module should be responsible for a specific aspect of the game, and they should communicate with each other through well-defined interfaces.",
+      "files": {},
+      "e_stats": {
+        "prompt_tokens": 573,
+        "completion_tokens": 283,
+        "total_tokens": 856,
+        "sp_cost": 0.017189999999999997,
+        "sc_cost": 0.01698,
+        "s_total": 0.03416999999999999,
+        "elapsed_time": 25.5502188205719
+      }
+    },
+    {
+      "py/object": "KbServerApp.step.Step",
+      "name": "4. Build Server Modules",
+      "prompt_name": "Snake/Prompts/Build Server Modules.pe",
+      "ai": {
+        "py/object": "KbServerApp.ai.AI",
+        "temperature": 0.0,
+        "max_tokens": 3000,
+        "model": "gpt-4",
+        "mode": "chat"
+      },
+      "storage_path": "Snake/Server/Source",
+      "text_file": "PlaceholderFileGeneration.txt",
+      "messages": [
+        {
+          "role": "system",
+          "content": "\nYou are an IT developer.\nDo not explain yourself.\nDo not apologize.\nComplete the tasks given in a way that allows for easy comprehension while not leaving anything out.\nFor comprehension use indented lists with minus signs.\n"
+        },
+        {
+          "role": "system",
+          "content": "\nText blocks will be delineated as follows:\n\n{text block name}.{ext}\n```{filetype}\n{text block contents}\n```"
+        },
+        {
+          "role": "user",
+          "content": "\nSnakeServer.py should be structured into several modules to handle different aspects of the game. Here's a possible structure:\n\n1. **Main Module**\n    - This is the entry point of the server. It initializes the game state and starts the server.\n\n2. **Client Handler Module**\n    - This module handles all client-related tasks. It assigns a color to each client that joins the game and sends the game state to each client.\n\n3. **Game Logic Module**\n    - This module calculates the movement of each snake, determines what snakes, if any, die, and what squares need color changes. It also updates the game state based on the change events to the arrow keys received from each client.\n\n4. **Countdown Module**\n    - This module initiates a 30-second countdown to the start of the game when the first client joins after the end of a game.\n\n5. **Winner Determination Module**\n    - This module determines the winner of the game and sends a \"Winner\" message to each client stating the color of the last surviving snake.\n\n6. **Communication Module**\n    - This module handles all the communication with the clients. It sends and receives messages using the specified protocol.\n\nThe structure of the server should be modular to allow for easy maintenance and updates. Each module should be responsible for a specific aspect of the game, and they should communicate with each other through well-defined interfaces."
+        },
+        {
+          "role": "user",
+          "content": "\nGenerate the placeholder files for the SnakeServer.py and its modules\nput each file in it's own text block."
+        }
+      ],
+      "answer": "**Main Module**\n\nMain.py\n```python\n# This is the entry point of the server. It initializes the game state and starts the server.\ndef main():\n    pass\nif __name__ == \"__main__\":\n    main()\n```\n\n**Client Handler Module**\n\nClientHandler.py\n```python\n# This module handles all client-related tasks.\nclass ClientHandler:\n    def __init__(self):\n        pass\n```\n\n**Game Logic Module**\n\nGameLogic.py\n```python\n# This module calculates the movement of each snake and updates the game state.\nclass GameLogic:\n    def __init__(self):\n        pass\n```\n\n**Countdown Module**\n\nCountdown.py\n```python\n# This module initiates a 30-second countdown to the start of the game.\nclass Countdown:\n    def __init__(self):\n        pass\n```\n\n**Winner Determination Module**\n\nWinnerDetermination.py\n```python\n# This module determines the winner of the game.\nclass WinnerDetermination:\n    def __init__(self):\n        pass\n```\n\n**Communication Module**\n\nCommunication.py\n```python\n# This module handles all the communication with the clients.\nclass Communication:\n    def __init__(self):\n        pass\n```",
+      "files": {
+        "Main.py": "# This is the entry point of the server. It initializes the game state and starts the server.\ndef main():\n    pass\nif __name__ == \"__main__\":\n    main()",
+        "ClientHandler.py": "# This module handles all client-related tasks.\nclass ClientHandler:\n    def __init__(self):\n        pass",
+        "GameLogic.py": "# This module calculates the movement of each snake and updates the game state.\nclass GameLogic:\n    def __init__(self):\n        pass",
+        "Countdown.py": "# This module initiates a 30-second countdown to the start of the game.\nclass Countdown:\n    def __init__(self):\n        pass",
+        "WinnerDetermination.py": "# This module determines the winner of the game.\nclass WinnerDetermination:\n    def __init__(self):\n        pass",
+        "Communication.py": "# This module handles all the communication with the clients.\nclass Communication:\n    def __init__(self):\n        pass"
+      },
+      "e_stats": {
+        "prompt_tokens": 397,
+        "completion_tokens": 249,
+        "total_tokens": 646,
+        "sp_cost": 0.01191,
+        "sc_cost": 0.01494,
+        "s_total": 0.02685,
+        "elapsed_time": 36.02623248100281
+      }
+    },
+    {
+      "py/object": "KbServerApp.step.Step",
+      "name": "5. Main Html Server",
+      "prompt_name": "Snake/Prompts/Add Html server to Main.py",
+      "ai": {
+        "py/object": "KbServerApp.ai.AI",
+        "temperature": 0.0,
+        "max_tokens": 3000,
+        "model": "gpt-4",
+        "mode": "chat"
+      },
+      "storage_path": "Snake/Server/Source",
+      "text_file": "AddHtmlServer.txt",
       "messages": [],
       "answer": "",
       "files": {},

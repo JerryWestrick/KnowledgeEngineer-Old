@@ -1,0 +1,8 @@
+.include Snake/Prompts/Actor.pe
+.include Snake/Prompts/Text Block.pe
+.include Snake/Requirements/Components/Server.md
+.include Snake/Server/server_overview.txt
+.user 
+Generate the files for the SnakeServer.py and its modules.
+Use lots of documentation about what each piece of code is required to do.
+

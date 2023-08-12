@@ -23,7 +23,8 @@ def interpret_results(text: str) -> dict[str, str]:
     result = {}
     full_path: str = ''
     content: str = ''
-    text_blocks = re.findall(r'^([\w\s/:.]+)```(\w+)?([^`]+)```', text, re.MULTILINE)
+    # text_blocks = re.findall(r'^([\w\s/:.]+)```(\w+)?([^`]+)```', text, re.MULTILINE)
+    text_blocks = re.findall(r"^([\w /:.]+)\s```(\w+)?([^`]+)```", text, re.MULTILINE)
     for (name, ext, content) in text_blocks:
         name = name.strip()
         content = content.strip()

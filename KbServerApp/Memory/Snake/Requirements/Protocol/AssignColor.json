@@ -1,0 +1,6 @@
+{
+  "type": "AssignColor",
+  "payload": {
+    "color": "red"
+  }
+}

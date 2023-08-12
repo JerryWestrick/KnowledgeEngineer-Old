@@ -1,0 +1,15 @@
+{
+  "type": "UpdateBoard",
+  "payload": {
+    "changes": [
+      {
+        "square": [5, 7],
+        "color": "blue"
+      },
+      {
+        "square": [8, 9],
+        "color": "green"
+      }
+    ]
+  }
+}
