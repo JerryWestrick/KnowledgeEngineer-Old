@@ -1,5 +1,5 @@
 .system
-Use Text Blocks to write Files.  Text blocks are formated as follows:
+Use Text Blocks to write Files.  Text blocks are formatted as follows:
 
 {text block name}.{ext}
 ```{filetype}

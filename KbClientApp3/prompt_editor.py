@@ -1,5 +1,6 @@
 import json
 
+import markdown as markdown
 from PySide6.QtGui import QDragEnterEvent, QDropEvent
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QSpacerItem, QSizePolicy, \
     QTextEdit, QMainWindow, QDialog
@@ -66,6 +67,9 @@ class PromptEditor(QWidget):
         self.save_button.clicked.connect(self.write_memory)
         h_box3.addWidget(self.save_button)
         h_box3.addItem(QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
+        self.md_button = QPushButton("Markdown")
+        self.md_button.clicked.connect(self.md_memory)
+        h_box3.addWidget(self.md_button)
         self.test_button = QPushButton("Test")
         self.test_button.clicked.connect(self.test_memory)
         h_box3.addWidget(self.test_button)
@@ -105,6 +109,11 @@ class PromptEditor(QWidget):
         record = {'prompt_name': self.prompt_name}
         msg = {'cmd': 'test', 'object': 'memory', 'cb': 'cb_test_memory', 'record': record}
         SEND(msg)
+
+    def md_memory(self):
+        md_text = self.text_edit.toPlainText()
+        html_content = markdown.markdown(md_text)
+        self.text_edit.setHtml(html_content)
 
     def cb_test_memory(self, msg):
         if msg['rc'] == 'Fail':

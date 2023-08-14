@@ -1,6 +1,0 @@
-{
-  "type": "GameStartCountdown",
-  "payload": {
-    "seconds": 30
-  }
-}

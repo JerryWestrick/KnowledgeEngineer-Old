@@ -1,0 +1,30 @@
+{
+    "type": "GameState",
+    "data": {
+        "snakes": [
+            {
+                "id": "1",
+                "color": "red",
+                "positions": [
+                    {"x": 5, "y": 5},
+                    {"x": 5, "y": 6},
+                    {"x": 5, "y": 7}
+                ]
+            },
+            {
+                "id": "2",
+                "color": "blue",
+                "positions": [
+                    {"x": 10, "y": 10},
+                    {"x": 10, "y": 11},
+                    {"x": 10, "y": 12}
+                ]
+            }
+        ],
+        "changedSquares": [
+            {"x": 5, "y": 5, "color": "red"},
+            {"x": 10, "y": 10, "color": "blue"}
+        ],
+        "deadClients": ["2"]
+    }
+}

@@ -5,7 +5,7 @@ implement a multi user "Snake" online game.
 - The game consists of 15 steps per second.
 - each step the server calculates:
     - the movement of each snake,
-    - what snakes if any (die),
+    - what snakes if any die,
     - what squares need color changes,
     - the list of squares that changed, and the new color is sent to each client.
 
