@@ -3,7 +3,7 @@
 .include Snake/Requirements/Game Description.pe
 .user
 Analyse the game description.
-Write 3 files:
+Write 3 text block files:
     - Server.md containing the description of the server and it's requirements
     - Client.md containing the description of the client and it's requirements
     - Protocol.md containing a description of the required Protocol.

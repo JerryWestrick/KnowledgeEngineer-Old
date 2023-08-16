@@ -1,0 +1,5 @@
+{
+  "type": "JoinGame",
+  "clientId": "123456",
+  "authToken": "abc123"
+}

@@ -1,0 +1,8 @@
+.include Snake/Prompts/Actor.pe
+.include Snake/Prompts/Text Block.pe
+.include Snake/Dynamic/Server/Server_Plan.md
+.user 
+read the plan.
+Separate each step in the plan into a unique file
+write a text block file named Step_<nn>.md for each step
+

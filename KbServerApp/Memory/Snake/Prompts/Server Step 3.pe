@@ -1,0 +1,10 @@
+.include Snake/Prompts/Actor.pe
+.include Snake/Prompts/Text Block.pe
+.user Here is the description of SnakeServer.py
+.include Snake/Dynamic/Components/Server.md
+.include Snake/Dynamic/Protocol/Protocol Description.md
+.user here is the code of SnakeServer.py
+.include Snake/Dynamic/Server/Source/SnakeServer.py
+.user Modify the code by implementing this step:
+.include Snake/Dynamic/Server/Step_3.md
+.user write modified code into text block file SnakeServer.py

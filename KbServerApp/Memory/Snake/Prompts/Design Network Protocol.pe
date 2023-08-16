@@ -1,9 +1,8 @@
 .include Snake/Prompts/Actor.pe
 .include Snake/Prompts/Text Block.pe
-.include Snake/Requirements/Components/Components_List.md
+.include Snake/Dynamic/Components/Components_List.md
 .user
 Analyze the system described.
 Design a network protocol based on json messages for the application.
 Describe each msg  type and its usage in a paragraph, followed by
-a file with name: {msg_type}.json
-
+a text block file with name: {msg_type}.json

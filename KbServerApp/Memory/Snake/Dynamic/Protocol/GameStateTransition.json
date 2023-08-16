@@ -1,8 +1,0 @@
-{
-    "type": "GameStateTransition",
-    "data": {
-        "currentState": "countdown",
-        "nextState": "game",
-        "countdown": 10
-    }
-}

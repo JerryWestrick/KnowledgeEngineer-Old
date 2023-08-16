@@ -24,18 +24,21 @@ def interpret_results(text: str) -> dict[str, str]:
     full_path: str = ''
     content: str = ''
     # text_blocks = re.findall(r'^([\w\s/:.]+)```(\w+)?([^`]+)```', text, re.MULTILINE)
-    text_blocks = re.findall(r"^([\w /:.]+)\s```(\w+)?([^`]+)```", text, re.MULTILINE)
-    for (name, ext, content) in text_blocks:
+    text_blocks = re.findall(r"^(\w[\w ]+)\.(.+)$\n^```(.*)$\n((?:^(?!```).*$\n?)+)^```", text, re.MULTILINE)
+    for (name, ext, _, content) in text_blocks:
         name = name.strip()
+        name = name.replace("*", "")
+        ext = ext.replace("*", "")
         content = content.strip()
+        file_name = f"{name}.{ext}"
 
         # remove the file extension if it is '.xxx.pe'
-        pl = name.split('.')
+        pl = file_name.split('.')
         if pl[-1] == 'pe' and len(pl[-2]) < 5:
             pl.pop()  # remove the file extension
-            name = '.'.join(pl)
+            file_name = '.'.join(pl)
 
-        result[name] = content
+        result[file_name] = content
     return result
 
 

@@ -1,16 +1,23 @@
 # Client
 
-The client is responsible for interacting with the user and communicating with the server.
+The client is responsible for rendering the game board and handling user input. It performs the following tasks:
 
-## Requirements:
+- Connects to the server and joins the game.
+- Displays the game board and the player's snake.
+- Shows a countdown to the start of the game.
+- Updates the server with any change events to the state of the arrow keys.
+- Receives updates from the server and updates the game board accordingly.
+- Displays a message if the player's snake dies.
+- Shows the winner message at the end of the game.
 
-- The client must display a "Join the game" pop-up with a countdown to game start.
-- The client must provide Yes/No buttons for the user to join or decline the game.
-- The client must close the pop-up when the user joins the game, declines the game, or when the game starts.
-- The client must display the entire game board.
-- The client must display a countdown to game start.
-- The client must update the server of any change event to the state of the arrow keys.
-- The client must update its view of the game board with the update commands received from the server.
-- The client must display a "Winner" message stating the color of the last surviving snake at the end of the game.
-- The client must display the winner until "ok" is clicked.
-- The client must display the "Join the Game" pop-up after the end of the game.
+## Requirements
+
+To implement the client, the following requirements should be considered:
+
+- The client should have a graphical user interface to display the game board and messages.
+- It should be able to connect to the server and establish a network connection.
+- The client should be able to send user input to the server, indicating changes to the state of the arrow keys.
+- It should receive updates from the server and update the game board accordingly.
+- The client should be able to render the game board and the player's snake in real-time.
+- It should display a countdown to the start of the game and update it as necessary.
+- The client should handle messages from the server, such as notifications of snake death and the winner message at the end of the game.
