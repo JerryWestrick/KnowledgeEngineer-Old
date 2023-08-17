@@ -24,27 +24,27 @@ empty_step_json = '''{
       "py/object": "KbServerApp.step.Step",
       "name": "New Step",
       "prompt_name": "",
+      "storage_path": "",
+      "text_file": "",
       "ai": {
         "py/object": "KbServerApp.ai.AI",
         "temperature": 0,
         "max_tokens": 3000,
         "model": "gpt-3.5-turbo",
-        "mode": "chat"
+        "messages": [],
+        "answer": "",
+        "files": {},
+        "mode": "chat",
+          "e_stats": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0,
+            "sp_cost": 0.0,
+            "sc_cost": 0.0,
+            "s_total": 0.0,
+            "elapsed_time": 0.0
+          }
       },
-      "storage_path": "",
-      "text_file": "",
-      "messages": [],
-      "answer": "",
-      "files": {},
-      "e_stats": {
-        "prompt_tokens": 0,
-        "completion_tokens": 0,
-        "total_tokens": 0,
-        "sp_cost": 0.0,
-        "sc_cost": 0.0,
-        "s_total": 0.0,
-        "elapsed_time": 0.0
-      }
     }
 '''
 
@@ -127,8 +127,8 @@ class KbServerProtocol(WebSocketServerProtocol):
                 subtree.setdefault(dirname, {})
 
             for filename in filenames:
+                path = os.path.join(dirpath, filename)
                 try:
-                    path = os.path.join(dirpath, filename)
                     with open(path, 'r') as f:
                         content = f.read()
                         subtree[filename] = content
@@ -166,11 +166,11 @@ class KbServerProtocol(WebSocketServerProtocol):
             ai_model = step.ai.model
             pricing = OpenAI_API_Costs[ai_model]
             yield step.run(self, pname)
-            prompt_tokens += step.e_stats['prompt_tokens']
-            completion_tokens += step.e_stats['completion_tokens']
-            total_tokens += step.e_stats['total_tokens']
-            sp_cost = pricing['input'] * (step.e_stats['prompt_tokens'] / 1000)
-            sc_cost = pricing['output'] * (step.e_stats['completion_tokens'] / 1000)
+            prompt_tokens += step.ai.e_stats['prompt_tokens']
+            completion_tokens += step.ai.e_stats['completion_tokens']
+            total_tokens += step.ai.e_stats['total_tokens']
+            sp_cost = pricing['input'] * (step.ai.e_stats['prompt_tokens'] / 1000)
+            sc_cost = pricing['output'] * (step.ai.e_stats['completion_tokens'] / 1000)
             s_total = sp_cost + sc_cost
             p_cost += sp_cost
             c_cost += sc_cost
@@ -288,22 +288,19 @@ class KbServerProtocol(WebSocketServerProtocol):
         self.send_object(msg)
 
     def move_memory(self, msg, isbinary):
-        prompt_name = msg['record']['prompt_name']
         from_path = msg['record']['from_path']
         to_path = msg['record']['to_path']
-        KbServerProtocol.log.info(f"Call to move_memory {prompt_name} from {from_path} to {to_path}...")
+        KbServerProtocol.log.info(f"Call to move_memory {from_path} to {to_path}...")
         msg['rc'] = 'Okay'
-        msg['reason'] = f"Call to move_memory {prompt_name} from {from_path} to {to_path} complete"
+        msg['reason'] = f"Call to move_memory {from_path} to {to_path}..."
 
         try:
-            from_full_name = f'{from_path}/{prompt_name}'
-            to_full_name = f'{to_path}/{prompt_name}'
-            contents = Step.memory.read(from_full_name)
+            contents = Step.memory.read(from_path)
             # KbServerProtocol.log.info(f"read {from_full_name}: {contents}")
-            Step.memory[to_full_name] = contents
+            Step.memory[to_path] = contents
             # KbServerProtocol.log.info(f"write {to_full_name}: {contents[:100]}")
-            del Step.memory[from_full_name]
-            KbServerProtocol.log.info(f"Call to move_memory {prompt_name} from {from_path} to {to_path} complete")
+            del Step.memory[from_path]
+            KbServerProtocol.log.info(f"Call to move_memory {from_path} to {to_path}... complete")
         except KeyError as key:
             msg['rc'] = 'Fail'
             msg['reason'] = f'move failed key error {key}'
@@ -350,6 +347,17 @@ class KbServerProtocol(WebSocketServerProtocol):
             msg['reason'] = f'move failed key error {key}'
         self.send_object(msg)
         self.memory_initial_load() # as I don't trust the iNotify to get this one right
+
+    def delete_dynamic_memory(self, msg, isbinary):
+        KbServerProtocol.log.info("Enter delete_dynamic_memory({msg})", msg=msg)
+        full_path_name = msg['record']['full_path_name']
+        KbServerProtocol.log.info(f"Call to delete_dynamic_memory({full_path_name})")
+        msg['rc'] = 'Okay'
+        msg['reason'] = f'Delete of dynamic_memory {full_path_name} Complete'
+        Step.memory.clear_dynamic_memory(full_path_name)
+        self.send_object(msg)
+        # self.memory_initial_load()  Memory is auto updated
+        # returnValue('')
 
     def delete_memory(self, msg, isbinary):
         KbServerProtocol.log.info("Enter delete_memory({msg})", msg=msg)
@@ -492,12 +500,10 @@ from twisted.internet import inotify
 from twisted.python import filepath
 
 
-def notify(ignored, fp, mask):
+def notify(_, fp, mask):
     """
-    For historical reasons, an opaque handle is passed as first
-    parameter. This object should never be used.
-
-    @param filepath: FilePath on which the event happened.
+    @param _: For historical reasons, an opaque handle is passed as first parameter. This object should never be used.
+    @param fp: FilePath on which the event happened.
     @param mask: inotify event as hexadecimal masks
     """
     fn = fp.asTextMode()  # encode('utf-8')# decode('utf-8')

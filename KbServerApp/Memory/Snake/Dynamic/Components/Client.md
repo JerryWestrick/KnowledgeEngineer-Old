@@ -1,23 +1,14 @@
 # Client
 
-The client is responsible for rendering the game board and handling user input. It performs the following tasks:
+The client is responsible for interacting with the user and communicating with the server. It performs the following tasks:
 
-- Connects to the server and joins the game.
-- Displays the game board and the player's snake.
-- Shows a countdown to the start of the game.
-- Updates the server with any change events to the state of the arrow keys.
-- Receives updates from the server and updates the game board accordingly.
-- Displays a message if the player's snake dies.
-- Shows the winner message at the end of the game.
-
-## Requirements
-
-To implement the client, the following requirements should be considered:
-
-- The client should have a graphical user interface to display the game board and messages.
-- It should be able to connect to the server and establish a network connection.
-- The client should be able to send user input to the server, indicating changes to the state of the arrow keys.
-- It should receive updates from the server and update the game board accordingly.
-- The client should be able to render the game board and the player's snake in real-time.
-- It should display a countdown to the start of the game and update it as necessary.
-- The client should handle messages from the server, such as notifications of snake death and the winner message at the end of the game.
+- Displays a "Join the game" pop-up with a countdown to game start when connected.
+- Provides Yes/No buttons for the user to join or decline to join the game.
+- Closes the pop-up when the user joins the game, declines to join, or when the game starts.
+- Displays the entire game board to the user once they join the game.
+- Displays a countdown to game start.
+- Sends any change event to the state of the arrow keys to the server.
+- Updates its view of the game board based on the update commands received from the server.
+- Continues to update the screen after the user's snake has died until the end of the game.
+- Displays a "Winner" message stating the color of the last surviving snake at the end of the game until "ok" is clicked.
+- Displays the "Join the Game" pop-up after the end of the game, but does not initiate a countdown until the first client joins.

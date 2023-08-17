@@ -1,22 +1,16 @@
 # Server
 
-The server is responsible for managing the game logic and facilitating communication between the clients. It performs the following tasks:
+The server is responsible for managing the game state and communicating with the clients. It performs the following tasks:
 
-- Manages the game board, which is a 100 x 100 grid of squares.
-- Calculates the movement of each snake on each step of the game.
-- Determines if any snakes have died.
-- Tracks the squares that need color changes.
-- Sends the updated game state to each client.
-
-## Requirements
-
-To implement the server, the following requirements should be considered:
-
-- The server should be able to handle multiple concurrent connections from clients.
-- It should have a high-performance network stack to handle the real-time nature of the game.
-- The server should be able to process game logic and update the game state at a rate of 15 steps per second.
-- It should have a data structure to represent the game board and track the state of each square.
-- The server should be able to handle client input and update the game state accordingly.
-- It should have a mechanism to detect when a snake dies and remove it from the game.
-- The server should be able to send the updated game state to each client efficiently.
-- It should handle the start and end of the game, including managing the countdown and announcing the winner.
+- Manages the game board of 100 x 100 squares.
+- Calculates the game at a rate of 15 steps per second.
+- Each step involves:
+    - Calculating the movement of each snake.
+    - Determining if any snakes die.
+    - Identifying squares that need color changes.
+- Sends a list of squares that changed and their new colors to each client.
+- Assigns a color to each client that joins the game and draws their snake.
+- Updates the state of the game based on the arrow key events received from each client.
+- Announces to the client if it has died.
+- Announces the color of the last surviving snake as the winner at the end of the game.
+- Initiates a 30-second countdown to the start of the game when the first client joins after the end of a game.

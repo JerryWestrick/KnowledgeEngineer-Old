@@ -6,12 +6,12 @@ import json
 import re
 import time
 
-from twisted.internet.defer import inlineCallbacks
 
-from KbServerApp.OpenAI_API_Costs import OpenAI_API_Costs
+from twisted.internet.defer import inlineCallbacks
+from twisted.logger import Logger
+
 from KbServerApp.ai import AI
 from KbServerApp.db import DB
-from KbServerApp.logger import GptLogger
 
 
 def interpret_results(text: str) -> dict[str, str]:
@@ -43,18 +43,17 @@ def interpret_results(text: str) -> dict[str, str]:
 
 
 class Step:
-    instances = {}
+    log = Logger(namespace='Step')
     memory = DB('Memory')
 
     def __init__(self, name: str, prompt_name: str, ai: AI, storage_path: str, text_file: str):
         # Note:  If you recreate a new step will overwrite the old one.
         self.name: str = name
         self.prompt_name: str = prompt_name
-        self.ai: AI = ai
         self.storage_path: str = storage_path
         self.text_file: str = text_file
-        self.__class__.instances[name] = self
         # Storage for historical values
+        self.ai: AI = ai
         self.messages: [dict[str, str]] = []  # The messages that have been sent to the AI
         self.answer: str = ''  # The answer from within the response
         self.files: dict[str, str] = {}  # The files that have been returned from the AI
@@ -75,21 +74,9 @@ class Step:
         return {
             'name': self.name,
             'prompt_name': self.prompt_name,
-            'ai': self.ai.to_json(),
             'storage_path': self.storage_path,
-            'messages': self.messages,
-            'answer': self.answer,
-            'files': self.files,
             'text_file': self.text_file,
-            'e_stats': {
-                'prompt_tokens': self.e_stats['prompt_tokens'],
-                'completion_tokens': self.e_stats['completion_tokens'],
-                'total_tokens': self.e_stats['total_tokens'],
-                'sp_cost': self.e_stats['sp_cost'],
-                'sc_cost': self.e_stats['sc_cost'],
-                's_total': self.e_stats['s_total'],
-                'elapsed_time': self.e_stats['elapsed_time'],
-            }
+            'ai': self.ai.to_json(),
         }
 
     @classmethod
@@ -104,12 +91,6 @@ class Step:
             storage_path=json_obj['storage_path'],
             text_file=json_obj['text_file']
         )
-        if 'messages' not in json_obj:
-            return step
-        step.messages = json_obj['messages']
-        step.answer = json_obj['answer']
-        step.files = json_obj['files']
-        step.e_stats = json_obj['e_stats']
         return step
 
     @inlineCallbacks
@@ -117,18 +98,18 @@ class Step:
         msg = {}
         head_len = len('[2023-06-30 10:29:41] STEP: ')
         head = ' ' * head_len
-        GptLogger.log('STEP', f"{'=' * 50}\n{head}Begin Step: {self.name}\n{head}{self.prompt_name}")
-        self.messages = self.memory[self.prompt_name]
-        # clear old History...
-        self.answer = ''
-        self.files = {}
-        self.e_stats['elapsed_time'] = 0.0
-        self.e_stats['prompt_tokens'] = 0.0
-        self.e_stats['completion_tokens'] = 0.0
-        self.e_stats['sp_cost'] = 0.0
-        self.e_stats['sc_cost'] = 0.0
-        self.e_stats['s_total'] = 0.0
-        self.e_stats['elapsed_time'] = 0.0
+        Step.log.info(f"{'=' * 50}\n{head}Begin Step: {self.name}\n{head}{self.prompt_name}")
+        self.ai.messages = self.memory[self.prompt_name]
+        # Clear Old History
+        self.ai.answer = ''
+        self.ai.files = {}
+        self.ai.e_stats['elapsed_time'] = 0.0
+        self.ai.e_stats['prompt_tokens'] = 0.0
+        self.ai.e_stats['completion_tokens'] = 0.0
+        self.ai.e_stats['sp_cost'] = 0.0
+        self.ai.e_stats['sc_cost'] = 0.0
+        self.ai.e_stats['s_total'] = 0.0
+        self.ai.e_stats['elapsed_time'] = 0.0
 
         # Send Update to the GUI
         msg = {'cmd': 'update', 'cb': 'update_step', 'rc': 'Okay', 'object': 'step', 'record': self.to_json()}
@@ -136,51 +117,32 @@ class Step:
         proto.sendMessage(response.encode('UTF8'), False)
 
         start_time = time.time()
-        ai_response = yield self.ai.generate(self.messages)
-        self.e_stats['elapsed_time'] = time.time() - start_time
-        self.e_stats['prompt_tokens'] = ai_response['usage']['prompt_tokens']
-        self.e_stats['completion_tokens'] = ai_response['usage']['completion_tokens']
-        self.e_stats['total_tokens'] = ai_response['usage']['total_tokens']
-        GptLogger.log('STEP', f"Call {self.ai.model} Elapsed: {self.e_stats['elapsed_time']:.2f}s Token Usage: "
-                              f"Total:{self.e_stats['total_tokens']} ("
-                              f"Prompt:{self.e_stats['prompt_tokens']}, "
-                              f"Completion:{self.e_stats['completion_tokens']})"
-                      )
+        ai_response = yield self.ai.generate()
+        Step.log.info(f"Call {self.ai.model} Elapsed: {self.ai.e_stats['elapsed_time']:.2f}s Token Usage: "
+                      f"Total:{self.ai.e_stats['total_tokens']} ("
+                      f"Prompt:{self.ai.e_stats['prompt_tokens']}, "
+                      f"Completion:{self.ai.e_stats['completion_tokens']})")
 
-        if self.ai.mode == 'chat':
-            self.answer = ai_response.choices[0].message.content
-        else:
-            self.answer = ai_response.choices[0].text
-
-        self.files = interpret_results(text=self.answer)
-        pricing = OpenAI_API_Costs[self.ai.model]
-
-        self.e_stats['sp_cost'] = pricing['input'] * (self.e_stats['prompt_tokens'] / 1000)
-        self.e_stats['sc_cost'] = pricing['output'] * (self.e_stats['completion_tokens'] / 1000)
-        self.e_stats['s_total'] = self.e_stats['sp_cost'] + self.e_stats['sc_cost']
-
+        self.ai.files = interpret_results(text=self.ai.answer)
         # Send Update to the GUI
         msg = {'cmd': 'update', 'cb': 'update_step', 'rc': 'Okay', 'object': 'step', 'record': self.to_json()}
         response = json.dumps(msg, ensure_ascii=False, default=str)
         proto.sendMessage(response.encode('UTF8'), False)
 
         # Okay Now we  need to save the response to the memory
-        for name, content in self.files.items():
+        for name, content in self.ai.files.items():
             # check for set memory
             if name == 'variable':
                 t = json.loads(content)
                 for k, v in t.items():
                     self.memory.macro[k] = v
-                    GptLogger.log('STEP', f"Setting Memory.macro['{k}']={v}")
+                    Step.log.info(f"Setting Memory.macro['{k}']={v}")
                 continue
             else:
                 full_path = f"{self.storage_path}/{name}"
                 self.memory[full_path] = content
-                GptLogger.log('STEP', f"Writing {full_path}")
+                Step.log.info(f"Writing {full_path}")
         if self.text_file != '':
             full_path = f"{self.storage_path}/{self.text_file}"
-            self.memory[full_path] = self.answer
-            GptLogger.log('STEP', f"Writing {full_path}")
-
-
-    
+            self.memory[full_path] = self.ai.answer
+            Step.log.info(f"Writing {full_path}")

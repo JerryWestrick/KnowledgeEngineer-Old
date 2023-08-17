@@ -1,0 +1,10 @@
+{
+  "type": "GameStatus",
+  "data": {
+    "clientStatus": {
+      "clientID": "123",
+      "status": "dead"
+    },
+    "winnerColor": "#FF0000"
+  }
+}

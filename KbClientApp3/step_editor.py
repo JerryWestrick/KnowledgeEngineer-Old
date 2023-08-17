@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import QApplication, QWidget, QFormLayout, QLabel, QLineEdit, QComboBox, QDoubleSpinBox, \
-    QSpinBox, QPushButton, QHBoxLayout
+    QSpinBox, QPushButton, QHBoxLayout, QGroupBox
 from PySide6.QtCore import Qt
 
 from websocket import REGISTER_CALLBACK, SEND

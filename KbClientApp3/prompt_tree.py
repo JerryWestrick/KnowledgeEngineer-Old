@@ -137,7 +137,7 @@ class PromptTree(QWidget):
             self.log('move_directory', f'move dir({from_name}) from dir:{from_path} to dir:{to_path}')
             self.move_directory(from_name, '/'.join(from_path), '/'.join(to_path))
         else:
-            self.log('move_memory', f'move file({from_name}) from dir:{from_path} to dir:{to_path}')
+            self.log('move_memory', f'move {from_path} to {to_path}')
             self.move_memory(from_name, '/'.join(from_path), '/'.join(to_path))
 
     def move_directory(self, name, from_path, to_path):
@@ -153,16 +153,15 @@ class PromptTree(QWidget):
         else:
             self.log('cb_move_directory', f"cb_move_directory failed reason: {msg['reason']}")
 
-    def move_memory(self, name, from_path, to_path):
-        record = {'prompt_name': name, 'from_path': from_path, 'to_path': to_path}
+    def move_memory(self, name, from_path, to_name, to_path):
+        record = {'prompt_name': name, 'from_path': from_path, 'to_path': to_path, 'to_name': to_name}
         SEND({'cmd': 'move', 'object': 'memory', 'cb': 'cb_move_memory', 'record': record})
 
     def cb_move_memory(self, msg):
-        name = msg['record']['prompt_name']
         from_path = msg['record']['from_path']
         to_path = msg['record']['to_path']
         if msg['rc'] == 'Okay':
-            self.log('cb_move_memory', f"cb_move_memory moved {name} from {from_path} to {to_path}")
+            self.log('cb_move_memory', f"cb_move_memory moved {from_path} to {to_path}")
         else:
             self.log('cb_move_memory', f"cb_move_memory failed reason: {msg['reason']}")
 
@@ -276,18 +275,24 @@ class PromptTree(QWidget):
 
         # Create actions
         delete_action = QAction("Delete", self)
+        rename_action = QAction("Rename", self)
         new_dir_action = QAction("Create New Directory", self)
         new_prompt_action = QAction("Create New Prompt", self)
+        delete_dynamic_memory = QAction("Delete All Files", self)
 
         # Add actions to menu
         context_menu.addAction(delete_action)
+        context_menu.addAction(rename_action)
         context_menu.addAction(new_dir_action)
         context_menu.addAction(new_prompt_action)
+        context_menu.addAction(delete_dynamic_memory)
 
         # Connect actions to custom slot methods
         delete_action.triggered.connect(self.delete_memory)
+        rename_action.triggered.connect(self.rename_prompt)
         new_dir_action.triggered.connect(self.create_directory)
         new_prompt_action.triggered.connect(self.create_new_prompt)
+        delete_dynamic_memory.triggered.connect(self.delete_dynamic_memory)
 
         # Show context menu
         context_menu.exec_(self.tree_widget.mapToGlobal(point))
@@ -313,6 +318,26 @@ class PromptTree(QWidget):
                      f"Error: delete_memory({msg['record']['full_path_name']}) reason {msg['reason']}")
             return
         self.log('cb_delete_memory', f"delete_memory({msg['record']['full_path_name']}) complete")
+
+    def delete_dynamic_memory(self):
+        current_item = self.tree_widget.currentItem()
+        path = self.get_index(current_item)
+        data = self.get_data(path)
+        if type(data) is not dict:
+            return
+
+        full_path_name = '/'.join(path)
+        self.log('delete_dynamic_items', f"Delete of all files recursively in {full_path_name}")
+        record = {'full_path_name': full_path_name}
+        msg = {'cmd': 'delete', 'object': 'dynamic_memory', 'cb': 'cb_delete_dynamic_memory', 'record': record}
+        SEND(msg)
+
+    def cb_delete_dynamic_memory(self, msg):
+        if msg['rc'] != 'Okay':
+            self.log('cb_delete_dynamic_memory',
+                     f"Error: cb_delete_dynamic_memory({msg['record']['full_path_name']}) reason {msg['reason']}")
+            return
+        self.log('cb_delete_dynamic_memory', f"cb_delete_dynamic_memory({msg['record']['full_path_name']}) complete")
 
     def create_directory(self):
         current_item = self.tree_widget.currentItem()
@@ -350,6 +375,23 @@ class PromptTree(QWidget):
             record = {'prompt_name': full_path_name, 'text': ''}
             SEND({'cmd': 'write', 'cb': 'cb_write_memory', 'object': 'memory', 'record': record})
             self.log("write_memory", f"call write_memory({full_path_name})")
+
+    def rename_prompt(self):
+        current_item = self.tree_widget.currentItem()
+        path = self.get_index(current_item)
+        ele = self.get_data(path)
+        if type(ele) is dict:
+            return
+
+        from_path = '/'.join(path)
+        new_name, ok = QInputDialog.getText(self, "File Name", f"Enter New name of {from_path} file:")
+        if ok:
+            # The user clicked "OK" and provided a valid input
+            to_path = '/'.join(path[:-1])+'/'+new_name
+            record = {'from_path': from_path, 'to_path': to_path}
+            msg = {'cmd': 'move', 'cb': 'cb_move_memory', 'object': 'memory', 'record': record}
+            SEND(msg)
+            self.log("move_memory", f"call move_memory({record})")
 
     def cb_write_memory(self, msg):
         if msg['rc'] == 'Okay':

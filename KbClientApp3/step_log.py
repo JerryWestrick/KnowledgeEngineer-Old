@@ -36,9 +36,19 @@ class StepLog(QWidget):
 
         # Fill the table with keys and values from the step dictionary
         for i, (key, value) in enumerate(step.items()):
+            if key == 'ai':
+                continue
             self.table.insertRow(i)
             self.table.setItem(i, 0, QTableWidgetItem(str(key)))
             self.table.setItem(i, 1, QTableWidgetItem(str(value)))
+
+        ai = step['ai']
+        # Fill the table with keys and values from the ai dictionary
+        last_row = self.table.rowCount()
+        for i, (key, value) in enumerate(ai.items()):
+            self.table.insertRow(last_row + i)
+            self.table.setItem(last_row + i, 0, QTableWidgetItem(str(key)))
+            self.table.setItem(last_row + i, 1, QTableWidgetItem(str(value)))
 
     def update_step(self, msg):
         # Load the new step into the table

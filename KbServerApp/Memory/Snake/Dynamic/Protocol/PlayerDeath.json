@@ -1,5 +1,0 @@
-{
-  "type": "PlayerDeath",
-  "snakeId": "snake1",
-  "cause": "collision"
-}

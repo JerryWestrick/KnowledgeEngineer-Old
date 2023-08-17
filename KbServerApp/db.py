@@ -138,10 +138,23 @@ class DB:
         # we now have a string with no '${' as only element in begin
         return begin[0]
 
-    def delete_dynamic_memory(self, process_name: str):
-        # delete all subdirectories and files in the directory Dynamic
-        this_dir = self.path / 'Dynamic' / process_name
-        if os.path.exists(this_dir):
-            shutil.rmtree(this_dir)
-        os.mkdir(this_dir)
-        Logger.log('MEMORY', f"deleted {this_dir} ")
+    # def delete_dynamic_memory(self, process_name: str):
+    #     # delete all subdirectories and files in the directory Dynamic
+    #     this_dir = self.path / 'Dynamic' / process_name
+    #     if os.path.exists(this_dir):
+    #         shutil.rmtree(this_dir)
+    #     os.mkdir(this_dir)
+    #     Logger.log('MEMORY', f"deleted {this_dir} ")
+
+    def clear_dynamic_memory(self, directory_path):
+        try:
+            directory_path = self.path / directory_path
+            for item in directory_path.iterdir():
+                if item.is_file():
+                    item.unlink()  # Delete the file
+                elif item.is_dir():
+                    self.clear_dynamic_memory(item)  # Recursive call for subdirectories
+            # directory_path.rmdir()  # Delete the now-empty directory
+        except Exception as e:
+            print(f"An error occurred: {e}")
+

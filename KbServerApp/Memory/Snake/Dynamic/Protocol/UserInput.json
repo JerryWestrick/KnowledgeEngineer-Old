@@ -1,0 +1,11 @@
+{
+  "type": "UserInput",
+  "data": {
+    "arrowKeyState": {
+      "up": false,
+      "down": true,
+      "left": false,
+      "right": false
+    }
+  }
+}

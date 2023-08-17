@@ -1,108 +1,71 @@
-The system described is a multiplayer game where clients connect to a server to play a game on a 100x100 grid. The server manages the game logic, including calculating snake movements, detecting snake deaths, and updating the game state. The clients are responsible for rendering the game board, handling user input, and receiving updates from the server.
+The system described is a multiplayer game where each player controls a snake. The game board is managed by a server, which calculates the game state and communicates with the clients. The clients are responsible for displaying the game to the user and sending user input to the server. The server and clients communicate using a protocol that includes sending game updates, user input, and game status messages.
 
-Based on this system, a network protocol can be designed using JSON messages. The protocol should be efficient, minimize network traffic, and handle potential errors or disconnections gracefully. The following message types can be defined:
+Based on this system, we can design a network protocol using JSON messages. The protocol will include the following message types:
 
-1. JoinGame: This message is sent by a client to the server to join the game. It includes the client's unique identifier and any necessary authentication information.
+1. GameUpdate: This message is sent by the server to the clients to update the game state. It includes a list of squares that have changed and their new colors.
 
-2. StartGame: This message is sent by the server to all clients to indicate the start of the game. It includes the initial game state, including the positions of all snakes on the game board.
+2. UserInput: This message is sent by the client to the server to communicate changes in the state of the arrow keys.
 
-3. UpdateGameState: This message is sent by the server to all clients to update the game state. It includes the new positions of all snakes on the game board and any other relevant changes.
+3. GameStatus: This message is sent by the server to the clients to communicate the status of the game, such as whether a client's snake has died or the color of the last surviving snake.
 
-4. PlayerDeath: This message is sent by the server to a specific client to notify them of their snake's death. It includes any necessary information about the death, such as the cause or the remaining snakes in the game.
+4. Countdown: This message is sent by the server to the clients to initiate a 30-second countdown to the start of the game when the first client joins after the end of a game.
 
-5. Winner: This message is sent by the server to all clients to announce the winner of the game. It includes the identifier of the winning snake and any other relevant information.
-
-6. RestartGame: This message is sent by the server to all clients to indicate the start of a new game. It includes any necessary information to reset the game state.
-
-Here are the JSON message files for each message type:
-
-JoinGame.json
+GameUpdate.json
 ```json
 {
-  "type": "JoinGame",
-  "clientId": "123456",
-  "authToken": "abc123"
+  "type": "GameUpdate",
+  "data": {
+    "changedSquares": [
+      {
+        "x": 0,
+        "y": 0,
+        "color": "#FF0000"
+      },
+      {
+        "x": 1,
+        "y": 1,
+        "color": "#00FF00"
+      }
+    ]
+  }
 }
 ```
 
-StartGame.json
+UserInput.json
 ```json
 {
-  "type": "StartGame",
-  "gameState": {
-    "boardSize": {
-      "width": 100,
-      "height": 100
+  "type": "UserInput",
+  "data": {
+    "arrowKeyState": {
+      "up": false,
+      "down": true,
+      "left": false,
+      "right": false
+    }
+  }
+}
+```
+
+GameStatus.json
+```json
+{
+  "type": "GameStatus",
+  "data": {
+    "clientStatus": {
+      "clientID": "123",
+      "status": "dead"
     },
-    "snakes": [
-      {
-        "id": "snake1",
-        "positions": [
-          {"x": 10, "y": 10},
-          {"x": 10, "y": 11},
-          {"x": 10, "y": 12}
-        ]
-      },
-      {
-        "id": "snake2",
-        "positions": [
-          {"x": 20, "y": 20},
-          {"x": 20, "y": 21},
-          {"x": 20, "y": 22}
-        ]
-      }
-    ]
+    "winnerColor": "#FF0000"
   }
 }
 ```
 
-UpdateGameState.json
+Countdown.json
 ```json
 {
-  "type": "UpdateGameState",
-  "gameState": {
-    "snakes": [
-      {
-        "id": "snake1",
-        "positions": [
-          {"x": 10, "y": 11},
-          {"x": 10, "y": 12},
-          {"x": 10, "y": 13}
-        ]
-      },
-      {
-        "id": "snake2",
-        "positions": [
-          {"x": 20, "y": 21},
-          {"x": 20, "y": 22},
-          {"x": 20, "y": 23}
-        ]
-      }
-    ]
+  "type": "Countdown",
+  "data": {
+    "secondsRemaining": 30
   }
-}
-```
-
-PlayerDeath.json
-```json
-{
-  "type": "PlayerDeath",
-  "snakeId": "snake1",
-  "cause": "collision"
-}
-```
-
-Winner.json
-```json
-{
-  "type": "Winner",
-  "snakeId": "snake2"
-}
-```
-
-RestartGame.json
-```json
-{
-  "type": "RestartGame"
 }
 ```

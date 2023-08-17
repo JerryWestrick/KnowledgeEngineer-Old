@@ -1,67 +1,61 @@
-Step_1.md
+Step_01.md
 ```md
-# Step 1: Import the necessary modules
+# Step 1: Import necessary libraries
 
-- `asyncio` for asynchronous programming.
-- `websockets` for WebSocket communication.
-- `http.server` for serving the HTML and JavaScript files to the clients.
+- Import asyncio for asynchronous I/O, networking, and concurrency.
+- Import websockets for WebSocket protocol handling.
+- Import json for encoding and decoding JSON data.
 ```
 
-Step_2.md
+Step_02.md
 ```md
-# Step 2: Define the WebSocket server class
+# Step 2: Define the game state
 
-- Create a class called `SnakeServer` that inherits from `websockets.WebSocketServerProtocol`.
-- Implement the `__init__` method to initialize the server.
-- Implement the `connection_made` method to handle new client connections.
-- Implement the `connection_lost` method to handle client disconnections.
-- Implement the `receive_message` method to handle incoming messages from clients.
+- Define a 100x100 grid to represent the game board.
+- Define a list of snakes, each with a position, direction, and color.
+- Define a list of squares that have changed since the last update.
 ```
 
-Step_3.md
+Step_03.md
 ```md
-# Step 3: Implement the game logic
+# Step 3: Define the WebSocket server
 
-- Create a class called `Game` to manage the game state and logic.
-- Implement the necessary methods to handle game initialization, updating the game state, detecting snake deaths, and announcing the winner.
-- Use a data structure to represent the game board and track the state of each square.
-- Calculate the movement of each snake on each step of the game.
-- Implement a mechanism to handle client input and update the game state accordingly.
+- The server should listen on localhost:8090.
+- It should accept connections from multiple clients.
+- It should handle incoming messages from clients and send outgoing messages to clients.
 ```
 
-Step_4.md
+Step_04.md
 ```md
-# Step 4: Define the message types and their handling
+# Step 4: Define the game loop
 
-- Define the message types mentioned earlier: `JoinGame`, `StartGame`, `UpdateGameState`, `PlayerDeath`, `Winner`, and `RestartGame`.
-- Implement methods in the `SnakeServer` class to handle each message type.
-- Parse the incoming JSON messages and perform the necessary actions based on the message type.
-- Send the appropriate response messages to the clients.
+- The game should run at 15 steps per second.
+- Each step should calculate the movement of each snake, determine if any snakes die, and identify squares that need color changes.
+- After each step, the server should send a GameUpdate message to each client with the list of squares that have changed and their new colors.
 ```
 
-Step_5.md
+Step_05.md
 ```md
-# Step 5: Implement the HTTP server
+# Step 5: Define the message handlers
 
-- Create a class called `SnakeHTTPServer` that inherits from `http.server.SimpleHTTPRequestHandler`.
-- Implement the necessary methods to serve the HTML and JavaScript files to the clients.
-- Set up the HTTP server to listen on port 8090 and handle requests.
+- GameUpdate: The server should send this message to each client after each step of the game. The message should include a list of squares that have changed and their new colors.
+- UserInput: The server should receive this message from each client. The message should include the state of the arrow keys for the client's snake. The server should update the direction of the client's snake based on this input.
+- GameStatus: The server should send this message to a client when the client's snake dies or when the game ends. The message should include the status of the client's snake and the color of the last surviving snake.
+- Countdown: The server should send this message to each client when the first client joins after the end of a game. The message should initiate a 30-second countdown to the start of the game.
 ```
 
-Step_6.md
+Step_06.md
 ```md
-# Step 6: Start the server
+# Step 6: Define the client handlers
 
-- Create an instance of the `SnakeHTTPServer` class and start the HTTP server.
-- Create an instance of the `SnakeServer` class and start the WebSocket server.
-- Run the event loop to handle incoming WebSocket connections and messages.
+- When a client connects, the server should assign a color to the client's snake and draw the snake on the game board.
+- When a client disconnects, the server should remove the client's snake from the game.
 ```
 
-Step_7.md
+Step_07.md
 ```md
-# Step 7: Test the server
+# Step 7: Define the game start and end conditions
 
-- Open a web browser and navigate to `localhost:8090` to test the client-side functionality.
-- Verify that multiple clients can join and play the game simultaneously.
-- Test the game logic, including snake movement, collision detection, and winner announcement.
+- The game should start when the first client joins after the end of a game and the 30-second countdown finishes.
+- The game should end when there is only one snake left on the game board. The server should announce the color of the last surviving snake as the winner.
 ```
