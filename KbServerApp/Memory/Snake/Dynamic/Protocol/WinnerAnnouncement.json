@@ -1,0 +1,6 @@
+{
+    "type": "WinnerAnnouncement",
+    "payload": {
+        "color": "#FF0000"
+    }
+}

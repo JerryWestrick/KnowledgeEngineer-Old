@@ -2,7 +2,8 @@
 .include Snake/Prompts/Text Block.pe
 .include Snake/Dynamic/Components/Server.md
 .include Snake/Dynamic/Protocol/Protocol Description.md
-.include Snake/Dynamic/Server/Step_1.md
+.include ${filename}$
+.include Snake/Dynamic/Server/Source/SnakeServer.py
 .user
-Implement Step 1 of plan
+Implement The Step 
 write text block file SnakeServer.py

@@ -1,3 +1,4 @@
+import copy
 import json
 import os
 import shutil
@@ -13,7 +14,7 @@ from twisted.logger import Logger
 
 from KbServerApp.OpenAI_API_Costs import OpenAI_API_Costs
 from KbServerApp.Processes import ProcessList, ProcessList_save, ProcessList_load
-from KbServerApp.logger import GptLogger
+# from KbServerApp.logger import GptLogger
 from KbServerApp.step import Step
 
 load_dotenv(find_dotenv())
@@ -26,6 +27,10 @@ empty_step_json = '''{
       "prompt_name": "",
       "storage_path": "",
       "text_file": "",
+      "file_process_enabled": false,
+      "file_process_name": "",
+      "file_glob": "",
+      "macros": {},
       "ai": {
         "py/object": "KbServerApp.ai.AI",
         "temperature": 0,
@@ -152,6 +157,38 @@ class KbServerProtocol(WebSocketServerProtocol):
         self.transport.write(message + b"\n")
 
     @inlineCallbacks
+    def generate_file_process(self, process_name, step):
+        # Generate a step in a process for each file in glob...
+        process_to_generate = step.file_process_name
+        file_glob = step.file_glob
+
+        process = []
+        KbServerProtocol.log.info(f"Call to generate_file_process {process_to_generate}...")
+        files = Step.memory.glob_files(file_glob)
+        for filename in sorted(files):
+            step_name = filename.split('.')[0]
+            step_name = step_name.split('/')[-1]
+            step_copy = copy.deepcopy(step)
+            step_copy.macros['filename'] = filename
+            step_copy.name = step_name
+            step_copy.file_process_enabled = False
+            process.append(step_copy)
+
+        KbServerProtocol.log.info(f"Saving Generated {process_to_generate} with {len(files)} steps...")
+        ProcessList[process_to_generate] = process
+        ProcessList_save(ProcessList)
+        self.process_list_initial_load()
+
+        msg = {'cmd': 'exec',
+               'cb': 'cb_exec_process',
+               'rc': 'Okay',
+               'object': 'process',
+               'record': {'process_name': process_to_generate}
+               }
+        yield self.exec_process(msg, False)
+        KbServerProtocol.log.info(f"Generation and Execution of {process_to_generate} from {process_name}{step.name} complete...")
+
+    @inlineCallbacks
     def schedule(self, pname: str, tasklist: List[Step]):
         # tasklist: List[Step] = ProcessList[pname]
         start_time = time.time()
@@ -163,9 +200,19 @@ class KbServerProtocol(WebSocketServerProtocol):
         total = 0.0
 
         for step in tasklist:
+
+            if step.file_process_enabled:
+                yield self.generate_file_process(pname, step)
+                continue
+
             ai_model = step.ai.model
             pricing = OpenAI_API_Costs[ai_model]
-            yield step.run(self, pname)
+            try:
+                yield step.run(self, pname)
+            except:
+                self.log.error(f"Error in step.run()")
+                raise
+
             prompt_tokens += step.ai.e_stats['prompt_tokens']
             completion_tokens += step.ai.e_stats['completion_tokens']
             total_tokens += step.ai.e_stats['total_tokens']
@@ -175,27 +222,27 @@ class KbServerProtocol(WebSocketServerProtocol):
             p_cost += sp_cost
             c_cost += sc_cost
             total += p_cost + c_cost
-            GptLogger.log('STEP', f'Cost Estimate: Total: {s_total:.4f} ('
-                                  f' Prompt: {sp_cost:.4f}'
-                                  f' Completion: {sc_cost:.4f})')
+            self.log.info(f'Cost Estimate: Total: {s_total:.4f} ( Prompt: {sp_cost:.4f} Completion: {sc_cost:.4f})')
 
         elapsed = time.time() - start_time
-        GptLogger.log('RUN', f'Elapsed: {elapsed:.2f}s'
-                             f' Cost Estimate: Total: {total:.4f} ('
-                             f' Prompt: {p_cost:.4f}'
-                             f' Completion: {c_cost:.4f})')
-
-        # Logger.log('RUN', f'Estimated Cost: Total: ${total:.4f}, (Prompt: ${p_cost:.4f}, Completion: ${c_cost:.4f})')
+        self.log.info(
+          f'Elapsed: {elapsed:.2f}s Cost Estimate: Total: {total:.4f} ( Prompt: {p_cost:.4f} Completion: {c_cost:.4f})'
+        )
 
     @inlineCallbacks
     def exec_step(self, msg, isbinary):
         process_name = msg['record']['process_name']
         step_name = msg['record']['step_name']
         KbServerProtocol.log.info(f"Call to run a single step {process_name}::{step_name}")
-        GptLogger(f'Memory/Dynamic/Logs/{process_name}_{step_name}.log')  # Is a singleton, so ignore result.
+        # GptLogger(f'Memory/Dynamic/Logs/{process_name}_{step_name}.log')  # Is a singleton, so ignore result.
         tasklist: List[Step] = ProcessList[process_name]
         steps = [step for step in tasklist if step.name == step_name]
-        yield self.schedule(process_name, steps)
+        try:
+            yield self.schedule(process_name, steps)
+        except:
+            self.log.error(f'Error in self.schedule()')
+            raise
+
         msg['rc'] = 'Okay'
         msg['reason'] = 'Run Completed'
         msg['record'] = {'one': 'two'}
@@ -214,9 +261,14 @@ class KbServerProtocol(WebSocketServerProtocol):
             returnValue('')
 
         KbServerProtocol.log.info(f"Call to run {process_name}.....")
-        GptLogger(f'Memory/Dynamic/Logs/{process_name}.log')  # Is a singleton, so ignore result.
+        # GptLogger(f'Memory/Dynamic/Logs/{process_name}.log')  # Is a singleton, so ignore result.
         tasklist: List[Step] = ProcessList[process_name]
-        yield self.schedule(process_name, tasklist)
+        try:
+            yield self.schedule(process_name, tasklist)
+        except:
+            self.log.error(f"Error in self.schedule()")
+            raise
+
         msg['rc'] = 'Okay'
         msg['reason'] = 'Run Completed'
         self.send_object(msg)
@@ -239,6 +291,25 @@ class KbServerProtocol(WebSocketServerProtocol):
             return
 
         msg['record'] = {'text': expanded_text}
+        self.send_object(msg)
+        return
+
+    def test_file_glob(self, msg, isbinary):
+        filename = msg['record']['file_glob']
+        KbServerProtocol.log.info(f"Call to test file Glob {filename}...")
+        msg['rc'] = 'Okay'
+        msg['reason'] = 'Test File Glob Complete'
+        try:
+            files = Step.memory.glob_files(filename)
+        except KeyError as key:
+            expanded_text = [{'role': 'Error', 'content': f'Expansion of {filename} failed.'},
+                             ]
+            msg['rc'] = 'Fail'
+            msg['reason'] = f'Test File Glob Failed {filename} not found'
+            self.send_object(msg)
+            return
+
+        msg['record']['files'] = sorted(files)
         self.send_object(msg)
         return
 

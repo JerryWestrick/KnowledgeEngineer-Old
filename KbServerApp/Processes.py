@@ -14,7 +14,10 @@ def ProcessList_load() -> dict[str, list[Step]]:
     file_path = "ProcessList.json"
     with open(file_path, "r") as read_file:
         file_string = read_file.read()
-    pl = jsonpickle.decode(file_string)
+    jo = jsonpickle.decode(file_string)
+    pl = {}
+    for key in sorted(jo.keys()):
+        pl[key] = jo[key]
     return pl
 
 

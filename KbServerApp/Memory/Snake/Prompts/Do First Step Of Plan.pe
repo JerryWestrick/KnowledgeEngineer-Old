@@ -1,8 +1,0 @@
-.include Snake/Prompts/Actor.pe
-.include Snake/Prompts/Text Block.pe
-.include Snake/Requirements/Components/Server.md
-.include Snake/Server/Server_Plan.md
-.user 
-Implement the first Step of the Server_Plan.md creating SnakeServer.py
-
-

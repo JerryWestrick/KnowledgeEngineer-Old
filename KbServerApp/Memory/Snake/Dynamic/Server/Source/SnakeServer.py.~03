@@ -1,0 +1,48 @@
+import asyncio
+import websockets
+import json
+
+# Define the game state
+class GameState:
+    def __init__(self):
+        self.board = [[None for _ in range(100)] for _ in range(100)]
+        self.snakes = []
+        self.changed_squares = []
+
+    def reset(self):
+        self.board = [[None for _ in range(100)] for _ in range(100)]
+        self.snakes = []
+        self.changed_squares = []
+
+    def add_snake(self, snake):
+        self.snakes.append(snake)
+
+    def remove_snake(self, snake):
+        self.snakes.remove(snake)
+
+    def update_square(self, x, y, color):
+        self.board[x][y] = color
+        self.changed_squares.append((x, y, color))
+
+    def get_changed_squares(self):
+        squares = self.changed_squares
+        self.changed_squares = []
+        return squares
+
+# Define the snake
+class Snake:
+    def __init__(self, color):
+        self.color = color
+        self.squares = []
+
+    def add_square(self, x, y):
+        self.squares.append((x, y))
+
+    def remove_square(self, x, y):
+        self.squares.remove((x, y))
+
+    def get_head(self):
+        return self.squares[0]
+
+    def get_tail(self):
+        return self.squares[-1]

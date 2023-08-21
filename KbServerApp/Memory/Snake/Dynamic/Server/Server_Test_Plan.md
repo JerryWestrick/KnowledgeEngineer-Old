@@ -4,7 +4,7 @@ Step_01.md
 
 - Import asyncio for asynchronous I/O, networking, and concurrency.
 - Import websockets for WebSocket protocol handling.
-- Import json for encoding and decoding JSON data.
+- Import json for JSON message encoding and decoding.
 ```
 
 Step_02.md
@@ -12,8 +12,8 @@ Step_02.md
 # Step 2: Define the game state
 
 - Define a 100x100 grid to represent the game board.
-- Define a list of snakes, each with a position, direction, and color.
-- Define a list of squares that have changed since the last update.
+- Define a list of snakes, each represented by a list of squares and a color.
+- Define a list of squares that have changed since the last step.
 ```
 
 Step_03.md
@@ -21,41 +21,46 @@ Step_03.md
 # Step 3: Define the WebSocket server
 
 - The server should listen on localhost:8090.
-- It should accept connections from multiple clients.
-- It should handle incoming messages from clients and send outgoing messages to clients.
+- When a client connects, assign them a color and add a snake to the game state.
+- When a client disconnects, remove their snake from the game state.
 ```
 
 Step_04.md
 ```md
 # Step 4: Define the game loop
 
-- The game should run at 15 steps per second.
-- Each step should calculate the movement of each snake, determine if any snakes die, and identify squares that need color changes.
-- After each step, the server should send a GameUpdate message to each client with the list of squares that have changed and their new colors.
+- The loop should run at a rate of 15 steps per second.
+- Each step, calculate the movement of each snake based on the last KeyEvent received from its client.
+- If a snake moves into a wall or another snake, remove it from the game state and send a DeathNotification to its client.
+- If a snake moves into a free square, add the square to the snake and to the list of changed squares.
+- If only one snake remains, send a WinnerAnnouncement to all clients and reset the game state.
 ```
 
 Step_05.md
 ```md
-# Step 5: Define the message handlers
+# Step 5: Define the message handling
 
-- GameUpdate: The server should send this message to each client after each step of the game. The message should include a list of squares that have changed and their new colors.
-- UserInput: The server should receive this message from each client. The message should include the state of the arrow keys for the client's snake. The server should update the direction of the client's snake based on this input.
-- GameStatus: The server should send this message to a client when the client's snake dies or when the game ends. The message should include the status of the client's snake and the color of the last surviving snake.
-- Countdown: The server should send this message to each client when the first client joins after the end of a game. The message should initiate a 30-second countdown to the start of the game.
+- When a GameUpdate message is received, update the list of changed squares and their colors in the game state.
+- When a KeyEvent message is received, update the direction of the corresponding snake.
+- When a DeathNotification message is received, remove the corresponding snake from the game state.
+- When a WinnerAnnouncement message is received, reset the game state.
+- When a GameReset message is received, reset the game state.
 ```
 
 Step_06.md
 ```md
-# Step 6: Define the client handlers
+# Step 6: Define the message sending
 
-- When a client connects, the server should assign a color to the client's snake and draw the snake on the game board.
-- When a client disconnects, the server should remove the client's snake from the game.
+- At each step, send a GameUpdate message to all clients with the list of changed squares and their new colors.
+- When a snake dies, send a DeathNotification message to its client.
+- When the game ends, send a WinnerAnnouncement message to all clients with the color of the last surviving snake.
+- After the game ends, send a GameReset message to all clients.
 ```
 
 Step_07.md
 ```md
-# Step 7: Define the game start and end conditions
+# Step 7: Start the WebSocket server and the game loop
 
-- The game should start when the first client joins after the end of a game and the 30-second countdown finishes.
-- The game should end when there is only one snake left on the game board. The server should announce the color of the last surviving snake as the winner.
+- Start the WebSocket server.
+- Start the game loop.
 ```

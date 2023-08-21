@@ -5,16 +5,18 @@ import re
 import glob
 import KbServerApp.colors
 from KbServerApp.LineStatement import Compiler
-from KbServerApp.logger import GptLogger as Logger
+# from KbServerApp.logger import GptLogger as Logger
+from twisted.logger import Logger
 
 
 # This class represents a simple database that stores its data as files in a directory hierarchy.
 class DB:
     """A simple key-value store, where keys are filenames and values are file contents."""
-
+    log = Logger(namespace='DB')
     # a class variable holding a dictionary of all macro_name -> values
     # this is used to replace macro names in the contents of the files
-    # macro syntax is '&{macro_name} i.e. &{version} will be replace with the version number defined below'
+    # macro syntax is '${macro_name}$ i.e. ${version}$ will be replace with the version number defined below'
+    # macro is set to a shallow copy of the variables of each step before step execution.
     macro: dict[str, str] = {'version': '1.0'}
 
     def __init__(self, path):
@@ -38,11 +40,11 @@ class DB:
     def read(self, key: str):
         full_path = self.path / key
         if not full_path.is_file():
-            Logger.log('ERROR', f"Invalid Memory Item.  \nPath not found: {full_path}")
+            self.log.error(f"Invalid Memory Item.  \nPath not found: {full_path}")
             raise KeyError(key)
         with full_path.open("r", encoding="utf-8") as f:
             # read the file and return the contents
-            Logger.log('STEP', f"Reading>>{key}")
+            self.log.info(f"Reading>>{key}")
             content = f.read()
         return content
 
@@ -122,7 +124,7 @@ class DB:
             ending = begin.pop()
 
             # if there is no '}$' in the last portion, no macro substitution needed
-            if '}$' not in ending:
+            if ending.find('}$') == -1:
                 begin.append(begin.pop() + '${' + ending)
                 continue
             else:

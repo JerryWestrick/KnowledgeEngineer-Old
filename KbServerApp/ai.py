@@ -82,60 +82,62 @@ class AI:
 
     @inlineCallbacks
     def generate(self):
-
-        answer = ''
+        # AI.log.info("generate()")
+        self.answer = ''
         start_time = time.time()
         if self.mode == 'complete':
             prompt: str = ''
             for message in self.messages:
                 prompt += message['content'] + '\n'
             ai_response = yield self.complete(prompt)
-            answer = ai_response.choices[0].text
+            self.answer = ai_response.choices[0].text
 
         elif self.mode == 'chat':
             ai_response = yield self.chat(self.messages)
-            answer = ai_response.choices[0].message.content
+            self.answer = ai_response.choices[0].message.content
 
         # Gather Answer
         self.e_stats['elapsed_time'] = time.time() - start_time
         pricing = OpenAI_API_Costs[self.model]
 
-        self.e_stats['sp_cost'] = pricing['input'] * (self.e_stats['prompt_tokens'] / 1000)
-        self.e_stats['sc_cost'] = pricing['output'] * (self.e_stats['completion_tokens'] / 1000)
-        self.e_stats['s_total'] = self.e_stats['sp_cost'] + self.e_stats['sc_cost']
-
         self.e_stats['prompt_tokens'] = ai_response['usage']['prompt_tokens']
         self.e_stats['completion_tokens'] = ai_response['usage']['completion_tokens']
         self.e_stats['total_tokens'] = ai_response['usage']['total_tokens']
 
-        return answer
+        self.e_stats['sp_cost'] = pricing['input'] * (self.e_stats['prompt_tokens'] / 1000)
+        self.e_stats['sc_cost'] = pricing['output'] * (self.e_stats['completion_tokens'] / 1000)
+        self.e_stats['s_total'] = self.e_stats['sp_cost'] + self.e_stats['sc_cost']
 
+        return self.answer
 
     @inlineCallbacks
     def chat(self, messages: list[dict[str, str]]) -> dict:
 
-        AI.log.info(f"Calling {self.model} chat with messages: ")
+        # AI.log.info(f"Calling {self.model} chat with messages: ")
+        try:
+            response = yield as_deferred(openai.ChatCompletion.acreate(
+                messages=messages,
+                model=self.model,
+                temperature=self.temperature,
+            ))
+        except Exception as err:
+            self.log.error("Call to ChatGpt returned error: {err}", err=err)
+            raise
 
-        response = yield as_deferred(openai.ChatCompletion.acreate(
-            messages=messages,
-            model=self.model,
-            temperature=self.temperature,
-        ))
-
-        AI.log.info(f"{self.model} chat Response")
+        # AI.log.info(f"{self.model} chat Response")
         return response
 
     @inlineCallbacks
     def complete(self, prompt: str) -> dict:
 
-        AI.log.info(f"Calling {self.model} complete with prompt: ")
+        # AI.log.info(f"Calling {self.model} complete with prompt: ")
         completion = yield as_deferred(openai.Completion.acreate(
             model=self.model,
             prompt=prompt,
             max_tokens=self.max_tokens,
             temperature=self.temperature,
         ))
-        AI.log.info(f"{self.model} Response")
+        # AI.log.info(f"{self.model} Response")
         return completion
 
     def to_json(self) -> dict:

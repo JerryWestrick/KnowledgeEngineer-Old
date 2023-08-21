@@ -1,3 +1,4 @@
+from PySide6.QtGui import QBrush, QColor
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QTableWidget, QTableWidgetItem, QHeaderView, QAbstractItemView
 
 from log_tab import LOG
@@ -42,6 +43,16 @@ class StepLog(QWidget):
             self.table.setItem(i, 0, QTableWidgetItem(str(key)))
             self.table.setItem(i, 1, QTableWidgetItem(str(value)))
 
+        # AI Call Separator
+        ai_call_position = self.table.rowCount()
+        self.table.insertRow(ai_call_position)
+        item = QTableWidgetItem("AI Call")
+        self.table.setItem(ai_call_position, 0, item)
+        self.table.setSpan(ai_call_position, 0, 1, 2)  # join the two columns for the 2nd row
+        # Set background color to teal
+        teal_brush = QBrush(QColor(0, 128, 128))
+        item.setBackground(teal_brush)
+
         ai = step['ai']
         # Fill the table with keys and values from the ai dictionary
         last_row = self.table.rowCount()
@@ -60,5 +71,7 @@ class StepLog(QWidget):
         row = item.row()
         key_item = self.table.item(row, 0)  # Key is in the first column
         value_item = self.table.item(row, 1)  # Value is in the second column
-        self.workbench.step_item_viewer.view_item(key_item.text(),value_item.text())
+        if value_item is None or key_item is None:
+            return
+        self.workbench.step_item_viewer.view_item(key_item.text(), value_item.text())
         # print(f'Row {row} clicked: Key="{key_item.text()}", Value="{value_item.text()}"')

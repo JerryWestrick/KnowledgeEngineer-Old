@@ -1,4 +1,6 @@
-# Step 6: Define the client handlers
+# Step 6: Define the message sending
 
-- When a client connects, the server should assign a color to the client's snake and draw the snake on the game board.
-- When a client disconnects, the server should remove the client's snake from the game.
+- At each step, send a GameUpdate message to all clients with the list of changed squares and their new colors.
+- When a snake dies, send a DeathNotification message to its client.
+- When the game ends, send a WinnerAnnouncement message to all clients with the color of the last surviving snake.
+- After the game ends, send a GameReset message to all clients.

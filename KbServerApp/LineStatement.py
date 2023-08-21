@@ -3,7 +3,7 @@ import glob
 from lark import Lark, Transformer
 import KbServerApp.colors
 from KbServerApp import colors
-from KbServerApp.logger import GptLogger as Logger
+# from KbServerApp.logger import GptLogger as Logger
 
 LineStatement_Grammar = r"""
     ?start: "." statement 
@@ -52,17 +52,17 @@ class MyTransformer(Transformer):
 
     @staticmethod
     def start(statements):
-        Logger.log('LARK', f"start({statements})")
+        # Logger.log('LARK', f"start({statements})")
         return statements
 
     @staticmethod
     def statement(statement):
-        Logger.log('LARK', f"statement({statement})")
+        # Logger.log('LARK', f"statement({statement})")
         return statement
 
     @staticmethod
     def role_statement(statement):
-        Logger.log('LARK', f"role_statement({statement})")
+        # Logger.log('LARK', f"role_statement({statement})")
         return statement
 
     @staticmethod
@@ -92,12 +92,12 @@ class MyTransformer(Transformer):
 
     @staticmethod
     def foreach_statement(statement):
-        Logger.log('LARK', f"foreach_statement({statement})")
+        # Logger.log('LARK', f"foreach_statement({statement})")
         return statement
 
     @staticmethod
     def endfor_statement(statement):
-        Logger.log('LARK', f"endfor_statement({statement})")
+        # Logger.log('LARK', f"endfor_statement({statement})")
         return statement
 
     @staticmethod
@@ -107,7 +107,7 @@ class MyTransformer(Transformer):
 
     @staticmethod
     def VAR(statement):
-        Logger.log('LARK', f"VAR({statement})")
+        # Logger.log('LARK', f"VAR({statement})")
         return statement
 
     @staticmethod
@@ -117,12 +117,12 @@ class MyTransformer(Transformer):
 
     @staticmethod
     def MEMORY_NAME(statement):
-        Logger.log('LARK', f"MEMORY_NAME({statement})")
+        # Logger.log('LARK', f"MEMORY_NAME({statement})")
         return statement
 
     @staticmethod
     def DOT(statement):
-        Logger.log('LARK', f"DOT({statement})")
+        # Logger.log('LARK', f"DOT({statement})")
         return statement
 
 
@@ -209,6 +209,7 @@ class Compiler:
                 messages.extend(msgs)
 
             elif keyword == 'text_block_statement':
+                print(f"in {keyword}")
                 # Check for file-globing
                 if '*' in statement['name']:
                     files = self.db.glob_files(statement['name'])
@@ -216,14 +217,18 @@ class Compiler:
                     files = [statement['name']]
 
                 for file in files:
+                    print(f"in {file}")
                     # Logger.log('STEP',f"{colors.INFO}- {file}")
                     # assumes only one msg is returned
                     msgs = self.db[file]
+                    print(f"in {file} 2")
                     msg = msgs[0]
+                    print(f"in {file} 3")
                     parts = file.split('/')
                     content = f"{parts[-1]}\n```\n{msg['content']}\n```"
                     messages.append({"role": msg["role"], "content": content})
 
+                print(f"out {keyword}")
                 continue  # next line
 
             # elif keyword == 'foreach':
@@ -232,7 +237,7 @@ class Compiler:
             #     pass
             else:
                 errmsg = f"Invalid instruction [{keyword}] "
-                Logger.log('STEP', f"{colors.ERROR}{errmsg}")
+                # Logger.log('STEP', f"{colors.ERROR}{errmsg}")
                 raise Exception(errmsg)
 
         if role is not None and literal_line_content != '':
