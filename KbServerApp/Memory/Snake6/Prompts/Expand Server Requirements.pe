@@ -1,0 +1,10 @@
+.include Snake5/Requirements/Actor.pe
+.include Snake5/Requirements/File Format.pe
+.include Snake5/Requirements/Application Description.pe
+.include Snake5/Dynamic/Planning/Server_Requirements.md
+.user
+Copy all details listed in the descriptions into the pertinent requirements.
+if Missing add a constants section requirement with all application constants.
+output filename=Expanded_Server_Requirements.md
+
+

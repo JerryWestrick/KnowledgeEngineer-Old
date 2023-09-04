@@ -99,6 +99,8 @@ class StepEditor(QWidget):
         self.layout.addRow("Name:", self.name_editor)
         self.prompt_name_editor = QLineEdit()
         self.layout.addRow("Prompt Name:", self.prompt_name_editor)
+        self.verify_prompt_editor = QLineEdit()
+        self.layout.addRow("Verify Prompt:", self.verify_prompt_editor)
         self.storage_path_editor = QLineEdit()
         self.layout.addRow("Storage Path:", self.storage_path_editor)
         self.text_file_editor = QLineEdit()
@@ -184,6 +186,7 @@ class StepEditor(QWidget):
 
         self.name_editor.setText(self.step["name"])
         self.prompt_name_editor.setText(self.step["prompt_name"])
+        self.verify_prompt_editor.setText(self.step["verify_prompt"])
         self.text_file_editor.setText(self.step["text_file"])
         self.storage_path_editor.setText(self.step["storage_path"])
         self.temperature_editor.setValue(float(self.step["ai"]["temperature"]))
@@ -218,6 +221,7 @@ class StepEditor(QWidget):
     def connect_signals(self):
         # Connect form field signals to enable the save button
         self.name_editor.textChanged.connect(self.save_button_enable)
+        self.prompt_name_editor.textChanged.connect(self.save_button_enable)
         self.prompt_name_editor.textChanged.connect(self.save_button_enable)
         self.text_file_editor.textChanged.connect(self.save_button_enable)
         self.temperature_editor.valueChanged.connect(self.save_button_enable)
@@ -289,6 +293,7 @@ class StepEditor(QWidget):
     def get_step(self):
         self.step["name"] = self.name_editor.text()
         self.step["prompt_name"] = self.prompt_name_editor.text()
+        self.step["verify_prompt"] = self.verify_prompt_editor.text()
         self.step["text_file"] = self.text_file_editor.text()
         self.step["storage_path"] = self.storage_path_editor.text()
         self.step["file_process_enabled"] = self.file_process_enabled.isChecked()
@@ -311,6 +316,7 @@ if __name__ == "__main__":
         "py/object": "KbServerApp.step.Step",
         "name": "Step 1",
         "prompt_name": "Prompts/Test Prompt.pe",
+        "verify_prompt": "Prompts/Test Prompt.pe",
         "storage_path": "Dynamic/Requirements",
         "text_file": "test text File",
         "file_process_enabled": True,

@@ -40,7 +40,7 @@ class StepItemViewer(QWidget):
                 html = f"<pre>{value}</pre>"
                 self.text_edit.setHtml(html)
             case "messages":
-                color = {"user": "green", "system": "teal"}
+                color = {"user": "green", "system": "teal", "exec": "royalblue", "assistant": "goldenrod"}
                 msgs = eval(value)
                 html = '''<table border="1px"><tr><th width='50' align='left'>Role</th><th align='left'>Content</th></tr>'''
                 for row in msgs:

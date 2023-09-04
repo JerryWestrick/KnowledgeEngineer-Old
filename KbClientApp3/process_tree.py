@@ -43,7 +43,8 @@ class ProcessTree(QTreeWidget):
             for step in steps:
                 step_item = QTreeWidgetItem(process_item, [step['name'], step['prompt_name']])
                 step_item.setIcon(0, self.step_icon)
-        self.expandAll()
+        # self.expandAll()
+        self.collapseAll()
 
     def get_item(self, item):
         parent = item.parent()
@@ -84,13 +85,13 @@ class ProcessTree(QTreeWidget):
 
             delete_action.triggered.connect(self.delete_process)
 
-            add_step_action = menu.addAction("Add New Step")
+            add_step_action = menu.addAction("Step New")
             add_step_action.triggered.connect(self.create_step)
 
-            add_process_action = menu.addAction("Add New Process")
+            add_process_action = menu.addAction("Create New Process")
             add_process_action.triggered.connect(self.create_process)
 
-            exec_process_action = menu.addAction(f"Exec Process {process_name}")
+            exec_process_action = menu.addAction(f"Execute {process_name}")
             exec_process_action.triggered.connect(self.exec_process)
 
             menu.exec_(event.globalPos())

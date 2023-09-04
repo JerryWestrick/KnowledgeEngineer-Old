@@ -1,9 +1,0 @@
-.include Snake/Prompts/Actor.pe
-.include Snake/Prompts/Text Block.pe
-.include Snake/Dynamic/Components/Server.md
-.include Snake/Dynamic/Protocol/Protocol Description.md
-.include ${filename}$
-.include Snake/Dynamic/Server/Source/SnakeServer.py
-.user
-Implement The Step 
-write text block file SnakeServer.py

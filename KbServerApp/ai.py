@@ -85,6 +85,7 @@ class AI:
         # AI.log.info("generate()")
         self.answer = ''
         start_time = time.time()
+        ai_response = None
         if self.mode == 'complete':
             prompt: str = ''
             for message in self.messages:
@@ -95,7 +96,7 @@ class AI:
         elif self.mode == 'chat':
             ai_response = yield self.chat(self.messages)
             self.answer = ai_response.choices[0].message.content
-
+            self.messages.append({'role': ai_response.choices[0].message.role, 'content': self.answer})
         # Gather Answer
         self.e_stats['elapsed_time'] = time.time() - start_time
         pricing = OpenAI_API_Costs[self.model]

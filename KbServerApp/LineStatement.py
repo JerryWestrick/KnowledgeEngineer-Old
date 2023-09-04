@@ -4,6 +4,7 @@ from lark import Lark, Transformer
 import KbServerApp.colors
 from KbServerApp import colors
 # from KbServerApp.logger import GptLogger as Logger
+from twisted.logger import Logger
 
 LineStatement_Grammar = r"""
     ?start: "." statement 
@@ -11,19 +12,13 @@ LineStatement_Grammar = r"""
     ?statement: role_statement
             | include_statement
             | text_block_statement
-            | foreach_statement
-            | endfor_statement
+            | exec_statement
             
-    ?role_statement: ml_role_statement 
-                   | sl_role_statement 
-    
-    ml_role_statement: role_name 
+    role_statement: role_name 
     
     sl_role_statement: role_name rest_of_line
     
-    role_name: role_name2
-        
-    role_name2: "system"     -> system
+    role_name: "system"     -> system
              | "user"        -> user
              | "assistant"   -> assistant
              | "function"    -> function
@@ -32,9 +27,7 @@ LineStatement_Grammar = r"""
 
     text_block_statement: "text_block" rest_of_line
     
-    foreach_statement: "foreach" VAR "in" MEMORY_NAME
-     
-    endfor_statement:  "endfor"
+    exec_statement:  "exec"
     
     rest_of_line: ENDOFLINE
     
@@ -49,84 +42,73 @@ LineStatement_Grammar = r"""
 
 
 class MyTransformer(Transformer):
+    # Class Variables
+    log = Logger(namespace='LARK Transformer')
 
     @staticmethod
     def start(statements):
-        # Logger.log('LARK', f"start({statements})")
+        # MyTransformer.log('LARK', f"start({statements})")
         return statements
 
     @staticmethod
     def statement(statement):
-        # Logger.log('LARK', f"statement({statement})")
+        # MyTransformer.log('LARK', f"statement({statement})")
         return statement
 
     @staticmethod
     def role_statement(statement):
-        # Logger.log('LARK', f"role_statement({statement})")
-        return statement
-
-    @staticmethod
-    def ml_role_statement(statement):
-        # Logger.log('LARK', f"ml_role_statement({statement})")
-        return {'statement': 'ml_role_statement', 'role': statement[0]}
-
-    @staticmethod
-    def sl_role_statement(statement):
-        # Logger.log('LARK', f"sl_role_statement({statement})")
-        return {'statement': 'sl_role_statement', 'role': statement[0], 'content': statement[1].strip()}
+        # MyTransformer.log.info("role_statement({statement})", statement=statement)
+        return {'statement': 'set_role', 'role': statement[0].data}
 
     @staticmethod
     def role_name(statement):
-        # Logger.log('LARK', f"role_name({statement})")
+        # MyTransformer.log.info(f"role_name({statement})")
         return statement[0].data
 
     @staticmethod
     def include_statement(statement):
-        # Logger.log('LARK', f"include_statement({statement})")
+        # MyTransformer.log.info(f"include_statement({statement})")
         return {'statement': 'include_statement', 'name': statement[0].strip()}
 
     @staticmethod
     def text_block_statement(statement):
-        # Logger.log('LARK', f"text_block_statement({statement})")
+        # MyTransformer.log.info(f"text_block_statement({statement})")
         return {'statement': 'text_block_statement', 'name': statement[0].strip()}
 
     @staticmethod
-    def foreach_statement(statement):
-        # Logger.log('LARK', f"foreach_statement({statement})")
-        return statement
-
-    @staticmethod
-    def endfor_statement(statement):
-        # Logger.log('LARK', f"endfor_statement({statement})")
-        return statement
+    def exec_statement(statement):
+        # MyTransformer.log.info(f"exec_statement({statement})")
+        return {'statement': 'exec_statement'}
 
     @staticmethod
     def rest_of_line(statement):
-        # Logger.log('LARK', f"rest_of_line({statement})")
+        # MyTransformer.log.info(f"rest_of_line({statement})")
         return statement[0]
 
     @staticmethod
     def VAR(statement):
-        # Logger.log('LARK', f"VAR({statement})")
+        # MyTransformer.log.info(f"VAR({statement})")
         return statement
 
     @staticmethod
     def ENDOFLINE(statement):
-        # Logger.log('LARK', f"ENDOFLINE({statement})")
+        # MyTransformer.log.info(f"ENDOFLINE({statement})")
         return statement.value
 
     @staticmethod
     def MEMORY_NAME(statement):
-        # Logger.log('LARK', f"MEMORY_NAME({statement})")
+        # MyTransformer.log.info(f"MEMORY_NAME({statement})")
         return statement
 
     @staticmethod
     def DOT(statement):
-        # Logger.log('LARK', f"DOT({statement})")
+        # MyTransformer.log.info(f"DOT({statement})")
         return statement
 
 
 class Compiler:
+    log = Logger(namespace='LineStmt Compiler')
+
     def __init__(self, db=None):
         self.db = db
         self.parser = Lark(LineStatement_Grammar, start='start')
@@ -158,58 +140,40 @@ class Compiler:
                 tree = self.parser.parse(result_line.strip())
                 statement = MyTransformer().transform(tree)
                 statements.append(statement)
-            elif len(result) == 1:
-                statements.append({'statement': 'sl_role_statement', 'role': 'user', 'content': result_line})
+            else:
+                statements.append({'statement': 'literal_line', 'content': result_line})
 
-            elif len(result) > 1:
-                last = statements[-1]
-                if last['statement'] == 'ml_role_statement':
-                    last['content'] = result_line
-                    last['statement'] = 'sl_role_statement'
-                else:
-                    statements.append({'statement': 'literal_line', 'content': result_line})
-
-        # Logger.log('STEP', "statements:")
+        # self.log.info("statements:")
         # for stmt in statements:
-        #     Logger.log('STEP', stmt)
+        #     self.log.info("{stmt}", stmt=stmt)
 
         return statements
 
     def execute(self, statements):
+        calls = []
         messages = []
+        stmts: dict[str, str] = {'system': '', 'user': ''}
         role = 'user'
         literal_line_content = ''
 
         for statement in statements:
             keyword = statement['statement']
-            if keyword != 'literal_line' and literal_line_content != '':
-                # write the literal_line_content to messages
-                messages.append(
-                    {'role': role, 'content': literal_line_content}
-                )
-                role = None
-                literal_line_content = ''
-                # continue with this statement
 
             if keyword == 'literal_line':
-                if 'line' in statement:
-                    literal_line_content = f"{literal_line_content}\n{statement['line']}"
-                # will be written later
+                c = statement['content']
+                new_value = f"{stmts[role]}\n{c}"
+                stmts[role] = new_value.strip()     # Drop Leading and Trailing WhiteSpace
 
-            elif keyword == 'ml_role_statement':
+            elif keyword == 'set_role':
                 role = statement['role']
-
-            elif keyword == 'sl_role_statement':
-                messages.append(
-                    {'role': statement['role'], 'content': statement['content']}
-                )
 
             elif keyword == 'include_statement':
                 msgs = self.db[statement['name']]
-                messages.extend(msgs)
+                for msg in msgs:
+                    stmts[msg['role']] = f"{stmts[msg['role']]}\n{msg['content']}"
 
             elif keyword == 'text_block_statement':
-                print(f"in {keyword}")
+                # print(f"in {keyword}")
                 # Check for file-globing
                 if '*' in statement['name']:
                     files = self.db.glob_files(statement['name'])
@@ -217,36 +181,42 @@ class Compiler:
                     files = [statement['name']]
 
                 for file in files:
-                    print(f"in {file}")
+                    # print(f"in {file}")
                     # Logger.log('STEP',f"{colors.INFO}- {file}")
                     # assumes only one msg is returned
                     msgs = self.db[file]
-                    print(f"in {file} 2")
+                    # print(f"in {file} 2")
                     msg = msgs[0]
-                    print(f"in {file} 3")
+                    # print(f"in {file} 3")
                     parts = file.split('/')
-                    content = f"{parts[-1]}\n```\n{msg['content']}\n```"
-                    messages.append({"role": msg["role"], "content": content})
+                    content = f"\n```filename={parts[-1]}\n{msg['content']}\n```"
+                    stmts[role] += content
 
-                print(f"out {keyword}")
+                # print(f"out {keyword}")
                 continue  # next line
 
-            # elif keyword == 'foreach':
-            #     pass
-            # elif keyword == 'endfor':
-            #     pass
+            elif keyword == 'exec_statement':
+                # self.log.info("In Execute Statement: {statement}", statement=statement)
+                if stmts['system'] != '':
+                    messages.append({'role': 'system', 'content': stmts['system']})
+                messages.append({'role': 'user', 'content': stmts['user']})
+                messages.append({"role": "exec", "content": "Execute Call AI Before Continuing"})
+                stmts = {'system': '', 'user': ''}
             else:
                 errmsg = f"Invalid instruction [{keyword}] "
-                # Logger.log('STEP', f"{colors.ERROR}{errmsg}")
-                raise Exception(errmsg)
+                self.log.error("{errmsg}", errmsg=errmsg)
+                raise Exception(f"{errmsg}")
 
-        if role is not None and literal_line_content != '':
-            messages.append(
-                {'role': role, 'content': literal_line_content}
-            )
+        if stmts['system'] != '':
+            messages.append({'role': 'system', 'content': stmts['system'].strip()})
 
+        if stmts['user'] != '':
+            messages.append({'role': 'user', 'content': stmts['user'].strip()})
+
+        if messages[-1]['role'] != 'exec':
+            messages.append({"role": "exec", "content": "Default Execute Call AI at end"})
         return messages
 
 #
-# Well that was one tough SOB
+# Okay That got alot Easier
 #

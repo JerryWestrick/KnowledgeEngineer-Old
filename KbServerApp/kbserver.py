@@ -25,6 +25,7 @@ empty_step_json = '''{
       "py/object": "KbServerApp.step.Step",
       "name": "New Step",
       "prompt_name": "",
+      "verify_prompt": "",
       "storage_path": "",
       "text_file": "",
       "file_process_enabled": false,
@@ -40,7 +41,7 @@ empty_step_json = '''{
         "answer": "",
         "files": {},
         "mode": "chat",
-          "e_stats": {
+        "e_stats": {
             "prompt_tokens": 0,
             "completion_tokens": 0,
             "total_tokens": 0,
@@ -48,9 +49,9 @@ empty_step_json = '''{
             "sc_cost": 0.0,
             "s_total": 0.0,
             "elapsed_time": 0.0
-          }
-      },
-    }
+        }
+      }
+}
 '''
 
 
@@ -169,7 +170,9 @@ class KbServerProtocol(WebSocketServerProtocol):
             step_name = filename.split('.')[0]
             step_name = step_name.split('/')[-1]
             step_copy = copy.deepcopy(step)
-            step_copy.macros['filename'] = filename
+            step_copy.macros['pathname'] = filename
+            step_copy.macros['filename'] = os.path.basename(filename)
+            step_copy.macros['path'] = os.path.dirname(filename)
             step_copy.name = step_name
             step_copy.file_process_enabled = False
             process.append(step_copy)
@@ -308,8 +311,9 @@ class KbServerProtocol(WebSocketServerProtocol):
             msg['reason'] = f'Test File Glob Failed {filename} not found'
             self.send_object(msg)
             return
-
-        msg['record']['files'] = sorted(files)
+        paths = sorted(files)
+        msg['record']['path'] = os.path.dirname(filename)
+        msg['record']['files'] = paths
         self.send_object(msg)
         return
 
@@ -326,7 +330,7 @@ class KbServerProtocol(WebSocketServerProtocol):
             else:
                 Step.memory[prompt_name] = None
                 self.memory_as_dictionary()
-            KbServerProtocol.log.info(f"Call to write {prompt_name} complete.")
+            # KbServerProtocol.log.info(f"Call to write {prompt_name} complete.")
         except KeyError as key:
             msg['rc'] = 'Fail'
             msg['reason'] = f'write of {prompt_name} Failed'
@@ -427,7 +431,18 @@ class KbServerProtocol(WebSocketServerProtocol):
         msg['reason'] = f'Delete of dynamic_memory {full_path_name} Complete'
         Step.memory.clear_dynamic_memory(full_path_name)
         self.send_object(msg)
-        # self.memory_initial_load()  Memory is auto updated
+        self.memory_initial_load()
+        # returnValue('')
+
+    def delete_memory_backup(self, msg, isbinary):
+        KbServerProtocol.log.info("Enter delete_memory_backup({msg})", msg=msg)
+        full_path_name = msg['record']['full_path_name']
+        KbServerProtocol.log.info(f"Call to delete_memory_backup({full_path_name})")
+        msg['rc'] = 'Okay'
+        msg['reason'] = f'Delete of delete_memory_backup {full_path_name} Complete'
+        Step.memory.delete_memory_backup(full_path_name)
+        self.send_object(msg)
+        self.memory_initial_load()
         # returnValue('')
 
     def delete_memory(self, msg, isbinary):
@@ -531,7 +546,7 @@ class KbServerProtocol(WebSocketServerProtocol):
         method_name = f"{msg['cmd']}_{msg['object']}"
         # Check if the method exists in the instance and call it with parameters
         if hasattr(self, method_name):
-            KbServerProtocol.log.info("received msg calling {method_name}(...)", method_name=method_name)
+            # KbServerProtocol.log.info("received msg calling {method_name}(...)", method_name=method_name)
             method = getattr(self, method_name)
             try:
                 yield method(msg, isbinary)

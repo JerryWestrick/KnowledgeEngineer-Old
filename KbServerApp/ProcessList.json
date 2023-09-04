@@ -1,11 +1,12 @@
 {
-  "Snake": [
+  "Snake6": [
     {
       "py/object": "KbServerApp.step.Step",
-      "name": "1. Organize  Requirements",
-      "prompt_name": "Snake/Prompts/Make Requirements.pe",
-      "storage_path": "Snake/Dynamic/Components",
-      "text_file": "Components_List.md",
+      "name": "Make Requirements",
+      "prompt_name": "Snake6/Prompts/Make Requirements.pe",
+      "verify_prompt": "",
+      "storage_path": "Snake6/Dynamic/Planning",
+      "text_file": "Make Requirements Log.md",
       "file_process_enabled": false,
       "file_process_name": "",
       "file_glob": "",
@@ -13,50 +14,59 @@
       "ai": {
         "py/object": "KbServerApp.ai.AI",
         "temperature": 0.0,
-        "max_tokens": 3000,
+        "max_tokens": 5000,
         "model": "gpt-4",
         "mode": "chat",
         "messages": [
           {
             "role": "system",
-            "content": "\nYou are an IT developer.\nDo not explain yourself.\nDo not apologize.\nWhen possible, do not talk to me.\nComplete the tasks given in a way that allows for easy comprehension while not leaving anything out.\nwhen using lists use minus signs.\nUse indentation."
+            "content": "\nYou are an AI Engineer, programming a prompt for Chat GPT\nDo not explain yourself.\nDo not apologize.\nComplete the tasks given in a way that is optimized for Chat GPT's easy comprehension while not leaving anything out.\nAll answers will be in MarkDown and/or Python 3."
+          },
+          {
+            "role": "user",
+            "content": "\n\n# Game constants\nBOARD_SIZE = 100\nSNAKE_CHARACTERS = [\"\ud83d\udd34\", \"\ud83d\udd35\", \"\ud83d\udfe0\", \"\ud83d\udfe1\", \"\ud83d\udfe2\", \"\ud83d\udfe3\", \"\ud83d\udfe4\"]\nFOOD_CHAR = \"\ud83c\udf4e\"\nFOOD_COUNT = 5\nDIRECTION = {\"Stop\": (0, 0), \"Up\": (0,\u22121), \"Down\": (0,1), \"Left\": (\u22121,0), \"Right\": (1,0) }\n\n\nGameStatus = {\n    \"game_board\": \" \" * (BOARD_SIZE * BOARD_SIZE),  # (100 strings of 100 spaces)\n    \"free_snake_chars\": [\"\ud83d\udd34\", \"\ud83d\udd35\", \"\ud83d\udfe0\", \"\ud83d\udfe1\", \"\ud83d\udfe2\", \"\ud83d\udfe3\", \"\ud83d\udfe4\"],\n    \"foods\": [(50, 2), (5, 20), (34, 12), (50, 2), (12, 98)],\n    \"clients\": {\n      websocket1: {\"name\": \"Jerry\", \"char\": \"\ud83d\udd34\", \"snake\": [(5, 3), (5, 4), (6, 4)], \"score\": 127, \"direction\": \"Up\"},\n      websocket2: {\"name\": \"Tom\", \"char\": \"\ud83d\udd35\", \"snake\": [(6, 12), (6, 13), (6, 14)], \"score\": 27, \"direction\": \"Left\"}\n    }\n}"
+          },
+          {
+            "role": "user",
+            "content": "\nThe Server side of a multi user \"Snake\" online game.\nServer is SnaekServer.py\n    Architecture: python 3, with Async IO, aiohttp serving SnakeClient.html, and connect via websockets\n    The game_board (a 100 x 100 2d character representation of the playing ground) is kept up to date\n    with the values of Snakes and Foods; Therefor you can check for collisions by checking the value of\n    the character in the game_board at position (x, y).\n\nTicks Logic:\n    The game is implemented as Ticks (5 per second).\n    Tick:\n        1. move each snake who's direction is not 'Stop':\n            new_head = head of snake + snake direction.\n\n            if new_head x or y are not in bounds: Snake_Dies\n            if game_board at new_head is a snake character: Snake_Dies.\n\n            if game_board at new_head is a food:\n                - game_board at new_head draw client char\n                - push new_head (x, y) onto front of snake\n                - remove new_head from foods.\n                - find a random (fx, fy) that is Space, add it to foods, and draw food char.\n                - add 100 to snake score.\n\n            if game_board at new_head is Space:\n                - game_board at new_head draw client char\n                - push new_head (x, y) onto front of snake\n                - pop last position from snake as tail.\n                - game_board at tail draw space\n                - add 1 to snake score\n\n        2. Send GameStatus to all connected Clients.\n\nSnake_Dies:\n    - Send SnakeDied message to client.\n    - erase client snake from the board.\n    - Do Reset_A_Client:\n\nReset_A_Client:\n    - new snake head is at random position so new snake is [(x, y), (x, y+1), (x, y+2)]\n        if game_board at each [(x, y), (x, y+1), (x, y+2)] == space\n            set client snake to new snake\n    - draw Client snake on game_board\n    - the Client score is set to zero\n    - the Client direction is set to \"Stop\"\n\nWhen Server receives \"Joining\":\n    - if free_snake_chars is empty then close websocket\n    - take a char from free_snake_chars and assign it to the Client as 'char'.\n    - the client['username']= username\n    - Do Reset_A_Client.\n\nServer When websocket disconnect:\n    - return Client char to game_state free_snake_chars.\n    - erase client snake from game_board\n    - del game_status['clients'][websocket]\n\nServer At Startup:\n    - At startup The Server will start a HTTP Server that serves the file SnakeClient.html\n"
+          },
+          {
+            "role": "user",
+            "content": "\nimplement the client of a multi user \"Snake\" online game.\nThe Client part is a single file containing html, css, and javascript called SnakeClient.html\n\nClient Architecture: html, css, javascript, websockets\n\nDisplay Artifacts:\n    GameBoard:\n        The GameBoard is a 2d 100 x 100 character array with default character \" \".\n        The Board needs a frame.\n        The Board needs to be resizable, the characters displayed in board need to be resized with board.\n\n    Client List:\n        The client list is displayed in a status bar at bottom of window.\n        display \"{client.char}{client.username}:{client.score} \" for each client in game_status.clients\n            for example: \"\ud83d\udd34Jerry:150  \ud83d\udd35Tom:423\"\n\nClient initialization:\n    - the Client prompts the user for a username.\n    - the Client connects via websocket\n    - the Client sends a \"Joining\" message (which includes the username).\n\nClient detects arrow keys:\n    - it sends \"DirectionChange\" message with 'Up', 'Down', 'Left', or 'Right', which starts the client.\n\nClient receives SnakeDied:\n     - client shows pop-up dialog.\n\nClient receives GameStatus:\n    - replace GameBoard and Client List with values from message"
           },
           {
             "role": "system",
-            "content": "\nUse Text Blocks to write Files.  Text blocks are formatted as follows:\n\n{text block name}.{ext}\n```{filetype}\n{text block contents}\n```"
+            "content": "\nWhen you see (Output filename=filename.ext) you are being asked to output \nthe file in the following format.\n\n```filename=filename.ext\nfile contents\n```"
           },
           {
             "role": "user",
-            "content": "\nimplement a multi user \"Snake\" online game.\n-The rules to the game are the standard \"Snake\" game rules.\n-The Board will be 100 x 100 squares.\n- The game consists of 15 steps per second.\n- each step the server calculates:\n    - the movement of each snake,\n    - what snakes if any die,\n    - what squares need color changes,\n    - the list of squares that changed, and the new color is sent to each client.\n\nDescription of Game:\n\n    Before The Game Starts:\n    - clients that connect see a \"Join the game\" pop-up with a countdown to game start.\n    - player is given Yes/No buttons.\n    - The popup is closed when:\n        - a player joins the game,\n        - declines to join the game,\n        - or the game starts (which is an implicit decline).\n\n    Once a player \"joins\":\n    - the Client is assigned a Color and the \"his\" snake is drawn\n    - the player sees the entire game board.\n    - the player sees a count-down to game start.\n    - each client that joined updates the server of any change event to the state of the arrow keys.\n\n    From Game Start to Client Death:\n    - each client updates the server of any change event to the state of the arrow keys.\n    - Each client updates its view of the 100 x 100 square board with the update commands received from the server\n    - the server will also announce to the client if it has died.\n\n    From Client Death to End of Game\n    - Once dead, the client continues to update the screen until end of game\n    - The Game ends with a \"Winner\" message stating the Color of the last surviving snake.\n    - Each client will display the winner until \"ok\" is clicked.\n\n    After End of Game:\n    - each client see the \"Join the Game\" pop-up, but no count dow is initiated until the first client joins.\n    - First client joins starts a 30-second count-down to start of game; and the game goes to \"Before The Game Starts\" mode\n"
-          },
-          {
-            "role": "user",
-            "content": "\nAnalyse the game description.\nWrite 3 text block files:\n    - Server.md containing the description of the server and it's requirements\n    - Client.md containing the description of the client and it's requirements\n    - Protocol.md containing a description of the required Protocol."
+            "content": "\nRead the application description provided.\nRewrite the description into a requirements list.\nGive each requirement a unique id.\nGroup requirements by Server (output filename=Server_Requirements.md) and Client Requirements (output filename=Client_Requirements.md).\nThen List all messages with thier senders receivers (output filename=Messages.md).\n"
           }
         ],
-        "answer": "Server.md\n```markdown\n# Server\n\nThe server is responsible for managing the game state and communicating with the clients. It performs the following tasks:\n\n- Manages the game board of 100 x 100 squares.\n- Calculates the game at a rate of 15 steps per second.\n- Each step, the server calculates:\n    - The movement of each snake.\n    - Determines if any snakes die.\n    - Determines what squares need color changes.\n- Sends a list of squares that changed and their new color to each client.\n- Assigns a color to each client that joins the game and draws their snake.\n- Updates the state of the game based on the arrow key events received from each client.\n- Announces to the client if it has died.\n- Announces the winner of the game when only one snake remains.\n- Resets the game after it ends and waits for the first client to join to start a new game.\n```\n\nClient.md\n```markdown\n# Client\n\nThe client is responsible for interacting with the user and communicating with the server. It performs the following tasks:\n\n- Displays a \"Join the game\" pop-up with a countdown to game start when connected to the server.\n- Allows the player to join or decline to join the game.\n- Displays the entire game board and a countdown to game start once the player joins the game.\n- Sends any change event to the state of the arrow keys to the server.\n- Updates its view of the game board based on the update commands received from the server.\n- Displays a \"Winner\" message stating the color of the last surviving snake when the game ends.\n- Continues to update the screen after the client's snake has died until the end of the game.\n- Displays the \"Join the Game\" pop-up after the end of the game.\n```\n\nProtocol.md\n```markdown\n# Protocol\n\nThe protocol is responsible for defining the communication between the server and the clients. It includes the following:\n\n- The server sends a list of squares that changed and their new color to each client at each step.\n- The client sends any change event to the state of the arrow keys to the server.\n- The server sends an announcement to the client if it has died.\n- The server sends a \"Winner\" message stating the color of the last surviving snake when the game ends.\n- The server sends a reset command to the clients after the game ends to start a new game.\n```",
+        "answer": "filename=Server_Requirements.md\n```\n# Server Requirements\n\n1. SR1: The server should be implemented in Python 3, with Async IO, aiohttp serving SnakeClient.html, and connect via websockets.\n2. SR2: The server should maintain a game_board, a 100 x 100 2D character representation of the playing ground.\n3. SR3: The server should keep the game_board up to date with the values of Snakes and Foods.\n4. SR4: The server should implement the game as Ticks (5 per second).\n5. SR5: The server should move each snake whose direction is not 'Stop' during each Tick.\n6. SR6: The server should check for collisions by checking the value of the character in the game_board at position (x, y).\n7. SR7: The server should handle snake death and reset the client.\n8. SR8: The server should send GameStatus to all connected Clients after each Tick.\n9. SR9: The server should handle \"Joining\" message from clients.\n10. SR10: The server should handle websocket disconnection from clients.\n11. SR11: The server should start a HTTP Server that serves the file SnakeClient.html at startup.\n```\n\nfilename=Client_Requirements.md\n```\n# Client Requirements\n\n1. CR1: The client should be implemented in HTML, CSS, and JavaScript.\n2. CR2: The client should display a GameBoard, a 2D 100 x 100 character array with default character \" \".\n3. CR3: The client should display a client list in a status bar at the bottom of the window.\n4. CR4: The client should prompt the user for a username at initialization.\n5. CR5: The client should connect via websocket at initialization.\n6. CR6: The client should send a \"Joining\" message (which includes the username) at initialization.\n7. CR7: The client should detect arrow keys and send \"DirectionChange\" message with 'Up', 'Down', 'Left', or 'Right'.\n8. CR8: The client should handle \"SnakeDied\" message from the server.\n9. CR9: The client should handle \"GameStatus\" message from the server.\n```\n\nfilename=Messages.md\n```\n# Messages\n\n1. \"Joining\" message: Sent by the client to the server at initialization. Includes the username.\n2. \"DirectionChange\" message: Sent by the client to the server when an arrow key is detected. Includes the direction ('Up', 'Down', 'Left', or 'Right').\n3. \"SnakeDied\" message: Sent by the server to the client when the snake dies.\n4. \"GameStatus\" message: Sent by the server to all connected clients after each Tick. Includes the game status.\n```",
         "files": {
-          "Server.md": "# Server\n\nThe server is responsible for managing the game state and communicating with the clients. It performs the following tasks:\n\n- Manages the game board of 100 x 100 squares.\n- Calculates the game at a rate of 15 steps per second.\n- Each step, the server calculates:\n    - The movement of each snake.\n    - Determines if any snakes die.\n    - Determines what squares need color changes.\n- Sends a list of squares that changed and their new color to each client.\n- Assigns a color to each client that joins the game and draws their snake.\n- Updates the state of the game based on the arrow key events received from each client.\n- Announces to the client if it has died.\n- Announces the winner of the game when only one snake remains.\n- Resets the game after it ends and waits for the first client to join to start a new game.",
-          "Client.md": "# Client\n\nThe client is responsible for interacting with the user and communicating with the server. It performs the following tasks:\n\n- Displays a \"Join the game\" pop-up with a countdown to game start when connected to the server.\n- Allows the player to join or decline to join the game.\n- Displays the entire game board and a countdown to game start once the player joins the game.\n- Sends any change event to the state of the arrow keys to the server.\n- Updates its view of the game board based on the update commands received from the server.\n- Displays a \"Winner\" message stating the color of the last surviving snake when the game ends.\n- Continues to update the screen after the client's snake has died until the end of the game.\n- Displays the \"Join the Game\" pop-up after the end of the game.",
-          "Protocol.md": "# Protocol\n\nThe protocol is responsible for defining the communication between the server and the clients. It includes the following:\n\n- The server sends a list of squares that changed and their new color to each client at each step.\n- The client sends any change event to the state of the arrow keys to the server.\n- The server sends an announcement to the client if it has died.\n- The server sends a \"Winner\" message stating the color of the last surviving snake when the game ends.\n- The server sends a reset command to the clients after the game ends to start a new game."
+          "Server_Requirements.md": "# Server Requirements\n\n1. SR1: The server should be implemented in Python 3, with Async IO, aiohttp serving SnakeClient.html, and connect via websockets.\n2. SR2: The server should maintain a game_board, a 100 x 100 2D character representation of the playing ground.\n3. SR3: The server should keep the game_board up to date with the values of Snakes and Foods.\n4. SR4: The server should implement the game as Ticks (5 per second).\n5. SR5: The server should move each snake whose direction is not 'Stop' during each Tick.\n6. SR6: The server should check for collisions by checking the value of the character in the game_board at position (x, y).\n7. SR7: The server should handle snake death and reset the client.\n8. SR8: The server should send GameStatus to all connected Clients after each Tick.\n9. SR9: The server should handle \"Joining\" message from clients.\n10. SR10: The server should handle websocket disconnection from clients.\n11. SR11: The server should start a HTTP Server that serves the file SnakeClient.html at startup.",
+          "Client_Requirements.md": "# Client Requirements\n\n1. CR1: The client should be implemented in HTML, CSS, and JavaScript.\n2. CR2: The client should display a GameBoard, a 2D 100 x 100 character array with default character \" \".\n3. CR3: The client should display a client list in a status bar at the bottom of the window.\n4. CR4: The client should prompt the user for a username at initialization.\n5. CR5: The client should connect via websocket at initialization.\n6. CR6: The client should send a \"Joining\" message (which includes the username) at initialization.\n7. CR7: The client should detect arrow keys and send \"DirectionChange\" message with 'Up', 'Down', 'Left', or 'Right'.\n8. CR8: The client should handle \"SnakeDied\" message from the server.\n9. CR9: The client should handle \"GameStatus\" message from the server.",
+          "Messages.md": "# Messages\n\n1. \"Joining\" message: Sent by the client to the server at initialization. Includes the username.\n2. \"DirectionChange\" message: Sent by the client to the server when an arrow key is detected. Includes the direction ('Up', 'Down', 'Left', or 'Right').\n3. \"SnakeDied\" message: Sent by the server to the client when the snake dies.\n4. \"GameStatus\" message: Sent by the server to all connected clients after each Tick. Includes the game status."
         },
         "e_stats": {
-          "prompt_tokens": 593,
-          "completion_tokens": 493,
-          "total_tokens": 1086,
-          "sp_cost": 0.017789999999999997,
-          "sc_cost": 0.02958,
-          "s_total": 0.047369999999999995,
-          "elapsed_time": 29.849005460739136
+          "prompt_tokens": 1369,
+          "completion_tokens": 585,
+          "total_tokens": 1954,
+          "sp_cost": 0.041069999999999995,
+          "sc_cost": 0.0351,
+          "s_total": 0.07616999999999999,
+          "elapsed_time": 49.183696269989014
         }
       }
     },
     {
       "py/object": "KbServerApp.step.Step",
-      "name": "2. Network Protocol",
-      "prompt_name": "Snake/Prompts/Design Network Protocol.pe",
-      "storage_path": "Snake/Dynamic/Protocol",
-      "text_file": "Protocol Description.md",
+      "name": "Expand Server Requirements",
+      "prompt_name": "Snake6/Prompts/Expand Server Requirements.pe",
+      "verify_prompt": "",
+      "storage_path": "Snake6/Dynamic/Planning",
+      "text_file": "Expand Server Requirements Log.md",
       "file_process_enabled": false,
       "file_process_name": "",
       "file_glob": "",
@@ -64,111 +74,75 @@
       "ai": {
         "py/object": "KbServerApp.ai.AI",
         "temperature": 0.0,
-        "max_tokens": 3000,
+        "max_tokens": 5000,
         "model": "gpt-4",
         "mode": "chat",
-        "messages": [
-          {
-            "role": "system",
-            "content": "\nYou are an IT developer.\nDo not explain yourself.\nDo not apologize.\nWhen possible, do not talk to me.\nComplete the tasks given in a way that allows for easy comprehension while not leaving anything out.\nwhen using lists use minus signs.\nUse indentation."
-          },
-          {
-            "role": "system",
-            "content": "\nUse Text Blocks to write Files.  Text blocks are formatted as follows:\n\n{text block name}.{ext}\n```{filetype}\n{text block contents}\n```"
-          },
-          {
-            "role": "user",
-            "content": "\nServer.md\n```markdown\n# Server\n\nThe server is responsible for managing the game state and communicating with the clients. It performs the following tasks:\n\n- Manages the game board of 100 x 100 squares.\n- Calculates the game at a rate of 15 steps per second.\n- Each step, the server calculates:\n    - The movement of each snake.\n    - Determines if any snakes die.\n    - Determines what squares need color changes.\n- Sends a list of squares that changed and their new color to each client.\n- Assigns a color to each client that joins the game and draws their snake.\n- Updates the state of the game based on the arrow key events received from each client.\n- Announces to the client if it has died.\n- Announces the winner of the game when only one snake remains.\n- Resets the game after it ends and waits for the first client to join to start a new game.\n```\n\nClient.md\n```markdown\n# Client\n\nThe client is responsible for interacting with the user and communicating with the server. It performs the following tasks:\n\n- Displays a \"Join the game\" pop-up with a countdown to game start when connected to the server.\n- Allows the player to join or decline to join the game.\n- Displays the entire game board and a countdown to game start once the player joins the game.\n- Sends any change event to the state of the arrow keys to the server.\n- Updates its view of the game board based on the update commands received from the server.\n- Displays a \"Winner\" message stating the color of the last surviving snake when the game ends.\n- Continues to update the screen after the client's snake has died until the end of the game.\n- Displays the \"Join the Game\" pop-up after the end of the game.\n```\n\nProtocol.md\n```markdown\n# Protocol\n\nThe protocol is responsible for defining the communication between the server and the clients. It includes the following:\n\n- The server sends a list of squares that changed and their new color to each client at each step.\n- The client sends any change event to the state of the arrow keys to the server.\n- The server sends an announcement to the client if it has died.\n- The server sends a \"Winner\" message stating the color of the last surviving snake when the game ends.\n- The server sends a reset command to the clients after the game ends to start a new game.\n```"
-          },
-          {
-            "role": "user",
-            "content": "\nAnalyze the system described.\nDesign a network protocol based on json messages for the application.\nDescribe each msg  type and its usage in a paragraph, followed by\na text block file with name: {msg_type}.json"
-          }
-        ],
-        "answer": "The system described is a multiplayer snake game where the server manages the game state and communicates with the clients. The clients interact with the user and communicate with the server. The protocol defines the communication between the server and the clients.\n\nThe network protocol designed for this application will be based on JSON messages. The messages will be of different types, each serving a specific purpose in the application. \n\nThe first message type is `GameUpdate`. This message is sent by the server to the clients at each step of the game. It contains a list of squares that have changed and their new color. This allows the clients to update their view of the game board.\n\nGameUpdate.json\n```json\n{\n    \"type\": \"GameUpdate\",\n    \"payload\": {\n        \"changedSquares\": [\n            {\n                \"x\": 0,\n                \"y\": 0,\n                \"color\": \"#FF0000\"\n            },\n            {\n                \"x\": 1,\n                \"y\": 1,\n                \"color\": \"#00FF00\"\n            }\n        ]\n    }\n}\n```\n\nThe second message type is `KeyEvent`. This message is sent by the clients to the server whenever there is a change in the state of the arrow keys. This allows the server to update the game state based on the user's input.\n\nKeyEvent.json\n```json\n{\n    \"type\": \"KeyEvent\",\n    \"payload\": {\n        \"key\": \"ArrowUp\"\n    }\n}\n```\n\nThe third message type is `DeathNotification`. This message is sent by the server to a client when the client's snake dies. This allows the client to display a death message to the user.\n\nDeathNotification.json\n```json\n{\n    \"type\": \"DeathNotification\",\n    \"payload\": {}\n}\n```\n\nThe fourth message type is `WinnerAnnouncement`. This message is sent by the server to the clients when the game ends. It contains the color of the last surviving snake. This allows the clients to display a winner message to the user.\n\nWinnerAnnouncement.json\n```json\n{\n    \"type\": \"WinnerAnnouncement\",\n    \"payload\": {\n        \"color\": \"#FF0000\"\n    }\n}\n```\n\nThe fifth message type is `GameReset`. This message is sent by the server to the clients after the game ends. This allows the clients to reset their state and prepare for a new game.\n\nGameReset.json\n```json\n{\n    \"type\": \"GameReset\",\n    \"payload\": {}\n}\n```",
-        "files": {
-          "GameUpdate.json": "{\n    \"type\": \"GameUpdate\",\n    \"payload\": {\n        \"changedSquares\": [\n            {\n                \"x\": 0,\n                \"y\": 0,\n                \"color\": \"#FF0000\"\n            },\n            {\n                \"x\": 1,\n                \"y\": 1,\n                \"color\": \"#00FF00\"\n            }\n        ]\n    }\n}",
-          "KeyEvent.json": "{\n    \"type\": \"KeyEvent\",\n    \"payload\": {\n        \"key\": \"ArrowUp\"\n    }\n}",
-          "DeathNotification.json": "{\n    \"type\": \"DeathNotification\",\n    \"payload\": {}\n}",
-          "WinnerAnnouncement.json": "{\n    \"type\": \"WinnerAnnouncement\",\n    \"payload\": {\n        \"color\": \"#FF0000\"\n    }\n}",
-          "GameReset.json": "{\n    \"type\": \"GameReset\",\n    \"payload\": {}\n}"
+        "messages": [],
+        "answer": {
+          "py/tuple": [
+            [
+              ""
+            ]
+          ]
         },
-        "e_stats": {
-          "prompt_tokens": 644,
-          "completion_tokens": 508,
-          "total_tokens": 1152,
-          "sp_cost": 0.01932,
-          "sc_cost": 0.03048,
-          "s_total": 0.0498,
-          "elapsed_time": 34.99353051185608
-        }
-      }
-    },
-    {
-      "py/object": "KbServerApp.step.Step",
-      "name": "3. Make Server Plan",
-      "prompt_name": "Snake/Prompts/Make Server Plan.pe",
-      "storage_path": "Snake/Dynamic/Server",
-      "text_file": "Server_Plan.md",
-      "file_process_enabled": false,
-      "file_process_name": "",
-      "file_glob": "",
-      "macros": {},
-      "ai": {
-        "py/object": "KbServerApp.ai.AI",
-        "temperature": 0.0,
-        "max_tokens": 3000,
-        "model": "gpt-4",
-        "mode": "chat",
-        "messages": [
-          {
-            "role": "system",
-            "content": "\nYou are an IT developer.\nDo not explain yourself.\nDo not apologize.\nWhen possible, do not talk to me.\nComplete the tasks given in a way that allows for easy comprehension while not leaving anything out.\nwhen using lists use minus signs.\nUse indentation."
-          },
-          {
-            "role": "system",
-            "content": "\nUse Text Blocks to write Files.  Text blocks are formatted as follows:\n\n{text block name}.{ext}\n```{filetype}\n{text block contents}\n```"
-          },
-          {
-            "role": "user",
-            "content": "\n# Server\n\nThe server is responsible for managing the game state and communicating with the clients. It performs the following tasks:\n\n- Manages the game board of 100 x 100 squares.\n- Calculates the game at a rate of 15 steps per second.\n- Each step, the server calculates:\n    - The movement of each snake.\n    - Determines if any snakes die.\n    - Determines what squares need color changes.\n- Sends a list of squares that changed and their new color to each client.\n- Assigns a color to each client that joins the game and draws their snake.\n- Updates the state of the game based on the arrow key events received from each client.\n- Announces to the client if it has died.\n- Announces the winner of the game when only one snake remains.\n- Resets the game after it ends and waits for the first client to join to start a new game."
-          },
-          {
-            "role": "user",
-            "content": "\nThe system described is a multiplayer snake game where the server manages the game state and communicates with the clients. The clients interact with the user and communicate with the server. The protocol defines the communication between the server and the clients.\n\nThe network protocol designed for this application will be based on JSON messages. The messages will be of different types, each serving a specific purpose in the application. \n\nThe first message type is `GameUpdate`. This message is sent by the server to the clients at each step of the game. It contains a list of squares that have changed and their new color. This allows the clients to update their view of the game board.\n\nGameUpdate.json\n```json\n{\n    \"type\": \"GameUpdate\",\n    \"payload\": {\n        \"changedSquares\": [\n            {\n                \"x\": 0,\n                \"y\": 0,\n                \"color\": \"#FF0000\"\n            },\n            {\n                \"x\": 1,\n                \"y\": 1,\n                \"color\": \"#00FF00\"\n            }\n        ]\n    }\n}\n```\n\nThe second message type is `KeyEvent`. This message is sent by the clients to the server whenever there is a change in the state of the arrow keys. This allows the server to update the game state based on the user's input.\n\nKeyEvent.json\n```json\n{\n    \"type\": \"KeyEvent\",\n    \"payload\": {\n        \"key\": \"ArrowUp\"\n    }\n}\n```\n\nThe third message type is `DeathNotification`. This message is sent by the server to a client when the client's snake dies. This allows the client to display a death message to the user.\n\nDeathNotification.json\n```json\n{\n    \"type\": \"DeathNotification\",\n    \"payload\": {}\n}\n```\n\nThe fourth message type is `WinnerAnnouncement`. This message is sent by the server to the clients when the game ends. It contains the color of the last surviving snake. This allows the clients to display a winner message to the user.\n\nWinnerAnnouncement.json\n```json\n{\n    \"type\": \"WinnerAnnouncement\",\n    \"payload\": {\n        \"color\": \"#FF0000\"\n    }\n}\n```\n\nThe fifth message type is `GameReset`. This message is sent by the server to the clients after the game ends. This allows the clients to reset their state and prepare for a new game.\n\nGameReset.json\n```json\n{\n    \"type\": \"GameReset\",\n    \"payload\": {}\n}\n```"
-          },
-          {
-            "role": "user",
-            "content": "Use the Archetecture:"
-          },
-          {
-            "role": "user",
-            "content": "\n- Python 3.\n- http server with websockets\n- client/server architecture.\n- allows multiple clients to join/play\n- WebBrowser to localhost:8090."
-          },
-          {
-            "role": "user",
-            "content": "\nAnalyze the included information.\nWrite a plan to implement the SnakeServer.py\nBe detailed, list all mesasges, conditions, and any other things to be implemented.\n"
-          }
-        ],
-        "answer": "Plan to implement SnakeServer.py:\n\n1. Import necessary libraries:\n    - asyncio for asynchronous I/O, networking, and concurrency.\n    - websockets for WebSocket protocol handling.\n    - json for JSON message encoding and decoding.\n\n2. Define the game state:\n    - A 100x100 grid to represent the game board.\n    - A list of snakes, each represented by a list of squares and a color.\n    - A list of squares that have changed since the last step.\n\n3. Define the WebSocket server:\n    - The server listens on localhost:8090.\n    - When a client connects, assign them a color and add a snake to the game state.\n    - When a client disconnects, remove their snake from the game state.\n\n4. Define the game loop:\n    - The loop runs at a rate of 15 steps per second.\n    - Each step, calculate the movement of each snake based on the last KeyEvent received from its client.\n    - If a snake moves into a wall or another snake, remove it from the game state and send a DeathNotification to its client.\n    - If a snake moves into a free square, add the square to the snake and to the list of changed squares.\n    - If only one snake remains, send a WinnerAnnouncement to all clients and reset the game state.\n\n5. Define the message handling:\n    - When a GameUpdate message is received, update the list of changed squares and their colors in the game state.\n    - When a KeyEvent message is received, update the direction of the corresponding snake.\n    - When a DeathNotification message is received, remove the corresponding snake from the game state.\n    - When a WinnerAnnouncement message is received, reset the game state.\n    - When a GameReset message is received, reset the game state.\n\n6. Define the message sending:\n    - At each step, send a GameUpdate message to all clients with the list of changed squares and their new colors.\n    - When a snake dies, send a DeathNotification message to its client.\n    - When the game ends, send a WinnerAnnouncement message to all clients with the color of the last surviving snake.\n    - After the game ends, send a GameReset message to all clients.\n\n7. Start the WebSocket server and the game loop.",
         "files": {},
         "e_stats": {
-          "prompt_tokens": 885,
-          "completion_tokens": 468,
-          "total_tokens": 1353,
-          "sp_cost": 0.02655,
-          "sc_cost": 0.02808,
-          "s_total": 0.05463,
-          "elapsed_time": 37.69104266166687
+          "prompt_tokens": 0,
+          "completion_tokens": 0,
+          "total_tokens": 0,
+          "sp_cost": 0.0,
+          "sc_cost": 0.0,
+          "s_total": 0.0,
+          "elapsed_time": 0.0
         }
       }
     },
     {
       "py/object": "KbServerApp.step.Step",
-      "name": "4. Elaborate Plan and separate steps",
-      "prompt_name": "Snake/Prompts/Separate Steps.pe",
-      "storage_path": "Snake/Dynamic/Server",
-      "text_file": "Server_Test_Plan.md",
+      "name": "Complete Expanded Server Requirements",
+      "prompt_name": "Snake6/Prompts/Complete Expanded Server Requirements.pe",
+      "verify_prompt": "",
+      "storage_path": "Snake6/Dynamic/Planning",
+      "text_file": "Complete_Expanded_Server_Requirements_log.md",
+      "file_process_enabled": false,
+      "file_process_name": "",
+      "file_glob": "",
+      "macros": {},
+      "ai": {
+        "py/object": "KbServerApp.ai.AI",
+        "temperature": 0.0,
+        "max_tokens": 5000,
+        "model": "gpt-4",
+        "mode": "chat",
+        "messages": [],
+        "answer": {
+          "py/tuple": [
+            [
+              [
+                ""
+              ]
+            ]
+          ]
+        },
+        "files": {},
+        "e_stats": {
+          "prompt_tokens": 0,
+          "completion_tokens": 0,
+          "total_tokens": 0,
+          "sp_cost": 0.0,
+          "sc_cost": 0.0,
+          "s_total": 0.0,
+          "elapsed_time": 0.0
+        }
+      }
+    },
+    {
+      "py/object": "KbServerApp.step.Step",
+      "name": "Make Message Protocol",
+      "prompt_name": "Snake6/Prompts/Make Message Protocol.pe",
+      "verify_prompt": "",
+      "storage_path": "Snake6/Dynamic/Planning",
+      "text_file": "Message Protocol Log.md",
       "file_process_enabled": false,
       "file_process_name": "",
       "file_glob": "",
@@ -182,511 +156,167 @@
         "messages": [
           {
             "role": "system",
-            "content": "\nYou are an IT developer.\nDo not explain yourself.\nDo not apologize.\nWhen possible, do not talk to me.\nComplete the tasks given in a way that allows for easy comprehension while not leaving anything out.\nwhen using lists use minus signs.\nUse indentation."
-          },
-          {
-            "role": "system",
-            "content": "\nUse Text Blocks to write Files.  Text blocks are formatted as follows:\n\n{text block name}.{ext}\n```{filetype}\n{text block contents}\n```"
+            "content": "\nYou are an AI Engineer, programming a prompt for Chat GPT\nDo not explain yourself.\nDo not apologize.\nComplete the tasks given in a way that is optimized for Chat GPT's easy comprehension while not leaving anything out.\nAll answers will be in MarkDown and/or Python 3."
           },
           {
             "role": "user",
-            "content": "\nPlan to implement SnakeServer.py:\n\n1. Import necessary libraries:\n    - asyncio for asynchronous I/O, networking, and concurrency.\n    - websockets for WebSocket protocol handling.\n    - json for JSON message encoding and decoding.\n\n2. Define the game state:\n    - A 100x100 grid to represent the game board.\n    - A list of snakes, each represented by a list of squares and a color.\n    - A list of squares that have changed since the last step.\n\n3. Define the WebSocket server:\n    - The server listens on localhost:8090.\n    - When a client connects, assign them a color and add a snake to the game state.\n    - When a client disconnects, remove their snake from the game state.\n\n4. Define the game loop:\n    - The loop runs at a rate of 15 steps per second.\n    - Each step, calculate the movement of each snake based on the last KeyEvent received from its client.\n    - If a snake moves into a wall or another snake, remove it from the game state and send a DeathNotification to its client.\n    - If a snake moves into a free square, add the square to the snake and to the list of changed squares.\n    - If only one snake remains, send a WinnerAnnouncement to all clients and reset the game state.\n\n5. Define the message handling:\n    - When a GameUpdate message is received, update the list of changed squares and their colors in the game state.\n    - When a KeyEvent message is received, update the direction of the corresponding snake.\n    - When a DeathNotification message is received, remove the corresponding snake from the game state.\n    - When a WinnerAnnouncement message is received, reset the game state.\n    - When a GameReset message is received, reset the game state.\n\n6. Define the message sending:\n    - At each step, send a GameUpdate message to all clients with the list of changed squares and their new colors.\n    - When a snake dies, send a DeathNotification message to its client.\n    - When the game ends, send a WinnerAnnouncement message to all clients with the color of the last surviving snake.\n    - After the game ends, send a GameReset message to all clients.\n\n7. Start the WebSocket server and the game loop."
+            "content": "\n\n# Game constants\nBOARD_SIZE = 100\nSNAKE_CHARACTERS = [\"\ud83d\udd34\", \"\ud83d\udd35\", \"\ud83d\udfe0\", \"\ud83d\udfe1\", \"\ud83d\udfe2\", \"\ud83d\udfe3\", \"\ud83d\udfe4\"]\nFOOD_CHAR = \"\ud83c\udf4e\"\nFOOD_COUNT = 5\nDIRECTION = {\"Stop\": (0, 0), \"Up\": (0,\u22121), \"Down\": (0,1), \"Left\": (\u22121,0), \"Right\": (1,0) }\n\n\nGameStatus = {\n    \"game_board\": \" \" * (BOARD_SIZE * BOARD_SIZE),  # (100 strings of 100 spaces)\n    \"free_snake_chars\": [\"\ud83d\udd34\", \"\ud83d\udd35\", \"\ud83d\udfe0\", \"\ud83d\udfe1\", \"\ud83d\udfe2\", \"\ud83d\udfe3\", \"\ud83d\udfe4\"],\n    \"foods\": [(50, 2), (5, 20), (34, 12), (50, 2), (12, 98)],\n    \"clients\": {\n      websocket1: {\"name\": \"Jerry\", \"char\": \"\ud83d\udd34\", \"snake\": [(5, 3), (5, 4), (6, 4)], \"score\": 127, \"direction\": \"Up\"},\n      websocket2: {\"name\": \"Tom\", \"char\": \"\ud83d\udd35\", \"snake\": [(6, 12), (6, 13), (6, 14)], \"score\": 27, \"direction\": \"Left\"}\n    }\n}"
           },
           {
             "role": "user",
-            "content": "\nread the plan.\nSeparate each step in the plan into a unique file\nwrite a text block file named Step_<nn>.md for each step\n"
+            "content": "\nThe Server side of a multi user \"Snake\" online game.\nServer is SnaekServer.py\n    Architecture: python 3, with Async IO, aiohttp serving SnakeClient.html, and connect via websockets\n    The game_board (a 100 x 100 2d character representation of the playing ground) is kept up to date\n    with the values of Snakes and Foods; Therefor you can check for collisions by checking the value of\n    the character in the game_board at position (x, y).\n\nTicks Logic:\n    The game is implemented as Ticks (5 per second).\n    Tick:\n        1. move each snake who's direction is not 'Stop':\n            new_head = head of snake + snake direction.\n\n            if new_head x or y are not in bounds: Snake_Dies\n            if game_board at new_head is a snake character: Snake_Dies.\n\n            if game_board at new_head is a food:\n                - game_board at new_head draw client char\n                - push new_head (x, y) onto front of snake\n                - remove new_head from foods.\n                - find a random (fx, fy) that is Space, add it to foods, and draw food char.\n                - add 100 to snake score.\n\n            if game_board at new_head is Space:\n                - game_board at new_head draw client char\n                - push new_head (x, y) onto front of snake\n                - pop last position from snake as tail.\n                - game_board at tail draw space\n                - add 1 to snake score\n\n        2. Send GameStatus to all connected Clients.\n\nSnake_Dies:\n    - Send SnakeDied message to client.\n    - erase client snake from the board.\n    - Do Reset_A_Client:\n\nReset_A_Client:\n    - new snake head is at random position so new snake is [(x, y), (x, y+1), (x, y+2)]\n        if game_board at each [(x, y), (x, y+1), (x, y+2)] == space\n            set client snake to new snake\n    - draw Client snake on game_board\n    - the Client score is set to zero\n    - the Client direction is set to \"Stop\"\n\nWhen Server receives \"Joining\":\n    - if free_snake_chars is empty then close websocket\n    - take a char from free_snake_chars and assign it to the Client as 'char'.\n    - the client['username']= username\n    - Do Reset_A_Client.\n\nServer When websocket disconnect:\n    - return Client char to game_state free_snake_chars.\n    - erase client snake from game_board\n    - del game_status['clients'][websocket]\n\nServer At Startup:\n    - At startup The Server will start a HTTP Server that serves the file SnakeClient.html\n"
+          },
+          {
+            "role": "user",
+            "content": "\nimplement the client of a multi user \"Snake\" online game.\nThe Client part is a single file containing html, css, and javascript called SnakeClient.html\n\nClient Architecture: html, css, javascript, websockets\n\nDisplay Artifacts:\n    GameBoard:\n        The GameBoard is a 2d 100 x 100 character array with default character \" \".\n        The Board needs a frame.\n        The Board needs to be resizable, the characters displayed in board need to be resized with board.\n\n    Client List:\n        The client list is displayed in a status bar at bottom of window.\n        display \"{client.char}{client.username}:{client.score} \" for each client in game_status.clients\n            for example: \"\ud83d\udd34Jerry:150  \ud83d\udd35Tom:423\"\n\nClient initialization:\n    - the Client prompts the user for a username.\n    - the Client connects via websocket\n    - the Client sends a \"Joining\" message (which includes the username).\n\nClient detects arrow keys:\n    - it sends \"DirectionChange\" message with 'Up', 'Down', 'Left', or 'Right', which starts the client.\n\nClient receives SnakeDied:\n     - client shows pop-up dialog.\n\nClient receives GameStatus:\n    - replace GameBoard and Client List with values from message"
+          },
+          {
+            "role": "user",
+            "content": "\nRead the application description above.\nCreate a msg protocol based on json messages that will be usedby the application.  \nFor each message describe: \n- Sender, \n- Receiver, \n- purpose of message, and \n- Example of Message.\n--- Answer ---"
           }
         ],
-        "answer": "Step_01.md\n```md\n# Step 1: Import necessary libraries\n\n- Import asyncio for asynchronous I/O, networking, and concurrency.\n- Import websockets for WebSocket protocol handling.\n- Import json for JSON message encoding and decoding.\n```\n\nStep_02.md\n```md\n# Step 2: Define the game state\n\n- Define a 100x100 grid to represent the game board.\n- Define a list of snakes, each represented by a list of squares and a color.\n- Define a list of squares that have changed since the last step.\n```\n\nStep_03.md\n```md\n# Step 3: Define the WebSocket server\n\n- The server should listen on localhost:8090.\n- When a client connects, assign them a color and add a snake to the game state.\n- When a client disconnects, remove their snake from the game state.\n```\n\nStep_04.md\n```md\n# Step 4: Define the game loop\n\n- The loop should run at a rate of 15 steps per second.\n- Each step, calculate the movement of each snake based on the last KeyEvent received from its client.\n- If a snake moves into a wall or another snake, remove it from the game state and send a DeathNotification to its client.\n- If a snake moves into a free square, add the square to the snake and to the list of changed squares.\n- If only one snake remains, send a WinnerAnnouncement to all clients and reset the game state.\n```\n\nStep_05.md\n```md\n# Step 5: Define the message handling\n\n- When a GameUpdate message is received, update the list of changed squares and their colors in the game state.\n- When a KeyEvent message is received, update the direction of the corresponding snake.\n- When a DeathNotification message is received, remove the corresponding snake from the game state.\n- When a WinnerAnnouncement message is received, reset the game state.\n- When a GameReset message is received, reset the game state.\n```\n\nStep_06.md\n```md\n# Step 6: Define the message sending\n\n- At each step, send a GameUpdate message to all clients with the list of changed squares and their new colors.\n- When a snake dies, send a DeathNotification message to its client.\n- When the game ends, send a WinnerAnnouncement message to all clients with the color of the last surviving snake.\n- After the game ends, send a GameReset message to all clients.\n```\n\nStep_07.md\n```md\n# Step 7: Start the WebSocket server and the game loop\n\n- Start the WebSocket server.\n- Start the game loop.\n```",
-        "files": {
-          "Step_01.md": "# Step 1: Import necessary libraries\n\n- Import asyncio for asynchronous I/O, networking, and concurrency.\n- Import websockets for WebSocket protocol handling.\n- Import json for JSON message encoding and decoding.",
-          "Step_02.md": "# Step 2: Define the game state\n\n- Define a 100x100 grid to represent the game board.\n- Define a list of snakes, each represented by a list of squares and a color.\n- Define a list of squares that have changed since the last step.",
-          "Step_03.md": "# Step 3: Define the WebSocket server\n\n- The server should listen on localhost:8090.\n- When a client connects, assign them a color and add a snake to the game state.\n- When a client disconnects, remove their snake from the game state.",
-          "Step_04.md": "# Step 4: Define the game loop\n\n- The loop should run at a rate of 15 steps per second.\n- Each step, calculate the movement of each snake based on the last KeyEvent received from its client.\n- If a snake moves into a wall or another snake, remove it from the game state and send a DeathNotification to its client.\n- If a snake moves into a free square, add the square to the snake and to the list of changed squares.\n- If only one snake remains, send a WinnerAnnouncement to all clients and reset the game state.",
-          "Step_05.md": "# Step 5: Define the message handling\n\n- When a GameUpdate message is received, update the list of changed squares and their colors in the game state.\n- When a KeyEvent message is received, update the direction of the corresponding snake.\n- When a DeathNotification message is received, remove the corresponding snake from the game state.\n- When a WinnerAnnouncement message is received, reset the game state.\n- When a GameReset message is received, reset the game state.",
-          "Step_06.md": "# Step 6: Define the message sending\n\n- At each step, send a GameUpdate message to all clients with the list of changed squares and their new colors.\n- When a snake dies, send a DeathNotification message to its client.\n- When the game ends, send a WinnerAnnouncement message to all clients with the color of the last surviving snake.\n- After the game ends, send a GameReset message to all clients.",
-          "Step_07.md": "# Step 7: Start the WebSocket server and the game loop\n\n- Start the WebSocket server.\n- Start the game loop."
-        },
+        "answer": "1. **Joining Message**\n    - Sender: Client\n    - Receiver: Server\n    - Purpose: To notify the server that a new client is joining the game.\n    - Example: `{\"type\": \"Joining\", \"username\": \"Jerry\"}`\n\n2. **DirectionChange Message**\n    - Sender: Client\n    - Receiver: Server\n    - Purpose: To notify the server about the change in direction of the client's snake.\n    - Example: `{\"type\": \"DirectionChange\", \"direction\": \"Up\"}`\n\n3. **GameStatus Message**\n    - Sender: Server\n    - Receiver: Client\n    - Purpose: To update the client about the current status of the game.\n    - Example: \n    ```\n    {\n        \"type\": \"GameStatus\",\n        \"game_board\": \" \" * (BOARD_SIZE * BOARD_SIZE),\n        \"clients\": {\n            \"websocket1\": {\"name\": \"Jerry\", \"char\": \"\ud83d\udd34\", \"snake\": [(5, 3), (5, 4), (6, 4)], \"score\": 127, \"direction\": \"Up\"},\n            \"websocket2\": {\"name\": \"Tom\", \"char\": \"\ud83d\udd35\", \"snake\": [(6, 12), (6, 13), (6, 14)], \"score\": 27, \"direction\": \"Left\"}\n        }\n    }\n    ```\n\n4. **SnakeDied Message**\n    - Sender: Server\n    - Receiver: Client\n    - Purpose: To notify the client that their snake has died.\n    - Example: `{\"type\": \"SnakeDied\", \"message\": \"Your snake has died!\"}`\n\n5. **Disconnect Message**\n    - Sender: Server\n    - Receiver: Client\n    - Purpose: To notify the client that they have been disconnected from the server.\n    - Example: `{\"type\": \"Disconnect\", \"message\": \"You have been disconnected from the server.\"}`\n\n6. **ResetClient Message**\n    - Sender: Server\n    - Receiver: Client\n    - Purpose: To reset the client's game state after their snake has died.\n    - Example: \n    ```\n    {\n        \"type\": \"ResetClient\",\n        \"snake\": [(x, y), (x, y+1), (x, y+2)],\n        \"score\": 0,\n        \"direction\": \"Stop\"\n    }\n    ```",
+        "files": {},
         "e_stats": {
-          "prompt_tokens": 605,
-          "completion_tokens": 548,
-          "total_tokens": 1153,
-          "sp_cost": 0.01815,
-          "sc_cost": 0.03288,
-          "s_total": 0.05103,
-          "elapsed_time": 35.452552318573
+          "prompt_tokens": 1318,
+          "completion_tokens": 509,
+          "total_tokens": 1827,
+          "sp_cost": 0.03954,
+          "sc_cost": 0.030539999999999998,
+          "s_total": 0.07008,
+          "elapsed_time": 35.36914396286011
         }
       }
     },
     {
       "py/object": "KbServerApp.step.Step",
-      "name": "5. Execute Server Steps",
-      "prompt_name": "Snake/Prompts/Execute Server Steps.pe",
-      "storage_path": "Snake/Dynamic/Server/Source",
-      "text_file": "",
-      "file_process_enabled": true,
-      "file_process_name": "Snake - Server Steps",
-      "file_glob": "Snake/Dynamic/Server/Step_*.md",
+      "name": "Make Implementation Plan",
+      "prompt_name": "Snake6/Prompts/Make Implementation Plan.pe",
+      "verify_prompt": "",
+      "storage_path": "Snake6/Dynamic/Planning",
+      "text_file": "Implementation Plan Log.md",
+      "file_process_enabled": false,
+      "file_process_name": "",
+      "file_glob": "",
       "macros": {},
       "ai": {
         "py/object": "KbServerApp.ai.AI",
         "temperature": 0.0,
-        "max_tokens": 3000,
+        "max_tokens": 5000,
         "model": "gpt-4",
         "mode": "chat",
         "messages": [
           {
             "role": "system",
-            "content": "\nYou are an IT developer.\nDo not explain yourself.\nDo not apologize.\nWhen possible, do not talk to me.\nComplete the tasks given in a way that allows for easy comprehension while not leaving anything out.\nwhen using lists use minus signs.\nUse indentation."
+            "content": "\nYou are an AI Engineer, programming a prompt for Chat GPT\nDo not explain yourself.\nDo not apologize.\nComplete the tasks given in a way that is optimized for Chat GPT's easy comprehension while not leaving anything out.\nAll answers will be in MarkDown and/or Python 3."
           },
           {
             "role": "system",
-            "content": "\nUse Text Blocks to write Files.  Text blocks are formatted as follows:\n\n{text block name}.{ext}\n```{filetype}\n{text block contents}\n```"
+            "content": "\nWhen asked to print a file use the following format:\n\n```filename=filename.ext\nfile contents\n```"
+          },
+          {
+            "role": "system",
+            "content": "\nWhen asked to print a file use the following format:\n\n```filename=filename.ext\nfile contents\n```"
           },
           {
             "role": "user",
-            "content": "\n# Server\n\nThe server is responsible for managing the game logic and facilitating communication between the clients. It performs the following tasks:\n\n- Manages the game board, which is a 100 x 100 grid of squares.\n- Calculates the movement of each snake on each step of the game.\n- Determines if any snakes have died.\n- Tracks the squares that need color changes.\n- Sends the updated game state to each client.\n\n## Requirements\n\nTo implement the server, the following requirements should be considered:\n\n- The server should be able to handle multiple concurrent connections from clients.\n- It should have a high-performance network stack to handle the real-time nature of the game.\n- The server should be able to process game logic and update the game state at a rate of 15 steps per second.\n- It should have a data structure to represent the game board and track the state of each square.\n- The server should be able to handle client input and update the game state accordingly.\n- It should have a mechanism to detect when a snake dies and remove it from the game.\n- The server should be able to send the updated game state to each client efficiently.\n- It should handle the start and end of the game, including managing the countdown and announcing the winner."
+            "content": "\nBelow you will find a description of a complex application.\nYou will read the description, developing an \"Implementation Plan\".\nThe Plan will allow Chat GPT to do the implementation in individual steps.\n"
           },
           {
             "role": "user",
-            "content": "\nThe system described is a multiplayer game where clients connect to a server to play a game on a 100x100 grid. The server manages the game logic, including calculating snake movements, detecting snake deaths, and updating the game state. The clients are responsible for rendering the game board, handling user input, and receiving updates from the server.\n\nBased on this system, a network protocol can be designed using JSON messages. The protocol should be efficient, minimize network traffic, and handle potential errors or disconnections gracefully. The following message types can be defined:\n\n1. JoinGame: This message is sent by a client to the server to join the game. It includes the client's unique identifier and any necessary authentication information.\n\n2. StartGame: This message is sent by the server to all clients to indicate the start of the game. It includes the initial game state, including the positions of all snakes on the game board.\n\n3. UpdateGameState: This message is sent by the server to all clients to update the game state. It includes the new positions of all snakes on the game board and any other relevant changes.\n\n4. PlayerDeath: This message is sent by the server to a specific client to notify them of their snake's death. It includes any necessary information about the death, such as the cause or the remaining snakes in the game.\n\n5. Winner: This message is sent by the server to all clients to announce the winner of the game. It includes the identifier of the winning snake and any other relevant information.\n\n6. RestartGame: This message is sent by the server to all clients to indicate the start of a new game. It includes any necessary information to reset the game state.\n\nHere are the JSON message files for each message type:\n\nJoinGame.json\n```json\n{\n  \"type\": \"JoinGame\",\n  \"clientId\": \"123456\",\n  \"authToken\": \"abc123\"\n}\n```\n\nStartGame.json\n```json\n{\n  \"type\": \"StartGame\",\n  \"gameState\": {\n    \"boardSize\": {\n      \"width\": 100,\n      \"height\": 100\n    },\n    \"snakes\": [\n      {\n        \"id\": \"snake1\",\n        \"positions\": [\n          {\"x\": 10, \"y\": 10},\n          {\"x\": 10, \"y\": 11},\n          {\"x\": 10, \"y\": 12}\n        ]\n      },\n      {\n        \"id\": \"snake2\",\n        \"positions\": [\n          {\"x\": 20, \"y\": 20},\n          {\"x\": 20, \"y\": 21},\n          {\"x\": 20, \"y\": 22}\n        ]\n      }\n    ]\n  }\n}\n```\n\nUpdateGameState.json\n```json\n{\n  \"type\": \"UpdateGameState\",\n  \"gameState\": {\n    \"snakes\": [\n      {\n        \"id\": \"snake1\",\n        \"positions\": [\n          {\"x\": 10, \"y\": 11},\n          {\"x\": 10, \"y\": 12},\n          {\"x\": 10, \"y\": 13}\n        ]\n      },\n      {\n        \"id\": \"snake2\",\n        \"positions\": [\n          {\"x\": 20, \"y\": 21},\n          {\"x\": 20, \"y\": 22},\n          {\"x\": 20, \"y\": 23}\n        ]\n      }\n    ]\n  }\n}\n```\n\nPlayerDeath.json\n```json\n{\n  \"type\": \"PlayerDeath\",\n  \"snakeId\": \"snake1\",\n  \"cause\": \"collision\"\n}\n```\n\nWinner.json\n```json\n{\n  \"type\": \"Winner\",\n  \"snakeId\": \"snake2\"\n}\n```\n\nRestartGame.json\n```json\n{\n  \"type\": \"RestartGame\"\n}\n```"
+            "content": "\n\n# Game constants\nBOARD_SIZE = 100\nSNAKE_CHARACTERS = [\"\ud83d\udd34\", \"\ud83d\udd35\", \"\ud83d\udfe0\", \"\ud83d\udfe1\", \"\ud83d\udfe2\", \"\ud83d\udfe3\", \"\ud83d\udfe4\"]\nFOOD_CHAR = \"\ud83c\udf4e\"\nFOOD_COUNT = 5\nDIRECTION = {\"Stop\": (0, 0), \"Up\": (0,\u22121), \"Down\": (0,1), \"Left\": (\u22121,0), \"Right\": (1,0) }\n\n\nGameStatus = {\n    \"game_board\": \" \" * (BOARD_SIZE * BOARD_SIZE),  # (100 strings of 100 spaces)\n    \"free_snake_chars\": [\"\ud83d\udd34\", \"\ud83d\udd35\", \"\ud83d\udfe0\", \"\ud83d\udfe1\", \"\ud83d\udfe2\", \"\ud83d\udfe3\", \"\ud83d\udfe4\"],\n    \"foods\": [(50, 2), (5, 20), (34, 12), (50, 2), (12, 98)],\n    \"clients\": {\n      websocket1: {\"name\": \"Jerry\", \"char\": \"\ud83d\udd34\", \"snake\": [(5, 3), (5, 4), (6, 4)], \"score\": 127, \"direction\": \"Up\"},\n      websocket2: {\"name\": \"Tom\", \"char\": \"\ud83d\udd35\", \"snake\": [(6, 12), (6, 13), (6, 14)], \"score\": 27, \"direction\": \"Left\"}\n    }\n}"
           },
           {
             "role": "user",
-            "content": "\n# Step 1: Import the necessary modules\n\n- `asyncio` for asynchronous programming.\n- `websockets` for WebSocket communication.\n- `http.server` for serving the HTML and JavaScript files to the clients."
+            "content": "\nThe Server side of a multi user \"Snake\" online game.\nServer is SnaekServer.py\n    Architecture: python 3, with Async IO, aiohttp serving SnakeClient.html, and connect via websockets\n    The game_board (a 100 x 100 2d character representation of the playing ground) is kept up to date\n    with the values of Snakes and Foods; Therefor you can check for collisions by checking the value of\n    the character in the game_board at position (x, y).\n\nTicks Logic:\n    The game is implemented as Ticks (5 per second).\n    Tick:\n        1. move each snake who's direction is not 'Stop':\n            new_head = head of snake + snake direction.\n\n            if new_head x or y are not in bounds: Snake_Dies\n            if game_board at new_head is a snake character: Snake_Dies.\n\n            if game_board at new_head is a food:\n                - game_board at new_head draw client char\n                - push new_head (x, y) onto front of snake\n                - remove new_head from foods.\n                - find a random (fx, fy) that is Space, add it to foods, and draw food char.\n                - add 100 to snake score.\n\n            if game_board at new_head is Space:\n                - game_board at new_head draw client char\n                - push new_head (x, y) onto front of snake\n                - pop last position from snake as tail.\n                - game_board at tail draw space\n                - add 1 to snake score\n\n        2. Send GameStatus to all connected Clients.\n\nSnake_Dies:\n    - Send SnakeDied message to client.\n    - erase client snake from the board.\n    - Do Reset_A_Client:\n\nReset_A_Client:\n    - new snake head is at random position so new snake is [(x, y), (x, y+1), (x, y+2)]\n        if game_board at each [(x, y), (x, y+1), (x, y+2)] == space\n            set client snake to new snake\n    - draw Client snake on game_board\n    - the Client score is set to zero\n    - the Client direction is set to \"Stop\"\n\nWhen Server receives \"Joining\":\n    - if free_snake_chars is empty then close websocket\n    - take a char from free_snake_chars and assign it to the Client as 'char'.\n    - the client['username']= username\n    - Do Reset_A_Client.\n\nServer When websocket disconnect:\n    - return Client char to game_state free_snake_chars.\n    - erase client snake from game_board\n    - del game_status['clients'][websocket]\n\nServer At Startup:\n    - At startup The Server will start a HTTP Server that serves the file SnakeClient.html\n"
           },
           {
             "role": "user",
-            "content": "\nImplement Step 1 of plan\nwrite text block file SnakeServer.py"
+            "content": "\nimplement the client of a multi user \"Snake\" online game.\nThe Client part is a single file containing html, css, and javascript called SnakeClient.html\n\nClient Architecture: html, css, javascript, websockets\n\nDisplay Artifacts:\n    GameBoard:\n        The GameBoard is a 2d 100 x 100 character array with default character \" \".\n        The Board needs a frame.\n        The Board needs to be resizable, the characters displayed in board need to be resized with board.\n\n    Client List:\n        The client list is displayed in a status bar at bottom of window.\n        display \"{client.char}{client.username}:{client.score} \" for each client in game_status.clients\n            for example: \"\ud83d\udd34Jerry:150  \ud83d\udd35Tom:423\"\n\nClient initialization:\n    - the Client prompts the user for a username.\n    - the Client connects via websocket\n    - the Client sends a \"Joining\" message (which includes the username).\n\nClient detects arrow keys:\n    - it sends \"DirectionChange\" message with 'Up', 'Down', 'Left', or 'Right', which starts the client.\n\nClient receives SnakeDied:\n     - client shows pop-up dialog.\n\nClient receives GameStatus:\n    - replace GameBoard and Client List with values from message"
+          },
+          {
+            "role": "user",
+            "content": "\nPrint Implementation Plan\n"
           }
         ],
-        "answer": "SnakeServer.py\n```python\nimport asyncio\nimport websockets\nimport http.server\n\n# Your code goes here\n\n```",
-        "files": {
-          "SnakeServer.py": "import asyncio\nimport websockets\nimport http.server\n\n# Your code goes here"
+        "answer": {
+          "py/tuple": [
+            "# Implementation Plan\n\n## Server Side (SnakeServer.py)\n\n1. **Setup the server:**\n    - Import necessary libraries (aiohttp, asyncio, websockets).\n    - Define the game constants and initial game status.\n    - Start an HTTP server that serves the file SnakeClient.html.\n\n2. **Handle client connections:**\n    - When a websocket connection is established, wait for a \"Joining\" message from the client.\n    - If there are no free snake characters, close the websocket. Otherwise, assign a character to the client and update the game status.\n\n3. **Handle client disconnections:**\n    - When a websocket disconnects, return the client's character to the game state, erase the client's snake from the game board, and remove the client from the game status.\n\n4. **Implement game logic:**\n    - Implement the \"Tick\" logic, which moves each snake according to its direction, checks for collisions, updates scores, and handles food consumption.\n    - Implement the \"Snake_Dies\" logic, which sends a \"SnakeDied\" message to the client, erases the snake from the board, and resets the client.\n    - Implement the \"Reset_A_Client\" logic, which generates a new snake for the client, draws it on the game board, and resets the client's score and direction.\n\n5. **Send game updates:**\n    - After each \"Tick\", send the updated game status to all connected clients.\n\n## Client Side (SnakeClient.html)\n\n1. **Setup the client:**\n    - Create the HTML structure for the game board and client list.\n    - Style the game board and client list using CSS.\n    - Connect to the server via websocket using JavaScript.\n\n2. **Handle user input:**\n    - Prompt the user for a username and send a \"Joining\" message to the server.\n    - Detect arrow key presses and send \"DirectionChange\" messages to the server.\n\n3. **Handle server messages:**\n    - When a \"SnakeDied\" message is received, show a pop-up dialog.\n    - When a \"GameStatus\" message is received, update the game board and client list.\n\n4. **Resize the game board:**\n    - Implement a function to resize the game board and its characters when the window size changes."
+          ]
         },
+        "files": {},
         "e_stats": {
-          "prompt_tokens": 1216,
-          "completion_tokens": 25,
-          "total_tokens": 1241,
-          "sp_cost": 0.001824,
-          "sc_cost": 5e-05,
-          "s_total": 0.001874,
-          "elapsed_time": 2.0965423583984375
-        }
-      }
-    }
-  ],
-  "Snake - Server Steps": [
-    {
-      "py/object": "KbServerApp.step.Step",
-      "name": "Step_01",
-      "prompt_name": "Snake/Prompts/Execute Server Steps.pe",
-      "storage_path": "Snake/Dynamic/Server/Source",
-      "text_file": "",
-      "file_process_enabled": false,
-      "file_process_name": "Snake - Server Steps",
-      "file_glob": "Snake/Dynamic/Server/Step_*.md",
-      "macros": {
-        "filename": "Snake/Dynamic/Server/Step_01.md"
-      },
-      "ai": {
-        "py/object": "KbServerApp.ai.AI",
-        "temperature": 0.0,
-        "max_tokens": 3000,
-        "model": "gpt-4",
-        "mode": "chat",
-        "messages": [
-          {
-            "role": "system",
-            "content": "\nYou are an IT developer.\nDo not explain yourself.\nDo not apologize.\nWhen possible, do not talk to me.\nComplete the tasks given in a way that allows for easy comprehension while not leaving anything out.\nwhen using lists use minus signs.\nUse indentation."
-          },
-          {
-            "role": "system",
-            "content": "\nUse Text Blocks to write Files.  Text blocks are formatted as follows:\n\n{text block name}.{ext}\n```{filetype}\n{text block contents}\n```"
-          },
-          {
-            "role": "user",
-            "content": "\n# Server\n\nThe server is responsible for managing the game logic and facilitating communication between the clients. It performs the following tasks:\n\n- Manages the game board, which is a 100 x 100 grid of squares.\n- Calculates the movement of each snake on each step of the game.\n- Determines if any snakes have died.\n- Tracks the squares that need color changes.\n- Sends the updated game state to each client.\n\n## Requirements\n\nTo implement the server, the following requirements should be considered:\n\n- The server should be able to handle multiple concurrent connections from clients.\n- It should have a high-performance network stack to handle the real-time nature of the game.\n- The server should be able to process game logic and update the game state at a rate of 15 steps per second.\n- It should have a data structure to represent the game board and track the state of each square.\n- The server should be able to handle client input and update the game state accordingly.\n- It should have a mechanism to detect when a snake dies and remove it from the game.\n- The server should be able to send the updated game state to each client efficiently.\n- It should handle the start and end of the game, including managing the countdown and announcing the winner."
-          },
-          {
-            "role": "user",
-            "content": "\nThe system described is a multiplayer game where clients connect to a server to play a game on a 100x100 grid. The server manages the game logic, including calculating snake movements, detecting snake deaths, and updating the game state. The clients are responsible for rendering the game board, handling user input, and receiving updates from the server.\n\nBased on this system, a network protocol can be designed using JSON messages. The protocol should be efficient, minimize network traffic, and handle potential errors or disconnections gracefully. The following message types can be defined:\n\n1. JoinGame: This message is sent by a client to the server to join the game. It includes the client's unique identifier and any necessary authentication information.\n\n2. StartGame: This message is sent by the server to all clients to indicate the start of the game. It includes the initial game state, including the positions of all snakes on the game board.\n\n3. UpdateGameState: This message is sent by the server to all clients to update the game state. It includes the new positions of all snakes on the game board and any other relevant changes.\n\n4. PlayerDeath: This message is sent by the server to a specific client to notify them of their snake's death. It includes any necessary information about the death, such as the cause or the remaining snakes in the game.\n\n5. Winner: This message is sent by the server to all clients to announce the winner of the game. It includes the identifier of the winning snake and any other relevant information.\n\n6. RestartGame: This message is sent by the server to all clients to indicate the start of a new game. It includes any necessary information to reset the game state.\n\nHere are the JSON message files for each message type:\n\nJoinGame.json\n```json\n{\n  \"type\": \"JoinGame\",\n  \"clientId\": \"123456\",\n  \"authToken\": \"abc123\"\n}\n```\n\nStartGame.json\n```json\n{\n  \"type\": \"StartGame\",\n  \"gameState\": {\n    \"boardSize\": {\n      \"width\": 100,\n      \"height\": 100\n    },\n    \"snakes\": [\n      {\n        \"id\": \"snake1\",\n        \"positions\": [\n          {\"x\": 10, \"y\": 10},\n          {\"x\": 10, \"y\": 11},\n          {\"x\": 10, \"y\": 12}\n        ]\n      },\n      {\n        \"id\": \"snake2\",\n        \"positions\": [\n          {\"x\": 20, \"y\": 20},\n          {\"x\": 20, \"y\": 21},\n          {\"x\": 20, \"y\": 22}\n        ]\n      }\n    ]\n  }\n}\n```\n\nUpdateGameState.json\n```json\n{\n  \"type\": \"UpdateGameState\",\n  \"gameState\": {\n    \"snakes\": [\n      {\n        \"id\": \"snake1\",\n        \"positions\": [\n          {\"x\": 10, \"y\": 11},\n          {\"x\": 10, \"y\": 12},\n          {\"x\": 10, \"y\": 13}\n        ]\n      },\n      {\n        \"id\": \"snake2\",\n        \"positions\": [\n          {\"x\": 20, \"y\": 21},\n          {\"x\": 20, \"y\": 22},\n          {\"x\": 20, \"y\": 23}\n        ]\n      }\n    ]\n  }\n}\n```\n\nPlayerDeath.json\n```json\n{\n  \"type\": \"PlayerDeath\",\n  \"snakeId\": \"snake1\",\n  \"cause\": \"collision\"\n}\n```\n\nWinner.json\n```json\n{\n  \"type\": \"Winner\",\n  \"snakeId\": \"snake2\"\n}\n```\n\nRestartGame.json\n```json\n{\n  \"type\": \"RestartGame\"\n}\n```"
-          },
-          {
-            "role": "user",
-            "content": "\n# Step 1: Import the necessary modules\n\n- `asyncio` for asynchronous programming.\n- `websockets` for WebSocket communication.\n- `http.server` for serving the HTML and JavaScript files to the clients."
-          },
-          {
-            "role": "user",
-            "content": "\nImplement Step 1 of plan\nwrite text block file SnakeServer.py"
-          }
-        ],
-        "answer": "SnakeServer.py\n```python\nimport asyncio\nimport websockets\nimport http.server\n\n# Your code goes here\n\n```",
-        "files": {
-          "SnakeServer.py": "import asyncio\nimport websockets\nimport http.server\n\n# Your code goes here"
-        },
-        "e_stats": {
-          "prompt_tokens": 1216,
-          "completion_tokens": 25,
-          "total_tokens": 1241,
-          "sp_cost": 0.001824,
-          "sc_cost": 5e-05,
-          "s_total": 0.001874,
-          "elapsed_time": 2.0965423583984375
+          "prompt_tokens": 1365,
+          "completion_tokens": 472,
+          "total_tokens": 1837,
+          "sp_cost": 0.04095,
+          "sc_cost": 0.028319999999999998,
+          "s_total": 0.06927,
+          "elapsed_time": 39.940160274505615
         }
       }
     },
     {
       "py/object": "KbServerApp.step.Step",
-      "name": "Step_02",
-      "prompt_name": "Snake/Prompts/Execute Server Steps.pe",
-      "storage_path": "Snake/Dynamic/Server/Source",
-      "text_file": "",
+      "name": "Expand Implementation Plan",
+      "prompt_name": "Snake6/Prompts/Expand Implementation Plan.pe",
+      "verify_prompt": "",
+      "storage_path": "Snake6/Dynamic/Planning",
+      "text_file": "Expanded Implementation Plan.md",
       "file_process_enabled": false,
-      "file_process_name": "Snake - Server Steps",
-      "file_glob": "Snake/Dynamic/Server/Step_*.md",
-      "macros": {
-        "filename": "Snake/Dynamic/Server/Step_02.md"
-      },
+      "file_process_name": "",
+      "file_glob": "",
+      "macros": {},
       "ai": {
         "py/object": "KbServerApp.ai.AI",
         "temperature": 0.0,
-        "max_tokens": 3000,
+        "max_tokens": 5000,
         "model": "gpt-4",
         "mode": "chat",
         "messages": [
           {
             "role": "system",
-            "content": "\nYou are an IT developer.\nDo not explain yourself.\nDo not apologize.\nWhen possible, do not talk to me.\nComplete the tasks given in a way that allows for easy comprehension while not leaving anything out.\nwhen using lists use minus signs.\nUse indentation."
+            "content": "\nYou are an AI Engineer, programming a prompt for Chat GPT\nDo not explain yourself.\nDo not apologize.\nComplete the tasks given in a way that is optimized for Chat GPT's easy comprehension while not leaving anything out.\nAll answers will be in MarkDown and/or Python 3."
           },
           {
             "role": "system",
-            "content": "\nUse Text Blocks to write Files.  Text blocks are formatted as follows:\n\n{text block name}.{ext}\n```{filetype}\n{text block contents}\n```"
+            "content": "\nWhen asked to print a file use the following format:\n\n```filename=filename.ext\nfile contents\n```"
           },
           {
             "role": "user",
-            "content": "\n# Server\n\nThe server is responsible for managing the game logic and facilitating communication between the clients. It performs the following tasks:\n\n- Manages the game board, which is a 100 x 100 grid of squares.\n- Calculates the movement of each snake on each step of the game.\n- Determines if any snakes have died.\n- Tracks the squares that need color changes.\n- Sends the updated game state to each client.\n\n## Requirements\n\nTo implement the server, the following requirements should be considered:\n\n- The server should be able to handle multiple concurrent connections from clients.\n- It should have a high-performance network stack to handle the real-time nature of the game.\n- The server should be able to process game logic and update the game state at a rate of 15 steps per second.\n- It should have a data structure to represent the game board and track the state of each square.\n- The server should be able to handle client input and update the game state accordingly.\n- It should have a mechanism to detect when a snake dies and remove it from the game.\n- The server should be able to send the updated game state to each client efficiently.\n- It should handle the start and end of the game, including managing the countdown and announcing the winner."
+            "content": "\n\n# Game constants\nBOARD_SIZE = 100\nSNAKE_CHARACTERS = [\"\ud83d\udd34\", \"\ud83d\udd35\", \"\ud83d\udfe0\", \"\ud83d\udfe1\", \"\ud83d\udfe2\", \"\ud83d\udfe3\", \"\ud83d\udfe4\"]\nFOOD_CHAR = \"\ud83c\udf4e\"\nFOOD_COUNT = 5\nDIRECTION = {\"Stop\": (0, 0), \"Up\": (0,\u22121), \"Down\": (0,1), \"Left\": (\u22121,0), \"Right\": (1,0) }\n\n\nGameStatus = {\n    \"game_board\": \" \" * (BOARD_SIZE * BOARD_SIZE),  # (100 strings of 100 spaces)\n    \"free_snake_chars\": [\"\ud83d\udd34\", \"\ud83d\udd35\", \"\ud83d\udfe0\", \"\ud83d\udfe1\", \"\ud83d\udfe2\", \"\ud83d\udfe3\", \"\ud83d\udfe4\"],\n    \"foods\": [(50, 2), (5, 20), (34, 12), (50, 2), (12, 98)],\n    \"clients\": {\n      websocket1: {\"name\": \"Jerry\", \"char\": \"\ud83d\udd34\", \"snake\": [(5, 3), (5, 4), (6, 4)], \"score\": 127, \"direction\": \"Up\"},\n      websocket2: {\"name\": \"Tom\", \"char\": \"\ud83d\udd35\", \"snake\": [(6, 12), (6, 13), (6, 14)], \"score\": 27, \"direction\": \"Left\"}\n    }\n}"
           },
           {
             "role": "user",
-            "content": "\nThe system described is a multiplayer game where clients connect to a server to play a game on a 100x100 grid. The server manages the game logic, including calculating snake movements, detecting snake deaths, and updating the game state. The clients are responsible for rendering the game board, handling user input, and receiving updates from the server.\n\nBased on this system, a network protocol can be designed using JSON messages. The protocol should be efficient, minimize network traffic, and handle potential errors or disconnections gracefully. The following message types can be defined:\n\n1. JoinGame: This message is sent by a client to the server to join the game. It includes the client's unique identifier and any necessary authentication information.\n\n2. StartGame: This message is sent by the server to all clients to indicate the start of the game. It includes the initial game state, including the positions of all snakes on the game board.\n\n3. UpdateGameState: This message is sent by the server to all clients to update the game state. It includes the new positions of all snakes on the game board and any other relevant changes.\n\n4. PlayerDeath: This message is sent by the server to a specific client to notify them of their snake's death. It includes any necessary information about the death, such as the cause or the remaining snakes in the game.\n\n5. Winner: This message is sent by the server to all clients to announce the winner of the game. It includes the identifier of the winning snake and any other relevant information.\n\n6. RestartGame: This message is sent by the server to all clients to indicate the start of a new game. It includes any necessary information to reset the game state.\n\nHere are the JSON message files for each message type:\n\nJoinGame.json\n```json\n{\n  \"type\": \"JoinGame\",\n  \"clientId\": \"123456\",\n  \"authToken\": \"abc123\"\n}\n```\n\nStartGame.json\n```json\n{\n  \"type\": \"StartGame\",\n  \"gameState\": {\n    \"boardSize\": {\n      \"width\": 100,\n      \"height\": 100\n    },\n    \"snakes\": [\n      {\n        \"id\": \"snake1\",\n        \"positions\": [\n          {\"x\": 10, \"y\": 10},\n          {\"x\": 10, \"y\": 11},\n          {\"x\": 10, \"y\": 12}\n        ]\n      },\n      {\n        \"id\": \"snake2\",\n        \"positions\": [\n          {\"x\": 20, \"y\": 20},\n          {\"x\": 20, \"y\": 21},\n          {\"x\": 20, \"y\": 22}\n        ]\n      }\n    ]\n  }\n}\n```\n\nUpdateGameState.json\n```json\n{\n  \"type\": \"UpdateGameState\",\n  \"gameState\": {\n    \"snakes\": [\n      {\n        \"id\": \"snake1\",\n        \"positions\": [\n          {\"x\": 10, \"y\": 11},\n          {\"x\": 10, \"y\": 12},\n          {\"x\": 10, \"y\": 13}\n        ]\n      },\n      {\n        \"id\": \"snake2\",\n        \"positions\": [\n          {\"x\": 20, \"y\": 21},\n          {\"x\": 20, \"y\": 22},\n          {\"x\": 20, \"y\": 23}\n        ]\n      }\n    ]\n  }\n}\n```\n\nPlayerDeath.json\n```json\n{\n  \"type\": \"PlayerDeath\",\n  \"snakeId\": \"snake1\",\n  \"cause\": \"collision\"\n}\n```\n\nWinner.json\n```json\n{\n  \"type\": \"Winner\",\n  \"snakeId\": \"snake2\"\n}\n```\n\nRestartGame.json\n```json\n{\n  \"type\": \"RestartGame\"\n}\n```"
+            "content": "\nThe Server side of a multi user \"Snake\" online game.\nServer is SnaekServer.py\n    Architecture: python 3, with Async IO, aiohttp serving SnakeClient.html, and connect via websockets\n    The game_board (a 100 x 100 2d character representation of the playing ground) is kept up to date\n    with the values of Snakes and Foods; Therefor you can check for collisions by checking the value of\n    the character in the game_board at position (x, y).\n\nTicks Logic:\n    The game is implemented as Ticks (5 per second).\n    Tick:\n        1. move each snake who's direction is not 'Stop':\n            new_head = head of snake + snake direction.\n\n            if new_head x or y are not in bounds: Snake_Dies\n            if game_board at new_head is a snake character: Snake_Dies.\n\n            if game_board at new_head is a food:\n                - game_board at new_head draw client char\n                - push new_head (x, y) onto front of snake\n                - remove new_head from foods.\n                - find a random (fx, fy) that is Space, add it to foods, and draw food char.\n                - add 100 to snake score.\n\n            if game_board at new_head is Space:\n                - game_board at new_head draw client char\n                - push new_head (x, y) onto front of snake\n                - pop last position from snake as tail.\n                - game_board at tail draw space\n                - add 1 to snake score\n\n        2. Send GameStatus to all connected Clients.\n\nSnake_Dies:\n    - Send SnakeDied message to client.\n    - erase client snake from the board.\n    - Do Reset_A_Client:\n\nReset_A_Client:\n    - new snake head is at random position so new snake is [(x, y), (x, y+1), (x, y+2)]\n        if game_board at each [(x, y), (x, y+1), (x, y+2)] == space\n            set client snake to new snake\n    - draw Client snake on game_board\n    - the Client score is set to zero\n    - the Client direction is set to \"Stop\"\n\nWhen Server receives \"Joining\":\n    - if free_snake_chars is empty then close websocket\n    - take a char from free_snake_chars and assign it to the Client as 'char'.\n    - the client['username']= username\n    - Do Reset_A_Client.\n\nServer When websocket disconnect:\n    - return Client char to game_state free_snake_chars.\n    - erase client snake from game_board\n    - del game_status['clients'][websocket]\n\nServer At Startup:\n    - At startup The Server will start a HTTP Server that serves the file SnakeClient.html\n"
           },
           {
             "role": "user",
-            "content": "\n# Step 1: Import the necessary modules\n\n- `asyncio` for asynchronous programming.\n- `websockets` for WebSocket communication.\n- `http.server` for serving the HTML and JavaScript files to the clients."
+            "content": "\nimplement the client of a multi user \"Snake\" online game.\nThe Client part is a single file containing html, css, and javascript called SnakeClient.html\n\nClient Architecture: html, css, javascript, websockets\n\nDisplay Artifacts:\n    GameBoard:\n        The GameBoard is a 2d 100 x 100 character array with default character \" \".\n        The Board needs a frame.\n        The Board needs to be resizable, the characters displayed in board need to be resized with board.\n\n    Client List:\n        The client list is displayed in a status bar at bottom of window.\n        display \"{client.char}{client.username}:{client.score} \" for each client in game_status.clients\n            for example: \"\ud83d\udd34Jerry:150  \ud83d\udd35Tom:423\"\n\nClient initialization:\n    - the Client prompts the user for a username.\n    - the Client connects via websocket\n    - the Client sends a \"Joining\" message (which includes the username).\n\nClient detects arrow keys:\n    - it sends \"DirectionChange\" message with 'Up', 'Down', 'Left', or 'Right', which starts the client.\n\nClient receives SnakeDied:\n     - client shows pop-up dialog.\n\nClient receives GameStatus:\n    - replace GameBoard and Client List with values from message"
           },
           {
             "role": "user",
-            "content": "\nImplement Step 1 of plan\nwrite text block file SnakeServer.py"
+            "content": "\nRead the description above. \nI will now give you a implementation Plan which you are to expand upon.\nList each step as a Header.  \nIn each step list all information required to implement the step:\n- Be sure to include calling formats, \n- Message descriptions, \n- as well as documentaiton the purpose of each routine to be written.\n\nKeep a carefull eye to the interfacing of all routines and objects and the information flow.\n"
+          },
+          {
+            "role": "user",
+            "content": "\n# Implementation Plan\n\n## Server Side (SnakeServer.py)\n\n1. **Setup the server:**\n    - Import necessary libraries (aiohttp, asyncio, websockets).\n    - Define the game constants and initial game status.\n    - Start an HTTP server that serves the file SnakeClient.html.\n\n2. **Handle client connections:**\n    - When a websocket connection is established, wait for a \"Joining\" message from the client.\n    - If there are no free snake characters, close the websocket. Otherwise, assign a character to the client and update the game status.\n\n3. **Handle client disconnections:**\n    - When a websocket disconnects, return the client's character to the game state, erase the client's snake from the game board, and remove the client from the game status.\n\n4. **Implement game logic:**\n    - Implement the \"Tick\" logic, which moves each snake according to its direction, checks for collisions, updates scores, and handles food consumption.\n    - Implement the \"Snake_Dies\" logic, which sends a \"SnakeDied\" message to the client, erases the snake from the board, and resets the client.\n    - Implement the \"Reset_A_Client\" logic, which generates a new snake for the client, draws it on the game board, and resets the client's score and direction.\n\n5. **Send game updates:**\n    - After each \"Tick\", send the updated game status to all connected clients.\n\n## Client Side (SnakeClient.html)\n\n1. **Setup the client:**\n    - Create the HTML structure for the game board and client list.\n    - Style the game board and client list using CSS.\n    - Connect to the server via websocket using JavaScript.\n\n2. **Handle user input:**\n    - Prompt the user for a username and send a \"Joining\" message to the server.\n    - Detect arrow key presses and send \"DirectionChange\" messages to the server.\n\n3. **Handle server messages:**\n    - When a \"SnakeDied\" message is received, show a pop-up dialog.\n    - When a \"GameStatus\" message is received, update the game board and client list.\n\n4. **Resize the game board:**\n    - Implement a function to resize the game board and its characters when the window size changes."
+          },
+          {
+            "role": "user",
+            "content": "\nPrint \"Expanded Implementation Plan.md\"\n"
           }
         ],
-        "answer": "SnakeServer.py\n```python\nimport asyncio\nimport websockets\nimport http.server\n\n# Your code goes here\n\n```",
-        "files": {
-          "SnakeServer.py": "import asyncio\nimport websockets\nimport http.server\n\n# Your code goes here"
-        },
+        "answer": "```filename=Expanded Implementation Plan.md\n# Expanded Implementation Plan\n\n## Server Side (SnakeServer.py)\n\n### 1. Setup the server:\n- Import necessary libraries: aiohttp for HTTP server, asyncio for asynchronous I/O, and websockets for WebSocket communication.\n- Define the game constants and initial game status as global variables.\n- Start an HTTP server that serves the file SnakeClient.html to clients.\n\n### 2. Handle client connections:\n- When a websocket connection is established, wait for a \"Joining\" message from the client. The \"Joining\" message should contain the client's username.\n- If the list of free snake characters is empty, close the websocket connection. Otherwise, assign a character to the client, update the game status to include the new client, and perform the \"Reset_A_Client\" operation.\n\n### 3. Handle client disconnections:\n- When a websocket disconnects, return the client's character to the list of free snake characters, erase the client's snake from the game board, and remove the client from the game status.\n\n### 4. Implement game logic:\n- Implement the \"Tick\" logic, which is executed five times per second. This logic moves each snake according to its direction, checks for collisions with the board edges or other snakes, updates scores, and handles food consumption.\n- Implement the \"Snake_Dies\" logic, which is triggered when a snake collides with the board edge or another snake. This logic sends a \"SnakeDied\" message to the client, erases the snake from the board, and performs the \"Reset_A_Client\" operation.\n- Implement the \"Reset_A_Client\" logic, which is used when a client joins the game or when a snake dies. This logic generates a new snake for the client at a random position, draws it on the game board, and resets the client's score and direction to zero and \"Stop\", respectively.\n\n### 5. Send game updates:\n- After each \"Tick\", send the updated game status to all connected clients. The game status should include the game board, the list of foods, and the list of clients with their scores and directions.\n\n## Client Side (SnakeClient.html)\n\n### 1. Setup the client:\n- Create the HTML structure for the game board and client list. The game board should be a 2D array of characters, and the client list should be a status bar at the bottom of the window.\n- Style the game board and client list using CSS. The game board should have a frame, and both the game board and client list should be resizable.\n- Connect to the server via websocket using JavaScript.\n\n### 2. Handle user input:\n- Prompt the user for a username and send a \"Joining\" message to the server. The \"Joining\" message should contain the username.\n- Detect arrow key presses and send \"DirectionChange\" messages to the server. The \"DirectionChange\" message should contain the new direction (\"Up\", \"Down\", \"Left\", or \"Right\").\n\n### 3. Handle server messages:\n- When a \"SnakeDied\" message is received, show a pop-up dialog to inform the user that their snake has died.\n- When a \"GameStatus\" message is received, update the game board and client list with the new information.\n\n### 4. Resize the game board:\n- Implement a function to resize the game board and its characters when the window size changes. This function should ensure that the game board always fits within the window and that the characters are always visible.\n```",
+        "files": {},
         "e_stats": {
-          "prompt_tokens": 1216,
-          "completion_tokens": 25,
-          "total_tokens": 1241,
-          "sp_cost": 0.001824,
-          "sc_cost": 5e-05,
-          "s_total": 0.001874,
-          "elapsed_time": 2.0965423583984375
-        }
-      }
-    },
-    {
-      "py/object": "KbServerApp.step.Step",
-      "name": "Step_03",
-      "prompt_name": "Snake/Prompts/Execute Server Steps.pe",
-      "storage_path": "Snake/Dynamic/Server/Source",
-      "text_file": "",
-      "file_process_enabled": false,
-      "file_process_name": "Snake - Server Steps",
-      "file_glob": "Snake/Dynamic/Server/Step_*.md",
-      "macros": {
-        "filename": "Snake/Dynamic/Server/Step_03.md"
-      },
-      "ai": {
-        "py/object": "KbServerApp.ai.AI",
-        "temperature": 0.0,
-        "max_tokens": 3000,
-        "model": "gpt-4",
-        "mode": "chat",
-        "messages": [
-          {
-            "role": "system",
-            "content": "\nYou are an IT developer.\nDo not explain yourself.\nDo not apologize.\nWhen possible, do not talk to me.\nComplete the tasks given in a way that allows for easy comprehension while not leaving anything out.\nwhen using lists use minus signs.\nUse indentation."
-          },
-          {
-            "role": "system",
-            "content": "\nUse Text Blocks to write Files.  Text blocks are formatted as follows:\n\n{text block name}.{ext}\n```{filetype}\n{text block contents}\n```"
-          },
-          {
-            "role": "user",
-            "content": "\n# Server\n\nThe server is responsible for managing the game logic and facilitating communication between the clients. It performs the following tasks:\n\n- Manages the game board, which is a 100 x 100 grid of squares.\n- Calculates the movement of each snake on each step of the game.\n- Determines if any snakes have died.\n- Tracks the squares that need color changes.\n- Sends the updated game state to each client.\n\n## Requirements\n\nTo implement the server, the following requirements should be considered:\n\n- The server should be able to handle multiple concurrent connections from clients.\n- It should have a high-performance network stack to handle the real-time nature of the game.\n- The server should be able to process game logic and update the game state at a rate of 15 steps per second.\n- It should have a data structure to represent the game board and track the state of each square.\n- The server should be able to handle client input and update the game state accordingly.\n- It should have a mechanism to detect when a snake dies and remove it from the game.\n- The server should be able to send the updated game state to each client efficiently.\n- It should handle the start and end of the game, including managing the countdown and announcing the winner."
-          },
-          {
-            "role": "user",
-            "content": "\nThe system described is a multiplayer game where clients connect to a server to play a game on a 100x100 grid. The server manages the game logic, including calculating snake movements, detecting snake deaths, and updating the game state. The clients are responsible for rendering the game board, handling user input, and receiving updates from the server.\n\nBased on this system, a network protocol can be designed using JSON messages. The protocol should be efficient, minimize network traffic, and handle potential errors or disconnections gracefully. The following message types can be defined:\n\n1. JoinGame: This message is sent by a client to the server to join the game. It includes the client's unique identifier and any necessary authentication information.\n\n2. StartGame: This message is sent by the server to all clients to indicate the start of the game. It includes the initial game state, including the positions of all snakes on the game board.\n\n3. UpdateGameState: This message is sent by the server to all clients to update the game state. It includes the new positions of all snakes on the game board and any other relevant changes.\n\n4. PlayerDeath: This message is sent by the server to a specific client to notify them of their snake's death. It includes any necessary information about the death, such as the cause or the remaining snakes in the game.\n\n5. Winner: This message is sent by the server to all clients to announce the winner of the game. It includes the identifier of the winning snake and any other relevant information.\n\n6. RestartGame: This message is sent by the server to all clients to indicate the start of a new game. It includes any necessary information to reset the game state.\n\nHere are the JSON message files for each message type:\n\nJoinGame.json\n```json\n{\n  \"type\": \"JoinGame\",\n  \"clientId\": \"123456\",\n  \"authToken\": \"abc123\"\n}\n```\n\nStartGame.json\n```json\n{\n  \"type\": \"StartGame\",\n  \"gameState\": {\n    \"boardSize\": {\n      \"width\": 100,\n      \"height\": 100\n    },\n    \"snakes\": [\n      {\n        \"id\": \"snake1\",\n        \"positions\": [\n          {\"x\": 10, \"y\": 10},\n          {\"x\": 10, \"y\": 11},\n          {\"x\": 10, \"y\": 12}\n        ]\n      },\n      {\n        \"id\": \"snake2\",\n        \"positions\": [\n          {\"x\": 20, \"y\": 20},\n          {\"x\": 20, \"y\": 21},\n          {\"x\": 20, \"y\": 22}\n        ]\n      }\n    ]\n  }\n}\n```\n\nUpdateGameState.json\n```json\n{\n  \"type\": \"UpdateGameState\",\n  \"gameState\": {\n    \"snakes\": [\n      {\n        \"id\": \"snake1\",\n        \"positions\": [\n          {\"x\": 10, \"y\": 11},\n          {\"x\": 10, \"y\": 12},\n          {\"x\": 10, \"y\": 13}\n        ]\n      },\n      {\n        \"id\": \"snake2\",\n        \"positions\": [\n          {\"x\": 20, \"y\": 21},\n          {\"x\": 20, \"y\": 22},\n          {\"x\": 20, \"y\": 23}\n        ]\n      }\n    ]\n  }\n}\n```\n\nPlayerDeath.json\n```json\n{\n  \"type\": \"PlayerDeath\",\n  \"snakeId\": \"snake1\",\n  \"cause\": \"collision\"\n}\n```\n\nWinner.json\n```json\n{\n  \"type\": \"Winner\",\n  \"snakeId\": \"snake2\"\n}\n```\n\nRestartGame.json\n```json\n{\n  \"type\": \"RestartGame\"\n}\n```"
-          },
-          {
-            "role": "user",
-            "content": "\n# Step 1: Import the necessary modules\n\n- `asyncio` for asynchronous programming.\n- `websockets` for WebSocket communication.\n- `http.server` for serving the HTML and JavaScript files to the clients."
-          },
-          {
-            "role": "user",
-            "content": "\nImplement Step 1 of plan\nwrite text block file SnakeServer.py"
-          }
-        ],
-        "answer": "SnakeServer.py\n```python\nimport asyncio\nimport websockets\nimport http.server\n\n# Your code goes here\n\n```",
-        "files": {
-          "SnakeServer.py": "import asyncio\nimport websockets\nimport http.server\n\n# Your code goes here"
-        },
-        "e_stats": {
-          "prompt_tokens": 1216,
-          "completion_tokens": 25,
-          "total_tokens": 1241,
-          "sp_cost": 0.001824,
-          "sc_cost": 5e-05,
-          "s_total": 0.001874,
-          "elapsed_time": 2.0965423583984375
-        }
-      }
-    },
-    {
-      "py/object": "KbServerApp.step.Step",
-      "name": "Step_04",
-      "prompt_name": "Snake/Prompts/Execute Server Steps.pe",
-      "storage_path": "Snake/Dynamic/Server/Source",
-      "text_file": "",
-      "file_process_enabled": false,
-      "file_process_name": "Snake - Server Steps",
-      "file_glob": "Snake/Dynamic/Server/Step_*.md",
-      "macros": {
-        "filename": "Snake/Dynamic/Server/Step_04.md"
-      },
-      "ai": {
-        "py/object": "KbServerApp.ai.AI",
-        "temperature": 0.0,
-        "max_tokens": 3000,
-        "model": "gpt-4",
-        "mode": "chat",
-        "messages": [
-          {
-            "role": "system",
-            "content": "\nYou are an IT developer.\nDo not explain yourself.\nDo not apologize.\nWhen possible, do not talk to me.\nComplete the tasks given in a way that allows for easy comprehension while not leaving anything out.\nwhen using lists use minus signs.\nUse indentation."
-          },
-          {
-            "role": "system",
-            "content": "\nUse Text Blocks to write Files.  Text blocks are formatted as follows:\n\n{text block name}.{ext}\n```{filetype}\n{text block contents}\n```"
-          },
-          {
-            "role": "user",
-            "content": "\n# Server\n\nThe server is responsible for managing the game logic and facilitating communication between the clients. It performs the following tasks:\n\n- Manages the game board, which is a 100 x 100 grid of squares.\n- Calculates the movement of each snake on each step of the game.\n- Determines if any snakes have died.\n- Tracks the squares that need color changes.\n- Sends the updated game state to each client.\n\n## Requirements\n\nTo implement the server, the following requirements should be considered:\n\n- The server should be able to handle multiple concurrent connections from clients.\n- It should have a high-performance network stack to handle the real-time nature of the game.\n- The server should be able to process game logic and update the game state at a rate of 15 steps per second.\n- It should have a data structure to represent the game board and track the state of each square.\n- The server should be able to handle client input and update the game state accordingly.\n- It should have a mechanism to detect when a snake dies and remove it from the game.\n- The server should be able to send the updated game state to each client efficiently.\n- It should handle the start and end of the game, including managing the countdown and announcing the winner."
-          },
-          {
-            "role": "user",
-            "content": "\nThe system described is a multiplayer game where clients connect to a server to play a game on a 100x100 grid. The server manages the game logic, including calculating snake movements, detecting snake deaths, and updating the game state. The clients are responsible for rendering the game board, handling user input, and receiving updates from the server.\n\nBased on this system, a network protocol can be designed using JSON messages. The protocol should be efficient, minimize network traffic, and handle potential errors or disconnections gracefully. The following message types can be defined:\n\n1. JoinGame: This message is sent by a client to the server to join the game. It includes the client's unique identifier and any necessary authentication information.\n\n2. StartGame: This message is sent by the server to all clients to indicate the start of the game. It includes the initial game state, including the positions of all snakes on the game board.\n\n3. UpdateGameState: This message is sent by the server to all clients to update the game state. It includes the new positions of all snakes on the game board and any other relevant changes.\n\n4. PlayerDeath: This message is sent by the server to a specific client to notify them of their snake's death. It includes any necessary information about the death, such as the cause or the remaining snakes in the game.\n\n5. Winner: This message is sent by the server to all clients to announce the winner of the game. It includes the identifier of the winning snake and any other relevant information.\n\n6. RestartGame: This message is sent by the server to all clients to indicate the start of a new game. It includes any necessary information to reset the game state.\n\nHere are the JSON message files for each message type:\n\nJoinGame.json\n```json\n{\n  \"type\": \"JoinGame\",\n  \"clientId\": \"123456\",\n  \"authToken\": \"abc123\"\n}\n```\n\nStartGame.json\n```json\n{\n  \"type\": \"StartGame\",\n  \"gameState\": {\n    \"boardSize\": {\n      \"width\": 100,\n      \"height\": 100\n    },\n    \"snakes\": [\n      {\n        \"id\": \"snake1\",\n        \"positions\": [\n          {\"x\": 10, \"y\": 10},\n          {\"x\": 10, \"y\": 11},\n          {\"x\": 10, \"y\": 12}\n        ]\n      },\n      {\n        \"id\": \"snake2\",\n        \"positions\": [\n          {\"x\": 20, \"y\": 20},\n          {\"x\": 20, \"y\": 21},\n          {\"x\": 20, \"y\": 22}\n        ]\n      }\n    ]\n  }\n}\n```\n\nUpdateGameState.json\n```json\n{\n  \"type\": \"UpdateGameState\",\n  \"gameState\": {\n    \"snakes\": [\n      {\n        \"id\": \"snake1\",\n        \"positions\": [\n          {\"x\": 10, \"y\": 11},\n          {\"x\": 10, \"y\": 12},\n          {\"x\": 10, \"y\": 13}\n        ]\n      },\n      {\n        \"id\": \"snake2\",\n        \"positions\": [\n          {\"x\": 20, \"y\": 21},\n          {\"x\": 20, \"y\": 22},\n          {\"x\": 20, \"y\": 23}\n        ]\n      }\n    ]\n  }\n}\n```\n\nPlayerDeath.json\n```json\n{\n  \"type\": \"PlayerDeath\",\n  \"snakeId\": \"snake1\",\n  \"cause\": \"collision\"\n}\n```\n\nWinner.json\n```json\n{\n  \"type\": \"Winner\",\n  \"snakeId\": \"snake2\"\n}\n```\n\nRestartGame.json\n```json\n{\n  \"type\": \"RestartGame\"\n}\n```"
-          },
-          {
-            "role": "user",
-            "content": "\n# Step 1: Import the necessary modules\n\n- `asyncio` for asynchronous programming.\n- `websockets` for WebSocket communication.\n- `http.server` for serving the HTML and JavaScript files to the clients."
-          },
-          {
-            "role": "user",
-            "content": "\nImplement Step 1 of plan\nwrite text block file SnakeServer.py"
-          }
-        ],
-        "answer": "SnakeServer.py\n```python\nimport asyncio\nimport websockets\nimport http.server\n\n# Your code goes here\n\n```",
-        "files": {
-          "SnakeServer.py": "import asyncio\nimport websockets\nimport http.server\n\n# Your code goes here"
-        },
-        "e_stats": {
-          "prompt_tokens": 1216,
-          "completion_tokens": 25,
-          "total_tokens": 1241,
-          "sp_cost": 0.001824,
-          "sc_cost": 5e-05,
-          "s_total": 0.001874,
-          "elapsed_time": 2.0965423583984375
-        }
-      }
-    },
-    {
-      "py/object": "KbServerApp.step.Step",
-      "name": "Step_05",
-      "prompt_name": "Snake/Prompts/Execute Server Steps.pe",
-      "storage_path": "Snake/Dynamic/Server/Source",
-      "text_file": "",
-      "file_process_enabled": false,
-      "file_process_name": "Snake - Server Steps",
-      "file_glob": "Snake/Dynamic/Server/Step_*.md",
-      "macros": {
-        "filename": "Snake/Dynamic/Server/Step_05.md"
-      },
-      "ai": {
-        "py/object": "KbServerApp.ai.AI",
-        "temperature": 0.0,
-        "max_tokens": 3000,
-        "model": "gpt-4",
-        "mode": "chat",
-        "messages": [
-          {
-            "role": "system",
-            "content": "\nYou are an IT developer.\nDo not explain yourself.\nDo not apologize.\nWhen possible, do not talk to me.\nComplete the tasks given in a way that allows for easy comprehension while not leaving anything out.\nwhen using lists use minus signs.\nUse indentation."
-          },
-          {
-            "role": "system",
-            "content": "\nUse Text Blocks to write Files.  Text blocks are formatted as follows:\n\n{text block name}.{ext}\n```{filetype}\n{text block contents}\n```"
-          },
-          {
-            "role": "user",
-            "content": "\n# Server\n\nThe server is responsible for managing the game logic and facilitating communication between the clients. It performs the following tasks:\n\n- Manages the game board, which is a 100 x 100 grid of squares.\n- Calculates the movement of each snake on each step of the game.\n- Determines if any snakes have died.\n- Tracks the squares that need color changes.\n- Sends the updated game state to each client.\n\n## Requirements\n\nTo implement the server, the following requirements should be considered:\n\n- The server should be able to handle multiple concurrent connections from clients.\n- It should have a high-performance network stack to handle the real-time nature of the game.\n- The server should be able to process game logic and update the game state at a rate of 15 steps per second.\n- It should have a data structure to represent the game board and track the state of each square.\n- The server should be able to handle client input and update the game state accordingly.\n- It should have a mechanism to detect when a snake dies and remove it from the game.\n- The server should be able to send the updated game state to each client efficiently.\n- It should handle the start and end of the game, including managing the countdown and announcing the winner."
-          },
-          {
-            "role": "user",
-            "content": "\nThe system described is a multiplayer game where clients connect to a server to play a game on a 100x100 grid. The server manages the game logic, including calculating snake movements, detecting snake deaths, and updating the game state. The clients are responsible for rendering the game board, handling user input, and receiving updates from the server.\n\nBased on this system, a network protocol can be designed using JSON messages. The protocol should be efficient, minimize network traffic, and handle potential errors or disconnections gracefully. The following message types can be defined:\n\n1. JoinGame: This message is sent by a client to the server to join the game. It includes the client's unique identifier and any necessary authentication information.\n\n2. StartGame: This message is sent by the server to all clients to indicate the start of the game. It includes the initial game state, including the positions of all snakes on the game board.\n\n3. UpdateGameState: This message is sent by the server to all clients to update the game state. It includes the new positions of all snakes on the game board and any other relevant changes.\n\n4. PlayerDeath: This message is sent by the server to a specific client to notify them of their snake's death. It includes any necessary information about the death, such as the cause or the remaining snakes in the game.\n\n5. Winner: This message is sent by the server to all clients to announce the winner of the game. It includes the identifier of the winning snake and any other relevant information.\n\n6. RestartGame: This message is sent by the server to all clients to indicate the start of a new game. It includes any necessary information to reset the game state.\n\nHere are the JSON message files for each message type:\n\nJoinGame.json\n```json\n{\n  \"type\": \"JoinGame\",\n  \"clientId\": \"123456\",\n  \"authToken\": \"abc123\"\n}\n```\n\nStartGame.json\n```json\n{\n  \"type\": \"StartGame\",\n  \"gameState\": {\n    \"boardSize\": {\n      \"width\": 100,\n      \"height\": 100\n    },\n    \"snakes\": [\n      {\n        \"id\": \"snake1\",\n        \"positions\": [\n          {\"x\": 10, \"y\": 10},\n          {\"x\": 10, \"y\": 11},\n          {\"x\": 10, \"y\": 12}\n        ]\n      },\n      {\n        \"id\": \"snake2\",\n        \"positions\": [\n          {\"x\": 20, \"y\": 20},\n          {\"x\": 20, \"y\": 21},\n          {\"x\": 20, \"y\": 22}\n        ]\n      }\n    ]\n  }\n}\n```\n\nUpdateGameState.json\n```json\n{\n  \"type\": \"UpdateGameState\",\n  \"gameState\": {\n    \"snakes\": [\n      {\n        \"id\": \"snake1\",\n        \"positions\": [\n          {\"x\": 10, \"y\": 11},\n          {\"x\": 10, \"y\": 12},\n          {\"x\": 10, \"y\": 13}\n        ]\n      },\n      {\n        \"id\": \"snake2\",\n        \"positions\": [\n          {\"x\": 20, \"y\": 21},\n          {\"x\": 20, \"y\": 22},\n          {\"x\": 20, \"y\": 23}\n        ]\n      }\n    ]\n  }\n}\n```\n\nPlayerDeath.json\n```json\n{\n  \"type\": \"PlayerDeath\",\n  \"snakeId\": \"snake1\",\n  \"cause\": \"collision\"\n}\n```\n\nWinner.json\n```json\n{\n  \"type\": \"Winner\",\n  \"snakeId\": \"snake2\"\n}\n```\n\nRestartGame.json\n```json\n{\n  \"type\": \"RestartGame\"\n}\n```"
-          },
-          {
-            "role": "user",
-            "content": "\n# Step 1: Import the necessary modules\n\n- `asyncio` for asynchronous programming.\n- `websockets` for WebSocket communication.\n- `http.server` for serving the HTML and JavaScript files to the clients."
-          },
-          {
-            "role": "user",
-            "content": "\nImplement Step 1 of plan\nwrite text block file SnakeServer.py"
-          }
-        ],
-        "answer": "SnakeServer.py\n```python\nimport asyncio\nimport websockets\nimport http.server\n\n# Your code goes here\n\n```",
-        "files": {
-          "SnakeServer.py": "import asyncio\nimport websockets\nimport http.server\n\n# Your code goes here"
-        },
-        "e_stats": {
-          "prompt_tokens": 1216,
-          "completion_tokens": 25,
-          "total_tokens": 1241,
-          "sp_cost": 0.001824,
-          "sc_cost": 5e-05,
-          "s_total": 0.001874,
-          "elapsed_time": 2.0965423583984375
-        }
-      }
-    },
-    {
-      "py/object": "KbServerApp.step.Step",
-      "name": "Step_06",
-      "prompt_name": "Snake/Prompts/Execute Server Steps.pe",
-      "storage_path": "Snake/Dynamic/Server/Source",
-      "text_file": "",
-      "file_process_enabled": false,
-      "file_process_name": "Snake - Server Steps",
-      "file_glob": "Snake/Dynamic/Server/Step_*.md",
-      "macros": {
-        "filename": "Snake/Dynamic/Server/Step_06.md"
-      },
-      "ai": {
-        "py/object": "KbServerApp.ai.AI",
-        "temperature": 0.0,
-        "max_tokens": 3000,
-        "model": "gpt-4",
-        "mode": "chat",
-        "messages": [
-          {
-            "role": "system",
-            "content": "\nYou are an IT developer.\nDo not explain yourself.\nDo not apologize.\nWhen possible, do not talk to me.\nComplete the tasks given in a way that allows for easy comprehension while not leaving anything out.\nwhen using lists use minus signs.\nUse indentation."
-          },
-          {
-            "role": "system",
-            "content": "\nUse Text Blocks to write Files.  Text blocks are formatted as follows:\n\n{text block name}.{ext}\n```{filetype}\n{text block contents}\n```"
-          },
-          {
-            "role": "user",
-            "content": "\n# Server\n\nThe server is responsible for managing the game logic and facilitating communication between the clients. It performs the following tasks:\n\n- Manages the game board, which is a 100 x 100 grid of squares.\n- Calculates the movement of each snake on each step of the game.\n- Determines if any snakes have died.\n- Tracks the squares that need color changes.\n- Sends the updated game state to each client.\n\n## Requirements\n\nTo implement the server, the following requirements should be considered:\n\n- The server should be able to handle multiple concurrent connections from clients.\n- It should have a high-performance network stack to handle the real-time nature of the game.\n- The server should be able to process game logic and update the game state at a rate of 15 steps per second.\n- It should have a data structure to represent the game board and track the state of each square.\n- The server should be able to handle client input and update the game state accordingly.\n- It should have a mechanism to detect when a snake dies and remove it from the game.\n- The server should be able to send the updated game state to each client efficiently.\n- It should handle the start and end of the game, including managing the countdown and announcing the winner."
-          },
-          {
-            "role": "user",
-            "content": "\nThe system described is a multiplayer game where clients connect to a server to play a game on a 100x100 grid. The server manages the game logic, including calculating snake movements, detecting snake deaths, and updating the game state. The clients are responsible for rendering the game board, handling user input, and receiving updates from the server.\n\nBased on this system, a network protocol can be designed using JSON messages. The protocol should be efficient, minimize network traffic, and handle potential errors or disconnections gracefully. The following message types can be defined:\n\n1. JoinGame: This message is sent by a client to the server to join the game. It includes the client's unique identifier and any necessary authentication information.\n\n2. StartGame: This message is sent by the server to all clients to indicate the start of the game. It includes the initial game state, including the positions of all snakes on the game board.\n\n3. UpdateGameState: This message is sent by the server to all clients to update the game state. It includes the new positions of all snakes on the game board and any other relevant changes.\n\n4. PlayerDeath: This message is sent by the server to a specific client to notify them of their snake's death. It includes any necessary information about the death, such as the cause or the remaining snakes in the game.\n\n5. Winner: This message is sent by the server to all clients to announce the winner of the game. It includes the identifier of the winning snake and any other relevant information.\n\n6. RestartGame: This message is sent by the server to all clients to indicate the start of a new game. It includes any necessary information to reset the game state.\n\nHere are the JSON message files for each message type:\n\nJoinGame.json\n```json\n{\n  \"type\": \"JoinGame\",\n  \"clientId\": \"123456\",\n  \"authToken\": \"abc123\"\n}\n```\n\nStartGame.json\n```json\n{\n  \"type\": \"StartGame\",\n  \"gameState\": {\n    \"boardSize\": {\n      \"width\": 100,\n      \"height\": 100\n    },\n    \"snakes\": [\n      {\n        \"id\": \"snake1\",\n        \"positions\": [\n          {\"x\": 10, \"y\": 10},\n          {\"x\": 10, \"y\": 11},\n          {\"x\": 10, \"y\": 12}\n        ]\n      },\n      {\n        \"id\": \"snake2\",\n        \"positions\": [\n          {\"x\": 20, \"y\": 20},\n          {\"x\": 20, \"y\": 21},\n          {\"x\": 20, \"y\": 22}\n        ]\n      }\n    ]\n  }\n}\n```\n\nUpdateGameState.json\n```json\n{\n  \"type\": \"UpdateGameState\",\n  \"gameState\": {\n    \"snakes\": [\n      {\n        \"id\": \"snake1\",\n        \"positions\": [\n          {\"x\": 10, \"y\": 11},\n          {\"x\": 10, \"y\": 12},\n          {\"x\": 10, \"y\": 13}\n        ]\n      },\n      {\n        \"id\": \"snake2\",\n        \"positions\": [\n          {\"x\": 20, \"y\": 21},\n          {\"x\": 20, \"y\": 22},\n          {\"x\": 20, \"y\": 23}\n        ]\n      }\n    ]\n  }\n}\n```\n\nPlayerDeath.json\n```json\n{\n  \"type\": \"PlayerDeath\",\n  \"snakeId\": \"snake1\",\n  \"cause\": \"collision\"\n}\n```\n\nWinner.json\n```json\n{\n  \"type\": \"Winner\",\n  \"snakeId\": \"snake2\"\n}\n```\n\nRestartGame.json\n```json\n{\n  \"type\": \"RestartGame\"\n}\n```"
-          },
-          {
-            "role": "user",
-            "content": "\n# Step 1: Import the necessary modules\n\n- `asyncio` for asynchronous programming.\n- `websockets` for WebSocket communication.\n- `http.server` for serving the HTML and JavaScript files to the clients."
-          },
-          {
-            "role": "user",
-            "content": "\nImplement Step 1 of plan\nwrite text block file SnakeServer.py"
-          }
-        ],
-        "answer": "SnakeServer.py\n```python\nimport asyncio\nimport websockets\nimport http.server\n\n# Your code goes here\n\n```",
-        "files": {
-          "SnakeServer.py": "import asyncio\nimport websockets\nimport http.server\n\n# Your code goes here"
-        },
-        "e_stats": {
-          "prompt_tokens": 1216,
-          "completion_tokens": 25,
-          "total_tokens": 1241,
-          "sp_cost": 0.001824,
-          "sc_cost": 5e-05,
-          "s_total": 0.001874,
-          "elapsed_time": 2.0965423583984375
-        }
-      }
-    },
-    {
-      "py/object": "KbServerApp.step.Step",
-      "name": "Step_07",
-      "prompt_name": "Snake/Prompts/Execute Server Steps.pe",
-      "storage_path": "Snake/Dynamic/Server/Source",
-      "text_file": "",
-      "file_process_enabled": false,
-      "file_process_name": "Snake - Server Steps",
-      "file_glob": "Snake/Dynamic/Server/Step_*.md",
-      "macros": {
-        "filename": "Snake/Dynamic/Server/Step_07.md"
-      },
-      "ai": {
-        "py/object": "KbServerApp.ai.AI",
-        "temperature": 0.0,
-        "max_tokens": 3000,
-        "model": "gpt-4",
-        "mode": "chat",
-        "messages": [
-          {
-            "role": "system",
-            "content": "\nYou are an IT developer.\nDo not explain yourself.\nDo not apologize.\nWhen possible, do not talk to me.\nComplete the tasks given in a way that allows for easy comprehension while not leaving anything out.\nwhen using lists use minus signs.\nUse indentation."
-          },
-          {
-            "role": "system",
-            "content": "\nUse Text Blocks to write Files.  Text blocks are formatted as follows:\n\n{text block name}.{ext}\n```{filetype}\n{text block contents}\n```"
-          },
-          {
-            "role": "user",
-            "content": "\n# Server\n\nThe server is responsible for managing the game logic and facilitating communication between the clients. It performs the following tasks:\n\n- Manages the game board, which is a 100 x 100 grid of squares.\n- Calculates the movement of each snake on each step of the game.\n- Determines if any snakes have died.\n- Tracks the squares that need color changes.\n- Sends the updated game state to each client.\n\n## Requirements\n\nTo implement the server, the following requirements should be considered:\n\n- The server should be able to handle multiple concurrent connections from clients.\n- It should have a high-performance network stack to handle the real-time nature of the game.\n- The server should be able to process game logic and update the game state at a rate of 15 steps per second.\n- It should have a data structure to represent the game board and track the state of each square.\n- The server should be able to handle client input and update the game state accordingly.\n- It should have a mechanism to detect when a snake dies and remove it from the game.\n- The server should be able to send the updated game state to each client efficiently.\n- It should handle the start and end of the game, including managing the countdown and announcing the winner."
-          },
-          {
-            "role": "user",
-            "content": "\nThe system described is a multiplayer game where clients connect to a server to play a game on a 100x100 grid. The server manages the game logic, including calculating snake movements, detecting snake deaths, and updating the game state. The clients are responsible for rendering the game board, handling user input, and receiving updates from the server.\n\nBased on this system, a network protocol can be designed using JSON messages. The protocol should be efficient, minimize network traffic, and handle potential errors or disconnections gracefully. The following message types can be defined:\n\n1. JoinGame: This message is sent by a client to the server to join the game. It includes the client's unique identifier and any necessary authentication information.\n\n2. StartGame: This message is sent by the server to all clients to indicate the start of the game. It includes the initial game state, including the positions of all snakes on the game board.\n\n3. UpdateGameState: This message is sent by the server to all clients to update the game state. It includes the new positions of all snakes on the game board and any other relevant changes.\n\n4. PlayerDeath: This message is sent by the server to a specific client to notify them of their snake's death. It includes any necessary information about the death, such as the cause or the remaining snakes in the game.\n\n5. Winner: This message is sent by the server to all clients to announce the winner of the game. It includes the identifier of the winning snake and any other relevant information.\n\n6. RestartGame: This message is sent by the server to all clients to indicate the start of a new game. It includes any necessary information to reset the game state.\n\nHere are the JSON message files for each message type:\n\nJoinGame.json\n```json\n{\n  \"type\": \"JoinGame\",\n  \"clientId\": \"123456\",\n  \"authToken\": \"abc123\"\n}\n```\n\nStartGame.json\n```json\n{\n  \"type\": \"StartGame\",\n  \"gameState\": {\n    \"boardSize\": {\n      \"width\": 100,\n      \"height\": 100\n    },\n    \"snakes\": [\n      {\n        \"id\": \"snake1\",\n        \"positions\": [\n          {\"x\": 10, \"y\": 10},\n          {\"x\": 10, \"y\": 11},\n          {\"x\": 10, \"y\": 12}\n        ]\n      },\n      {\n        \"id\": \"snake2\",\n        \"positions\": [\n          {\"x\": 20, \"y\": 20},\n          {\"x\": 20, \"y\": 21},\n          {\"x\": 20, \"y\": 22}\n        ]\n      }\n    ]\n  }\n}\n```\n\nUpdateGameState.json\n```json\n{\n  \"type\": \"UpdateGameState\",\n  \"gameState\": {\n    \"snakes\": [\n      {\n        \"id\": \"snake1\",\n        \"positions\": [\n          {\"x\": 10, \"y\": 11},\n          {\"x\": 10, \"y\": 12},\n          {\"x\": 10, \"y\": 13}\n        ]\n      },\n      {\n        \"id\": \"snake2\",\n        \"positions\": [\n          {\"x\": 20, \"y\": 21},\n          {\"x\": 20, \"y\": 22},\n          {\"x\": 20, \"y\": 23}\n        ]\n      }\n    ]\n  }\n}\n```\n\nPlayerDeath.json\n```json\n{\n  \"type\": \"PlayerDeath\",\n  \"snakeId\": \"snake1\",\n  \"cause\": \"collision\"\n}\n```\n\nWinner.json\n```json\n{\n  \"type\": \"Winner\",\n  \"snakeId\": \"snake2\"\n}\n```\n\nRestartGame.json\n```json\n{\n  \"type\": \"RestartGame\"\n}\n```"
-          },
-          {
-            "role": "user",
-            "content": "\n# Step 1: Import the necessary modules\n\n- `asyncio` for asynchronous programming.\n- `websockets` for WebSocket communication.\n- `http.server` for serving the HTML and JavaScript files to the clients."
-          },
-          {
-            "role": "user",
-            "content": "\nImplement Step 1 of plan\nwrite text block file SnakeServer.py"
-          }
-        ],
-        "answer": "SnakeServer.py\n```python\nimport asyncio\nimport websockets\nimport http.server\n\n# Your code goes here\n\n```",
-        "files": {
-          "SnakeServer.py": "import asyncio\nimport websockets\nimport http.server\n\n# Your code goes here"
-        },
-        "e_stats": {
-          "prompt_tokens": 1216,
-          "completion_tokens": 25,
-          "total_tokens": 1241,
-          "sp_cost": 0.001824,
-          "sc_cost": 5e-05,
-          "s_total": 0.001874,
-          "elapsed_time": 2.0965423583984375
+          "prompt_tokens": 1871,
+          "completion_tokens": 721,
+          "total_tokens": 2592,
+          "sp_cost": 0.05613,
+          "sc_cost": 0.04326,
+          "s_total": 0.09939,
+          "elapsed_time": 60.187966108322144
         }
       }
     }

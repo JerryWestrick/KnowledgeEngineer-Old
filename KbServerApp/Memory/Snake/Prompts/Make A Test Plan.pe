@@ -1,9 +1,0 @@
-.include Snake/Prompts/Actor.pe
-.include Snake/Prompts/Text Block.pe
-.include Snake/Dynamic/Protocol/Protocol Description.md
-.include Snake/Dynamic/Server/Server_Plan.md
-.user
-Analyze the included files.
-With each step, describe: 
-- what is required to implement the step, 
-- and how to test the if the step was implemented correctly.

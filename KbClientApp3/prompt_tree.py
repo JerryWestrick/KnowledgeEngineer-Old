@@ -273,12 +273,20 @@ class PromptTree(QWidget):
         # Create QMenu
         context_menu = QMenu(self)
 
+        # Get the Item
+        item = self.tree_widget.itemAt(point)
+        if not item:
+            return
+        item_path = self.get_index(item)
+        item_name = '/'.join(item_path)
+
         # Create actions
         delete_action = QAction("Delete", self)
         rename_action = QAction("Rename", self)
         new_dir_action = QAction("Create New Directory", self)
         new_prompt_action = QAction("Create New Prompt", self)
-        delete_dynamic_memory = QAction("Delete All Files", self)
+        delete_dynamic_memory = QAction(f"Delete all files {item_name}/*", self)
+        delete_memory_backup = QAction(f"Delete all backup files {item_name}/*.~nn", self)
 
         # Add actions to menu
         context_menu.addAction(delete_action)
@@ -286,6 +294,7 @@ class PromptTree(QWidget):
         context_menu.addAction(new_dir_action)
         context_menu.addAction(new_prompt_action)
         context_menu.addAction(delete_dynamic_memory)
+        context_menu.addAction(delete_memory_backup)
 
         # Connect actions to custom slot methods
         delete_action.triggered.connect(self.delete_memory)
@@ -293,6 +302,7 @@ class PromptTree(QWidget):
         new_dir_action.triggered.connect(self.create_directory)
         new_prompt_action.triggered.connect(self.create_new_prompt)
         delete_dynamic_memory.triggered.connect(self.delete_dynamic_memory)
+        delete_memory_backup.triggered.connect(self.delete_memory_backup)
 
         # Show context menu
         context_menu.exec_(self.tree_widget.mapToGlobal(point))
@@ -325,12 +335,14 @@ class PromptTree(QWidget):
         data = self.get_data(path)
         if type(data) is not dict:
             return
-
         full_path_name = '/'.join(path)
-        self.log('delete_dynamic_items', f"Delete of all files recursively in {full_path_name}")
-        record = {'full_path_name': full_path_name}
-        msg = {'cmd': 'delete', 'object': 'dynamic_memory', 'cb': 'cb_delete_dynamic_memory', 'record': record}
-        SEND(msg)
+
+        response, ok = QInputDialog.getText(self, f"Recursively delete all files in Directory {full_path_name}", "Enter Yes:")
+        if response[0] in ['Y', 'y']:
+            self.log('delete_dynamic_items', f"Delete of all files recursively in {full_path_name}")
+            record = {'full_path_name': full_path_name}
+            msg = {'cmd': 'delete', 'object': 'dynamic_memory', 'cb': 'cb_delete_dynamic_memory', 'record': record}
+            SEND(msg)
 
     def cb_delete_dynamic_memory(self, msg):
         if msg['rc'] != 'Okay':
@@ -338,6 +350,26 @@ class PromptTree(QWidget):
                      f"Error: cb_delete_dynamic_memory({msg['record']['full_path_name']}) reason {msg['reason']}")
             return
         self.log('cb_delete_dynamic_memory', f"cb_delete_dynamic_memory({msg['record']['full_path_name']}) complete")
+
+    def delete_memory_backup(self):
+        current_item = self.tree_widget.currentItem()
+        path = self.get_index(current_item)
+        data = self.get_data(path)
+        if type(data) is not dict:
+            return
+
+        full_path_name = '/'.join(path)
+        self.log('delete_memory_backup', f"Delete of all backup files recursively in {full_path_name}")
+        record = {'full_path_name': full_path_name}
+        msg = {'cmd': 'delete', 'object': 'memory_backup', 'cb': 'cb_delete_memory_backup', 'record': record}
+        SEND(msg)
+
+    def cb_delete_memory_backup(self, msg):
+        if msg['rc'] != 'Okay':
+            self.log('cb_delete_memory_backup',
+                     f"Error: cb_delete_memory_backup({msg['record']['full_path_name']}) reason {msg['reason']}")
+            return
+        self.log('cb_delete_memory_backup', f"cb_delete_memory_backup({msg['record']['full_path_name']}) complete")
 
     def create_directory(self):
         current_item = self.tree_widget.currentItem()
@@ -409,8 +441,11 @@ class PromptTree(QWidget):
         content = record['content']
         if 'delete' in mask:
             ele = self.get_data(path)
-            del ele[name]
-            self.log('memory_update', f"memory_update({mask}, {path}/{name}) deleted")
+            if name in ele:
+                del ele[name]
+                self.log('memory_update', f"memory_update({mask}, {path}/{name}) deleted")
+            else:
+                self.log('memory_update', f"memory_update({mask}, {path}/{name}) Not in Memory")
         elif 'create' in mask:
             ele = self.get_data(path)
             if 'is_dir' in mask:

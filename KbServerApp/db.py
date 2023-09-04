@@ -1,5 +1,6 @@
 import os
 import shutil
+import traceback
 from pathlib import Path
 import re
 import glob
@@ -56,21 +57,20 @@ class DB:
 
     def get_messages(self, name: str, macro_source: [str]) -> [dict[str, str]]:
         """ Compile the code in source into a list of statements
-            Execute the statements to return a list of messages """
+            Execute the statements to return a list of messages"""
         source = []
         for line in macro_source:
             source.append(self.replace_macros(line))
-        # print(f"source to compile {len(source)} lines of source: {source}")
-        # for stmt in source:
-        #     print(stmt)
         code = self.compiler.compile(source)
-        # print(f"compiled source into {len(code)} lines of code:")
-        # for stmt in code:
-        #     print(stmt)
-        msgs = self.compiler.execute(code)
-        # print(f"executed code into {len(msgs)} messages:")
-        # for msg in msgs:
-        #     print(msg)
+        try:
+            msgs = self.compiler.execute(code)
+        except Exception as err:
+            tb_str = traceback.format_exc()
+            err_msg = str(err)
+            print(f"Error Message:{err_msg}")
+            self.log.error("Error {err_msg}", err_msg=err_msg)
+            raise
+
         return msgs
 
     def glob_files(self, search: str) -> [str]:
@@ -154,6 +154,21 @@ class DB:
             for item in directory_path.iterdir():
                 if item.is_file():
                     item.unlink()  # Delete the file
+                elif item.is_dir():
+                    self.clear_dynamic_memory(item)  # Recursive call for subdirectories
+            # directory_path.rmdir()  # Delete the now-empty directory
+        except Exception as e:
+            print(f"An error occurred: {e}")
+
+    def delete_memory_backup(self, directory_path: str):
+        try:
+            directory_path = self.path / directory_path
+            for item in directory_path.iterdir():
+                if item.is_file():
+                    if len(item.suffixes) > 1:
+                        if re.match(r"^\.~\d\d$", item.suffix):
+                            # print(f"Deleting file {item}")
+                            item.unlink()  # Delete the file
                 elif item.is_dir():
                     self.clear_dynamic_memory(item)  # Recursive call for subdirectories
             # directory_path.rmdir()  # Delete the now-empty directory
