@@ -6,7 +6,6 @@ import json
 import re
 import time
 
-
 from twisted.internet.defer import inlineCallbacks
 from twisted.logger import Logger
 
@@ -47,9 +46,11 @@ class Step:
     log = Logger(namespace='Step')
     memory = DB('Memory')
 
-    def __init__(self, name: str, prompt_name: str, ai: AI, verify_prompt: str = '', storage_path: str = '', text_file: str = '',
+    def __init__(self, name: str, prompt_name: str, ai: AI, verify_prompt: str = '', storage_path: str = '',
+                 text_file: str = '',
                  file_process_enabled: bool = False, file_process_name: str = '', file_glob: str = '',
                  macros: dict[str, str] = None):
+        self.proto = None
         self.name: str = name
         self.prompt_name: str = prompt_name
         self.verify_prompt: str = verify_prompt
@@ -99,10 +100,20 @@ class Step:
         )
         return step
 
+    def update_gui(self):
+        # Send Update to the GUI
+        msg = {'cmd': 'update', 'cb': 'update_step', 'rc': 'Okay', 'object': 'step', 'record': self.to_json()}
+        response = json.dumps(msg, ensure_ascii=False, default=str)
+        self.proto.sendMessage(response.encode('UTF8'), False)
+
     @inlineCallbacks
     def run(self, proto, pname):
+
+        self.proto = proto
+
         msg = {}
         msgs = []
+        start_time = time.time()
         head_len = len('[2023-06-30 10:29:41] STEP: ') + 22
         head = ' ' * head_len
         self.memory.macro = self.macros  # Use these values for macro substitution
@@ -115,7 +126,7 @@ class Step:
         # Clear Old History
         # self.log.info("step.run()::1")
         self.ai.answer = ''
-        self.ai.messages = messages
+        self.ai.messages = []
         self.ai.files = {}
         self.ai.e_stats['elapsed_time'] = 0.0
         self.ai.e_stats['prompt_tokens'] = 0.0
@@ -125,67 +136,42 @@ class Step:
         self.ai.e_stats['s_total'] = 0.0
         self.ai.e_stats['elapsed_time'] = 0.0
 
-        # Send Update to the GUI
-        # self.log.info("step.run()::2")
-        msg = {'cmd': 'update', 'cb': 'update_step', 'rc': 'Okay', 'object': 'step', 'record': self.to_json()}
-        # self.log.info("step.run()::3")
-        response = json.dumps(msg, ensure_ascii=False, default=str)
-        # self.log.info("step.run()::4")
-        proto.sendMessage(response.encode('UTF8'), False)
+        Step.log.info(
+            f"{'=' * 50}\n{head}Begin Step: {pname}:{self.name} -- {self.prompt_name}\n{head}Call {self.ai.model} ")
+        try:
+            # self.ai.messages = messages
+            self.update_gui()
+            ai_response = yield self.ai.generate(self, messages)
+        except Exception as err:
+            self.log.error(f"Error in ai.generate: {err}", err=err)
+            raise
 
+        self.ai.answer = [m['content'] for m in self.ai.messages if m['role'] == 'assistant' and m['content'] is not None]
 
+        # self.ai.files = interpret_results(text=self.ai.response)
+        self.update_gui()
 
-        # Split messages list by "Execute" statements
-        this_call = []
-        calls = []
-        for msg in messages:
-            if msg['role'] == "exec":
-                calls.append(this_call)
-                this_call = []
-            else:
-                this_call.append(msg)
+        # # Okay Now we need to save the response to the memory
+        # for name, content in self.ai.files.items():
+        #     # check for set memory
+        #     if name == 'variable':
+        #         t = json.loads(content)
+        #         for k, v in t.items():
+        #             self.memory.macro[k] = v
+        #             Step.log.info(f"Setting Memory.macro['{k}']={v}")
+        #         continue
+        #     else:
+        #         full_path = f"{self.storage_path}/{name}"
+        #         self.memory[full_path] = content
+        #         Step.log.info(f"Writing {full_path}")
+        # if self.text_file != '':
+        #     full_path = f"{self.storage_path}/{self.text_file}"
+        #     self.memory[full_path] = self.ai.answer
+        #     Step.log.info(f"Writing {full_path}")
 
-        messages = []
-        for this_call in calls:
-            messages.extend(this_call)
-
-            start_time = time.time()
-            Step.log.info(f"{'=' * 50}\n{head}Begin Step: {pname}:{self.name} -- {self.prompt_name}\n{head}Call {self.ai.model} ")
-            try:
-                self.ai.messages = messages
-                ai_response = yield self.ai.generate()
-            except Exception as err:
-                self.log.error(f"Error in ai.generate: {err}", err=err)
-                raise
-
-            Step.log.info(f"Elapsed: {self.ai.e_stats['elapsed_time']:.2f}s Token Usage: "
-                          f"Total:{self.ai.e_stats['total_tokens']} ("
-                          f"Prompt:{self.ai.e_stats['prompt_tokens']}, "
-                          f"Completion:{self.ai.e_stats['completion_tokens']})")
-            Step.log.info(f"End Step: {pname}:{self.name} -- {self.prompt_name}\n{head}{'=' * 50}")
-
-            self.ai.files = interpret_results(text=self.ai.answer)
-            # Send Update to the GUI
-            msg = {'cmd': 'update', 'cb': 'update_step', 'rc': 'Okay', 'object': 'step', 'record': self.to_json()}
-            response = json.dumps(msg, ensure_ascii=False, default=str)
-            proto.sendMessage(response.encode('UTF8'), False)
-
-            # Okay Now we need to save the response to the memory
-            for name, content in self.ai.files.items():
-                # check for set memory
-                if name == 'variable':
-                    t = json.loads(content)
-                    for k, v in t.items():
-                        self.memory.macro[k] = v
-                        Step.log.info(f"Setting Memory.macro['{k}']={v}")
-                    continue
-                else:
-                    full_path = f"{self.storage_path}/{name}"
-                    self.memory[full_path] = content
-                    Step.log.info(f"Writing {full_path}")
-            if self.text_file != '':
-                full_path = f"{self.storage_path}/{self.text_file}"
-                self.memory[full_path] = self.ai.answer
-                Step.log.info(f"Writing {full_path}")
-
-        # Call verify Prompt on Chat...
+        self.ai.e_stats['elapsed_time'] = time.time() - start_time
+        Step.log.info(f"Elapsed: {self.ai.e_stats['elapsed_time']:.2f}s Token Usage: "
+                      f"Total:{self.ai.e_stats['total_tokens']} ("
+                      f"Prompt:{self.ai.e_stats['prompt_tokens']}, "
+                      f"Completion:{self.ai.e_stats['completion_tokens']})")
+        Step.log.info(f"End Step: {pname}:{self.name} -- {self.prompt_name}\n{head}{'=' * 50}")

@@ -212,8 +212,10 @@ class KbServerProtocol(WebSocketServerProtocol):
             pricing = OpenAI_API_Costs[ai_model]
             try:
                 yield step.run(self, pname)
-            except:
-                self.log.error(f"Error in step.run()")
+            except Exception as err:
+                tb_str = traceback.format_exc()
+                err_msg = str(err)
+                self.log.error("Error in step.run(): {err_msg}", err_msg=err_msg)
                 raise
 
             prompt_tokens += step.ai.e_stats['prompt_tokens']
@@ -221,15 +223,13 @@ class KbServerProtocol(WebSocketServerProtocol):
             total_tokens += step.ai.e_stats['total_tokens']
             sp_cost = pricing['input'] * (step.ai.e_stats['prompt_tokens'] / 1000)
             sc_cost = pricing['output'] * (step.ai.e_stats['completion_tokens'] / 1000)
-            s_total = sp_cost + sc_cost
             p_cost += sp_cost
             c_cost += sc_cost
             total += p_cost + c_cost
-            self.log.info(f'Cost Estimate: Total: {s_total:.4f} ( Prompt: {sp_cost:.4f} Completion: {sc_cost:.4f})')
 
         elapsed = time.time() - start_time
         self.log.info(
-          f'Elapsed: {elapsed:.2f}s Cost Estimate: Total: {total:.4f} ( Prompt: {p_cost:.4f} Completion: {c_cost:.4f})'
+          f'Total Run Elapsed: {elapsed:.2f}s \n {" "*50}Cost Estimate: Total: {total:.4f} ( Prompt: {p_cost:.4f} Completion: {c_cost:.4f})'
         )
 
     @inlineCallbacks
