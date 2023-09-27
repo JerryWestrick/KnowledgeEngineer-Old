@@ -169,7 +169,7 @@ class Compiler:
 
             elif keyword == 'include_statement':
                 msgs = self.db[statement['name']]
-                for msg in msgs:
+                for msg in msgs[:-1]:
                     stmts[msg['role']] = f"{stmts[msg['role']]}\n{msg['content']}"
 
             elif keyword == 'text_block_statement':
@@ -188,8 +188,8 @@ class Compiler:
                     # print(f"in {file} 2")
                     msg = msgs[0]
                     # print(f"in {file} 3")
-                    parts = file.split('/')
-                    content = f"\n```filename={parts[-1]}\n{msg['content']}\n```"
+                    # parts = file.split('/')
+                    content = f"\n```filename={file}\n{msg['content']}\n```"
                     stmts[role] += content
 
                 # print(f"out {keyword}")

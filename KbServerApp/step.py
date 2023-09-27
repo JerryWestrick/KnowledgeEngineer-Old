@@ -13,35 +13,6 @@ from KbServerApp.ai import AI
 from KbServerApp.db import DB
 
 
-def interpret_results(text: str) -> dict[str, str]:
-    """
-    Search Text for Text Blocks and add them as files to the Memory
-    """
-    # text_block_pattern = re.compile()
-
-    result = {}
-    full_path: str = ''
-    content: str = ''
-    # text_blocks = re.findall(r'^([\w\s/:.]+)```(\w+)?([^`]+)```', text, re.MULTILINE)
-    # text_blocks = re.findall(r"^(\w[\w ]+)\.(.+)$\n^```(.*)$\n((?:^(?!```).*$\n?)+)^```", text, re.MULTILINE)
-    # text_blocks = re.findall(r"^([\w *#]+)\.(.+)$\n{1,2}^```(.*)$\n((?:^(?!```).*$\n?)+)^```", text, re.MULTILINE)
-    text_blocks = re.findall(r"^```(\w+ )?filename=(\w+)\.(\w+)$\n((?:^(?!```).*$\n?)+)^```", text, re.MULTILINE)
-    if text_blocks:
-        for (lang, name, ext, content) in text_blocks:
-            name = name.strip()
-            content = content.strip()
-            file_name = f"{name}.{ext}"
-            result[file_name] = content
-    else:
-
-        text_blocks = re.findall(r"^filename=(\w+\.\w+)\n^```(\w+)?\n((?:^(?!```).*$\n?)+)^```", text, re.MULTILINE)
-        if text_blocks:
-            for (file_name, _, content) in text_blocks:
-                content = content.strip()
-                result[file_name] = content
-        return result
-
-
 class Step:
     log = Logger(namespace='Step')
     memory = DB('Memory')
@@ -146,28 +117,13 @@ class Step:
             self.log.error(f"Error in ai.generate: {err}", err=err)
             raise
 
-        self.ai.answer = [m['content'] for m in self.ai.messages if m['role'] == 'assistant' and m['content'] is not None]
-
-        # self.ai.files = interpret_results(text=self.ai.response)
         self.update_gui()
 
-        # # Okay Now we need to save the response to the memory
-        # for name, content in self.ai.files.items():
-        #     # check for set memory
-        #     if name == 'variable':
-        #         t = json.loads(content)
-        #         for k, v in t.items():
-        #             self.memory.macro[k] = v
-        #             Step.log.info(f"Setting Memory.macro['{k}']={v}")
-        #         continue
-        #     else:
-        #         full_path = f"{self.storage_path}/{name}"
-        #         self.memory[full_path] = content
-        #         Step.log.info(f"Writing {full_path}")
-        # if self.text_file != '':
-        #     full_path = f"{self.storage_path}/{self.text_file}"
-        #     self.memory[full_path] = self.ai.answer
-        #     Step.log.info(f"Writing {full_path}")
+        # Write log file if required...
+        if self.text_file != '':
+            full_path = f"{self.storage_path}/{self.text_file}"
+            self.memory[full_path] = self.ai.answer
+            Step.log.info(f"Writing {full_path}")
 
         self.ai.e_stats['elapsed_time'] = time.time() - start_time
         Step.log.info(f"Elapsed: {self.ai.e_stats['elapsed_time']:.2f}s Token Usage: "

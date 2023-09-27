@@ -1,7 +1,0 @@
-When you see (Output filename=filename.ext) you are being asked to output 
-the file in the following format:
-
-filename=filename.ext
-```filetype
-file contents
-```

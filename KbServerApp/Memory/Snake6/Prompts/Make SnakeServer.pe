@@ -1,0 +1,12 @@
+.include Snake6/Requirements/Actor.pe
+.user
+Fully Implement SnakeServer.py
+read Snake6/Planning/Server_Implementation_Plan.md
+read Snake6/Planning/Messages.md
+read Snake6/Requirements/ApplicationDescription.md
+You will also read Snake6/Code/Snake_Constants.py
+Following the Implementation Plan write the server to Snake6/Code/SnakeServer.py
+.exec
+Study the server:
+Check that all routines have been fully impelmented, and nothing is left undone.
+

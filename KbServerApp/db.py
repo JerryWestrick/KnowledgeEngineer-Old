@@ -66,9 +66,7 @@ class DB:
             msgs = self.compiler.execute(code)
         except Exception as err:
             tb_str = traceback.format_exc()
-            err_msg = str(err)
-            print(f"Error Message:{err_msg}")
-            self.log.error("Error {err_msg}", err_msg=err_msg)
+            self.log.error("Error {err_msg}", err_msg=tb_str)
             raise
 
         return msgs
@@ -133,7 +131,10 @@ class DB:
 
                 # replace the macro name with its value, and add to end of string
                 t = begin.pop()
-                t += str(self.macro[macro_name]) + rest
+                if macro_name in self.macro:
+                    t += str(self.macro[macro_name]) + rest
+                else:
+                    t += '${' + macro_name + '}$'
                 begin.append(t)
                 continue
 

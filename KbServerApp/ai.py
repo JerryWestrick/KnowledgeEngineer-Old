@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 import os
 import time
+import traceback
+from json import JSONDecodeError
 
 import openai
 from dotenv import load_dotenv
@@ -102,6 +104,15 @@ class AI:
         self.log.info("Writing<<{name}", name=name)
         return {'role': 'function', 'name': 'write_file', 'content': 'Done.'}
 
+    # def check_python(self, name: str, contents: str) -> str:
+    #     try:
+    #         self.memory[name] = contents
+    #     except Exception as err:
+    #         self.log.error("Error while writing file for AI...")
+    #         raise
+    #     self.log.info("Writing<<{name}", name=name)
+    #     return {'role': 'function', 'name': 'write_file', 'content': 'Done.'}
+    #
     functions = [
         {
             "name": "read_file",
@@ -144,7 +155,7 @@ class AI:
     @inlineCallbacks
     def generate(self, step, user_messages: list[dict[str, str]]) -> dict[str, str]:
 
-        self.answer = ''
+        self.answer = f'Log of Step: {step.name} : {step.prompt_name}\n'
         pricing = OpenAI_API_Costs[self.model]
 
         while user_messages:
@@ -169,16 +180,34 @@ class AI:
                     # if ai_response.choices[0].message.get("function_call"):
                     call_function = ai_response.choices[0].message.get("function_call")
                     function_name = call_function["name"]
-                    function_args = json.loads(call_function["arguments"])
+                    try:
+                        t_args = call_function["arguments"]
+                        begin = t_args.find('"contents": "')
+                        if begin == -1:
+                            t1_args = t_args
+                        else:
+                            end = t_args.rfind('"')
+                            t1_args = t_args[:begin] + t_args[begin:end].replace('\n', '\\n') + t_args[end:]
+                        function_args = json.loads(t1_args)
+                    except JSONDecodeError as err:
+                        err_msg = err.args[0]
+                        self.log.warn("While parsing arguments for function call {name}\n{err_msg}",
+                                       name=function_name, err_msg=err_msg)
+                        # Okay Send error back to AI...
+                        repeat = True
+                        response_message['function_call'] = {'name': function_name, 'arguments': call_function["arguments"]}
+                        response_message['content'] = f'Arguments are not valid Jason\n{err_msg}'
+                        self.messages.append(response_message)
+                        self.log.info("    --> msg:{msg}", msg=response_message)
+                        continue
+
                     response_message['function_call'] = {'name': function_name, 'arguments': call_function["arguments"]}
                 else:
-                    self.answer = f"{self.answer}\n{response_message['content']}"
+                    self.answer = f"{self.answer}\n\n - {response_message['content']}"
 
                 self.messages.append(response_message)
                 self.log.info("    <-- msg:{msg}", msg=response_message)  # Display with last message
-                if ai_response.choices[0].message.get("function_call"):
-                    # self.log.info("     CALL {function_name}({function_args})",
-                    #               function_name=function_name, function_args=function_args)
+                if ai_response.choices[0].finish_reason == 'function_call':
                     new_msg = self.available_functions[function_name](self, **function_args)
                     self.messages.append(new_msg)
                     self.log.info("    --> msg:{msg}", msg=new_msg)
@@ -243,3 +272,9 @@ class AI:
     @classmethod
     def from_json(cls, param) -> AI:
         return cls(**param)
+
+if __name__ == "__main__":
+    my_models = {m.id for m in AI.models['data'] }
+    print(f"Models: {AI.models['data']}")
+    for m in sorted(my_models):
+        print(f'\t{m}')

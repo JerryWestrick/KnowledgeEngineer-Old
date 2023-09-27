@@ -1,7 +1,0 @@
-.include Snake5/Requirements/Actor.pe
-.include Snake5/Requirements/File Format.pe
-.include Snake5/Requirements/Application Description.pe
-.include Snake5/Dynamic/Planning/Expanded_Server_Requirements.md
-.user
-Include remaining details from Description to Expanded_Server_Requirements.md.
-output filename=Completed_Expanded_Server_Requirements.md

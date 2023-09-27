@@ -1,0 +1,13 @@
+.include Snake6/Requirements/Actor.pe
+.user
+Fully Implement SnakeClient.html
+read Snake6/Planning/Client_Implementation_Plan.md
+read Snake6/Planning/Messages.md
+read Snake6/Requirements/ApplicationDescription.md
+You will also read Snake6/Code/Snake_Constants.py
+Following the Implementation Plan write the client to Snake6/Code/SnakeClient.html
+.exec
+Study the client:
+Check that all routines have been fully impelmented, and nothing is left undone.
+implement any changes via a patch file Snake6/Code/SnakeClient.patch
+

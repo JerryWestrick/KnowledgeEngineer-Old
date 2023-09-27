@@ -1,8 +1,0 @@
-.include Snake5/Requirements/Actor.pe
-.include Snake5/Requirements/File Format.pe
-.include Snake5/Requirements/Application Requirements.pe
-.include Snake5/Requirements/Server Requirements.pe
-.include Snake5/Requirements/Client Requirements.pe
-.user
-Read the description above. 
-Make a Prompt instructing Chat GPT 4 to build SnakeServer.py

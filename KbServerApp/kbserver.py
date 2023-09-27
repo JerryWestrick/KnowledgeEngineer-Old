@@ -14,7 +14,6 @@ from twisted.logger import Logger
 
 from KbServerApp.OpenAI_API_Costs import OpenAI_API_Costs
 from KbServerApp.Processes import ProcessList, ProcessList_save, ProcessList_load
-# from KbServerApp.logger import GptLogger
 from KbServerApp.step import Step
 
 load_dotenv(find_dotenv())

@@ -1,0 +1,12 @@
+.include Snake6/Requirements/Actor.pe
+.user
+Read the application description file: 'Snake6/Requirements/ApplicationDescription.md'.
+Read the requirements for the server from file Snake6/Planning/Client_Requirements.md.
+Read the constants for the server from the file 'Snake6/Code/Snake_Constants.py'.
+Read the Network Protocol from the file 'Snake6/Planning/Messages.md'.
+Create Client_Implementation_Plan.md mapping each requirement in Client_Requirements.md to functions describing the interface and the logic of each function.
+Include extensive documentation for each function.
+Write the plan to the file 'Snake6/Planning/Client_Implementation_Plan.md'
+.exec
+Study the implementation plan, check that all requirements are included, and that all routines are described.
+Implement any changes via a .patch file named Snake6/Planning/Client_implementation_Plan.patch

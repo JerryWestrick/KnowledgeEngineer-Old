@@ -176,6 +176,7 @@ class StepEditor(QWidget):
     def models_initial_load(self, msg):
         self.log('models_initial_load', f'models_initial_load({msg})')
         self.models = msg['record']
+        self.model_editor.clear()
         self.model_editor.addItems(self.models.keys())
 
     def set_step(self, process_name, step):

@@ -1,12 +1,13 @@
 {
-  "Snake6": [
+  "Asterisk": [
     {
       "py/object": "KbServerApp.step.Step",
-      "name": "Make Requirements",
-      "prompt_name": "Snake6/Prompts/Make Requirements.pe",
+      "proto": null,
+      "name": "DocumentConfiguration",
+      "prompt_name": "Asterisk/Prompts/DocumentConfiguration",
       "verify_prompt": "",
-      "storage_path": "Snake6/Dynamic/Planning",
-      "text_file": "Make Requirements Log.md",
+      "storage_path": "Asterisk/Prompts",
+      "text_file": "DocumentConfigurationLog.md",
       "file_process_enabled": false,
       "file_process_name": "",
       "file_glob": "",
@@ -14,7 +15,7 @@
       "ai": {
         "py/object": "KbServerApp.ai.AI",
         "temperature": 0.0,
-        "max_tokens": 5000,
+        "max_tokens": 15000,
         "model": "gpt-3.5-turbo",
         "mode": "chat",
         "messages": [
@@ -45,7 +46,92 @@
         ],
         "answer": {
           "py/tuple": [
-            "filename=Server_Requirements.md\n```\n# Server Requirements\n\n1. SR1: The server should be implemented in Python 3, with Async IO, aiohttp serving SnakeClient.html, and connect via websockets.\n2. SR2: The server should maintain a game_board, a 100 x 100 2D character representation of the playing ground.\n3. SR3: The server should keep the game_board up to date with the values of Snakes and Foods.\n4. SR4: The server should implement the game as Ticks (5 per second).\n5. SR5: The server should move each snake whose direction is not 'Stop' during each Tick.\n6. SR6: The server should check for collisions by checking the value of the character in the game_board at position (x, y).\n7. SR7: The server should handle snake death and reset the client.\n8. SR8: The server should send GameStatus to all connected Clients after each Tick.\n9. SR9: The server should handle \"Joining\" message from clients.\n10. SR10: The server should handle websocket disconnection from clients.\n11. SR11: The server should start a HTTP Server that serves the file SnakeClient.html at startup.\n```\n\nfilename=Client_Requirements.md\n```\n# Client Requirements\n\n1. CR1: The client should be implemented in HTML, CSS, and JavaScript.\n2. CR2: The client should display a GameBoard, a 2D 100 x 100 character array with default character \" \".\n3. CR3: The client should display a client list in a status bar at the bottom of the window.\n4. CR4: The client should prompt the user for a username at initialization.\n5. CR5: The client should connect via websocket at initialization.\n6. CR6: The client should send a \"Joining\" message (which includes the username) at initialization.\n7. CR7: The client should detect arrow keys and send \"DirectionChange\" message with 'Up', 'Down', 'Left', or 'Right'.\n8. CR8: The client should handle \"SnakeDied\" message from the server.\n9. CR9: The client should handle \"GameStatus\" message from the server.\n```\n\nfilename=Messages.md\n```\n# Messages\n\n1. \"Joining\" message: Sent by the client to the server at initialization. Includes the username.\n2. \"DirectionChange\" message: Sent by the client to the server when an arrow key is detected. Includes the direction ('Up', 'Down', 'Left', or 'Right').\n3. \"SnakeDied\" message: Sent by the server to the client when the snake dies.\n4. \"GameStatus\" message: Sent by the server to all connected clients after each Tick. Includes the game status.\n```"
+            [
+              [
+                [
+                  [
+                    [
+                      [
+                        "filename=Server_Requirements.md\n```\n# Server Requirements\n\n1. SR1: The server should be implemented in Python 3, with Async IO, aiohttp serving SnakeClient.html, and connect via websockets.\n2. SR2: The server should maintain a game_board, a 100 x 100 2D character representation of the playing ground.\n3. SR3: The server should keep the game_board up to date with the values of Snakes and Foods.\n4. SR4: The server should implement the game as Ticks (5 per second).\n5. SR5: The server should move each snake whose direction is not 'Stop' during each Tick.\n6. SR6: The server should check for collisions by checking the value of the character in the game_board at position (x, y).\n7. SR7: The server should handle snake death and reset the client.\n8. SR8: The server should send GameStatus to all connected Clients after each Tick.\n9. SR9: The server should handle \"Joining\" message from clients.\n10. SR10: The server should handle websocket disconnection from clients.\n11. SR11: The server should start a HTTP Server that serves the file SnakeClient.html at startup.\n```\n\nfilename=Client_Requirements.md\n```\n# Client Requirements\n\n1. CR1: The client should be implemented in HTML, CSS, and JavaScript.\n2. CR2: The client should display a GameBoard, a 2D 100 x 100 character array with default character \" \".\n3. CR3: The client should display a client list in a status bar at the bottom of the window.\n4. CR4: The client should prompt the user for a username at initialization.\n5. CR5: The client should connect via websocket at initialization.\n6. CR6: The client should send a \"Joining\" message (which includes the username) at initialization.\n7. CR7: The client should detect arrow keys and send \"DirectionChange\" message with 'Up', 'Down', 'Left', or 'Right'.\n8. CR8: The client should handle \"SnakeDied\" message from the server.\n9. CR9: The client should handle \"GameStatus\" message from the server.\n```\n\nfilename=Messages.md\n```\n# Messages\n\n1. \"Joining\" message: Sent by the client to the server at initialization. Includes the username.\n2. \"DirectionChange\" message: Sent by the client to the server when an arrow key is detected. Includes the direction ('Up', 'Down', 'Left', or 'Right').\n3. \"SnakeDied\" message: Sent by the server to the client when the snake dies.\n4. \"GameStatus\" message: Sent by the server to all connected clients after each Tick. Includes the game status.\n```"
+                      ]
+                    ]
+                  ]
+                ]
+              ]
+            ]
+          ]
+        },
+        "files": {
+          "Server_Requirements.md": "# Server Requirements\n\n1. SR1: The server should be implemented in Python 3, with Async IO, aiohttp serving SnakeClient.html, and connect via websockets.\n2. SR2: The server should maintain a game_board, a 100 x 100 2D character representation of the playing ground.\n3. SR3: The server should keep the game_board up to date with the values of Snakes and Foods.\n4. SR4: The server should implement the game as Ticks (5 per second).\n5. SR5: The server should move each snake whose direction is not 'Stop' during each Tick.\n6. SR6: The server should check for collisions by checking the value of the character in the game_board at position (x, y).\n7. SR7: The server should handle snake death and reset the client.\n8. SR8: The server should send GameStatus to all connected Clients after each Tick.\n9. SR9: The server should handle \"Joining\" message from clients.\n10. SR10: The server should handle websocket disconnection from clients.\n11. SR11: The server should start a HTTP Server that serves the file SnakeClient.html at startup.",
+          "Client_Requirements.md": "# Client Requirements\n\n1. CR1: The client should be implemented in HTML, CSS, and JavaScript.\n2. CR2: The client should display a GameBoard, a 2D 100 x 100 character array with default character \" \".\n3. CR3: The client should display a client list in a status bar at the bottom of the window.\n4. CR4: The client should prompt the user for a username at initialization.\n5. CR5: The client should connect via websocket at initialization.\n6. CR6: The client should send a \"Joining\" message (which includes the username) at initialization.\n7. CR7: The client should detect arrow keys and send \"DirectionChange\" message with 'Up', 'Down', 'Left', or 'Right'.\n8. CR8: The client should handle \"SnakeDied\" message from the server.\n9. CR9: The client should handle \"GameStatus\" message from the server.",
+          "Messages.md": "# Messages\n\n1. \"Joining\" message: Sent by the client to the server at initialization. Includes the username.\n2. \"DirectionChange\" message: Sent by the client to the server when an arrow key is detected. Includes the direction ('Up', 'Down', 'Left', or 'Right').\n3. \"SnakeDied\" message: Sent by the server to the client when the snake dies.\n4. \"GameStatus\" message: Sent by the server to all connected clients after each Tick. Includes the game status."
+        },
+        "e_stats": {
+          "prompt_tokens": 1369,
+          "completion_tokens": 585,
+          "total_tokens": 1954,
+          "sp_cost": 0.041069999999999995,
+          "sc_cost": 0.0351,
+          "s_total": 0.07616999999999999,
+          "elapsed_time": 49.183696269989014
+        }
+      }
+    }
+  ],
+  "Snake6": [
+    {
+      "py/object": "KbServerApp.step.Step",
+      "proto": null,
+      "name": "Make Requirements",
+      "prompt_name": "Snake6/Prompts/Make Requirements.pe",
+      "verify_prompt": "",
+      "storage_path": "Snake6/Planning",
+      "text_file": "Make Requirements Log.md",
+      "file_process_enabled": false,
+      "file_process_name": "",
+      "file_glob": "",
+      "macros": {},
+      "ai": {
+        "py/object": "KbServerApp.ai.AI",
+        "temperature": 0.0,
+        "max_tokens": 5000,
+        "model": "gpt-4",
+        "mode": "chat",
+        "messages": [
+          {
+            "role": "system",
+            "content": "\nYou are an AI Engineer, programming a prompt for Chat GPT\nDo not explain yourself.\nDo not apologize.\nComplete the tasks given in a way that is optimized for Chat GPT's easy comprehension while not leaving anything out.\nAll answers will be in MarkDown and/or Python 3."
+          },
+          {
+            "role": "user",
+            "content": "\n\n# Game constants\nBOARD_SIZE = 100\nSNAKE_CHARACTERS = [\"\ud83d\udd34\", \"\ud83d\udd35\", \"\ud83d\udfe0\", \"\ud83d\udfe1\", \"\ud83d\udfe2\", \"\ud83d\udfe3\", \"\ud83d\udfe4\"]\nFOOD_CHAR = \"\ud83c\udf4e\"\nFOOD_COUNT = 5\nDIRECTION = {\"Stop\": (0, 0), \"Up\": (0,\u22121), \"Down\": (0,1), \"Left\": (\u22121,0), \"Right\": (1,0) }\n\n\nGameStatus = {\n    \"game_board\": \" \" * (BOARD_SIZE * BOARD_SIZE),  # (100 strings of 100 spaces)\n    \"free_snake_chars\": [\"\ud83d\udd34\", \"\ud83d\udd35\", \"\ud83d\udfe0\", \"\ud83d\udfe1\", \"\ud83d\udfe2\", \"\ud83d\udfe3\", \"\ud83d\udfe4\"],\n    \"foods\": [(50, 2), (5, 20), (34, 12), (50, 2), (12, 98)],\n    \"clients\": {\n      websocket1: {\"name\": \"Jerry\", \"char\": \"\ud83d\udd34\", \"snake\": [(5, 3), (5, 4), (6, 4)], \"score\": 127, \"direction\": \"Up\"},\n      websocket2: {\"name\": \"Tom\", \"char\": \"\ud83d\udd35\", \"snake\": [(6, 12), (6, 13), (6, 14)], \"score\": 27, \"direction\": \"Left\"}\n    }\n}"
+          },
+          {
+            "role": "user",
+            "content": "\nThe Server side of a multi user \"Snake\" online game.\nServer is SnaekServer.py\n    Architecture: python 3, with Async IO, aiohttp serving SnakeClient.html, and connect via websockets\n    The game_board (a 100 x 100 2d character representation of the playing ground) is kept up to date\n    with the values of Snakes and Foods; Therefor you can check for collisions by checking the value of\n    the character in the game_board at position (x, y).\n\nTicks Logic:\n    The game is implemented as Ticks (5 per second).\n    Tick:\n        1. move each snake who's direction is not 'Stop':\n            new_head = head of snake + snake direction.\n\n            if new_head x or y are not in bounds: Snake_Dies\n            if game_board at new_head is a snake character: Snake_Dies.\n\n            if game_board at new_head is a food:\n                - game_board at new_head draw client char\n                - push new_head (x, y) onto front of snake\n                - remove new_head from foods.\n                - find a random (fx, fy) that is Space, add it to foods, and draw food char.\n                - add 100 to snake score.\n\n            if game_board at new_head is Space:\n                - game_board at new_head draw client char\n                - push new_head (x, y) onto front of snake\n                - pop last position from snake as tail.\n                - game_board at tail draw space\n                - add 1 to snake score\n\n        2. Send GameStatus to all connected Clients.\n\nSnake_Dies:\n    - Send SnakeDied message to client.\n    - erase client snake from the board.\n    - Do Reset_A_Client:\n\nReset_A_Client:\n    - new snake head is at random position so new snake is [(x, y), (x, y+1), (x, y+2)]\n        if game_board at each [(x, y), (x, y+1), (x, y+2)] == space\n            set client snake to new snake\n    - draw Client snake on game_board\n    - the Client score is set to zero\n    - the Client direction is set to \"Stop\"\n\nWhen Server receives \"Joining\":\n    - if free_snake_chars is empty then close websocket\n    - take a char from free_snake_chars and assign it to the Client as 'char'.\n    - the client['username']= username\n    - Do Reset_A_Client.\n\nServer When websocket disconnect:\n    - return Client char to game_state free_snake_chars.\n    - erase client snake from game_board\n    - del game_status['clients'][websocket]\n\nServer At Startup:\n    - At startup The Server will start a HTTP Server that serves the file SnakeClient.html\n"
+          },
+          {
+            "role": "user",
+            "content": "\nimplement the client of a multi user \"Snake\" online game.\nThe Client part is a single file containing html, css, and javascript called SnakeClient.html\n\nClient Architecture: html, css, javascript, websockets\n\nDisplay Artifacts:\n    GameBoard:\n        The GameBoard is a 2d 100 x 100 character array with default character \" \".\n        The Board needs a frame.\n        The Board needs to be resizable, the characters displayed in board need to be resized with board.\n\n    Client List:\n        The client list is displayed in a status bar at bottom of window.\n        display \"{client.char}{client.username}:{client.score} \" for each client in game_status.clients\n            for example: \"\ud83d\udd34Jerry:150  \ud83d\udd35Tom:423\"\n\nClient initialization:\n    - the Client prompts the user for a username.\n    - the Client connects via websocket\n    - the Client sends a \"Joining\" message (which includes the username).\n\nClient detects arrow keys:\n    - it sends \"DirectionChange\" message with 'Up', 'Down', 'Left', or 'Right', which starts the client.\n\nClient receives SnakeDied:\n     - client shows pop-up dialog.\n\nClient receives GameStatus:\n    - replace GameBoard and Client List with values from message"
+          },
+          {
+            "role": "system",
+            "content": "\nWhen you see (Output filename=filename.ext) you are being asked to output \nthe file in the following format.\n\n```filename=filename.ext\nfile contents\n```"
+          },
+          {
+            "role": "user",
+            "content": "\nRead the application description provided.\nRewrite the description into a requirements list.\nGive each requirement a unique id.\nGroup requirements by Server (output filename=Server_Requirements.md) and Client Requirements (output filename=Client_Requirements.md).\nThen List all messages with thier senders receivers (output filename=Messages.md).\n"
+          }
+        ],
+        "answer": {
+          "py/tuple": [
+            [
+              [
+                [
+                  "filename=Server_Requirements.md\n```\n# Server Requirements\n\n1. SR1: The server should be implemented in Python 3, with Async IO, aiohttp serving SnakeClient.html, and connect via websockets.\n2. SR2: The server should maintain a game_board, a 100 x 100 2D character representation of the playing ground.\n3. SR3: The server should keep the game_board up to date with the values of Snakes and Foods.\n4. SR4: The server should implement the game as Ticks (5 per second).\n5. SR5: The server should move each snake whose direction is not 'Stop' during each Tick.\n6. SR6: The server should check for collisions by checking the value of the character in the game_board at position (x, y).\n7. SR7: The server should handle snake death and reset the client.\n8. SR8: The server should send GameStatus to all connected Clients after each Tick.\n9. SR9: The server should handle \"Joining\" message from clients.\n10. SR10: The server should handle websocket disconnection from clients.\n11. SR11: The server should start a HTTP Server that serves the file SnakeClient.html at startup.\n```\n\nfilename=Client_Requirements.md\n```\n# Client Requirements\n\n1. CR1: The client should be implemented in HTML, CSS, and JavaScript.\n2. CR2: The client should display a GameBoard, a 2D 100 x 100 character array with default character \" \".\n3. CR3: The client should display a client list in a status bar at the bottom of the window.\n4. CR4: The client should prompt the user for a username at initialization.\n5. CR5: The client should connect via websocket at initialization.\n6. CR6: The client should send a \"Joining\" message (which includes the username) at initialization.\n7. CR7: The client should detect arrow keys and send \"DirectionChange\" message with 'Up', 'Down', 'Left', or 'Right'.\n8. CR8: The client should handle \"SnakeDied\" message from the server.\n9. CR9: The client should handle \"GameStatus\" message from the server.\n```\n\nfilename=Messages.md\n```\n# Messages\n\n1. \"Joining\" message: Sent by the client to the server at initialization. Includes the username.\n2. \"DirectionChange\" message: Sent by the client to the server when an arrow key is detected. Includes the direction ('Up', 'Down', 'Left', or 'Right').\n3. \"SnakeDied\" message: Sent by the server to the client when the snake dies.\n4. \"GameStatus\" message: Sent by the server to all connected clients after each Tick. Includes the game status.\n```"
+                ]
+              ]
+            ]
           ]
         },
         "files": {
@@ -66,11 +152,56 @@
     },
     {
       "py/object": "KbServerApp.step.Step",
-      "name": "Expand Server Requirements",
-      "prompt_name": "Snake6/Prompts/Expand Server Requirements.pe",
+      "proto": null,
+      "name": "Make Server Implementation Plan",
+      "prompt_name": "Snake6/Prompts/Make Server Implementation Plan.pe",
       "verify_prompt": "",
-      "storage_path": "Snake6/Dynamic/Planning",
-      "text_file": "Expand Server Requirements Log.md",
+      "storage_path": "Snake6/Planning",
+      "text_file": "Make Server Implementation Plan Log.md",
+      "file_process_enabled": false,
+      "file_process_name": "",
+      "file_glob": "",
+      "macros": {},
+      "ai": {
+        "py/object": "KbServerApp.ai.AI",
+        "temperature": 0.0,
+        "max_tokens": 5000,
+        "model": "gpt-4",
+        "mode": "chat",
+        "messages": [],
+        "answer": {
+          "py/tuple": [
+            [
+              [
+                [
+                  [
+                    ""
+                  ]
+                ]
+              ]
+            ]
+          ]
+        },
+        "files": {},
+        "e_stats": {
+          "prompt_tokens": 0,
+          "completion_tokens": 0,
+          "total_tokens": 0,
+          "sp_cost": 0.0,
+          "sc_cost": 0.0,
+          "s_total": 0.0,
+          "elapsed_time": 0.0
+        }
+      }
+    },
+    {
+      "py/object": "KbServerApp.step.Step",
+      "proto": null,
+      "name": "Make SnakeServer",
+      "prompt_name": "Snake6/Prompts/Make SnakeServer.pe",
+      "verify_prompt": "",
+      "storage_path": "Snake6/Planning",
+      "text_file": "Make SnakeServer Log.md",
       "file_process_enabled": false,
       "file_process_name": "",
       "file_glob": "",
@@ -103,11 +234,12 @@
     },
     {
       "py/object": "KbServerApp.step.Step",
-      "name": "Complete Expanded Server Requirements",
-      "prompt_name": "Snake6/Prompts/Complete Expanded Server Requirements.pe",
+      "proto": null,
+      "name": "Make Client Implementation Plan",
+      "prompt_name": "Snake6/Prompts/Make Client Implementation Plan.pe",
       "verify_prompt": "",
-      "storage_path": "Snake6/Dynamic/Planning",
-      "text_file": "Complete_Expanded_Server_Requirements_log.md",
+      "storage_path": "Snake6/Planning",
+      "text_file": "Make Client Implementation Plan Log.md",
       "file_process_enabled": false,
       "file_process_name": "",
       "file_glob": "",
@@ -142,63 +274,12 @@
     },
     {
       "py/object": "KbServerApp.step.Step",
-      "name": "Make Message Protocol",
-      "prompt_name": "Snake6/Prompts/Make Message Protocol.pe",
+      "proto": null,
+      "name": "Make SnakeClient",
+      "prompt_name": "Snake6/Prompts/Make SnakeClient.pe",
       "verify_prompt": "",
-      "storage_path": "Snake6/Dynamic/Planning",
-      "text_file": "Message Protocol Log.md",
-      "file_process_enabled": false,
-      "file_process_name": "",
-      "file_glob": "",
-      "macros": {},
-      "ai": {
-        "py/object": "KbServerApp.ai.AI",
-        "temperature": 0.0,
-        "max_tokens": 3000,
-        "model": "gpt-4",
-        "mode": "chat",
-        "messages": [
-          {
-            "role": "system",
-            "content": "\nYou are an AI Engineer, programming a prompt for Chat GPT\nDo not explain yourself.\nDo not apologize.\nComplete the tasks given in a way that is optimized for Chat GPT's easy comprehension while not leaving anything out.\nAll answers will be in MarkDown and/or Python 3."
-          },
-          {
-            "role": "user",
-            "content": "\n\n# Game constants\nBOARD_SIZE = 100\nSNAKE_CHARACTERS = [\"\ud83d\udd34\", \"\ud83d\udd35\", \"\ud83d\udfe0\", \"\ud83d\udfe1\", \"\ud83d\udfe2\", \"\ud83d\udfe3\", \"\ud83d\udfe4\"]\nFOOD_CHAR = \"\ud83c\udf4e\"\nFOOD_COUNT = 5\nDIRECTION = {\"Stop\": (0, 0), \"Up\": (0,\u22121), \"Down\": (0,1), \"Left\": (\u22121,0), \"Right\": (1,0) }\n\n\nGameStatus = {\n    \"game_board\": \" \" * (BOARD_SIZE * BOARD_SIZE),  # (100 strings of 100 spaces)\n    \"free_snake_chars\": [\"\ud83d\udd34\", \"\ud83d\udd35\", \"\ud83d\udfe0\", \"\ud83d\udfe1\", \"\ud83d\udfe2\", \"\ud83d\udfe3\", \"\ud83d\udfe4\"],\n    \"foods\": [(50, 2), (5, 20), (34, 12), (50, 2), (12, 98)],\n    \"clients\": {\n      websocket1: {\"name\": \"Jerry\", \"char\": \"\ud83d\udd34\", \"snake\": [(5, 3), (5, 4), (6, 4)], \"score\": 127, \"direction\": \"Up\"},\n      websocket2: {\"name\": \"Tom\", \"char\": \"\ud83d\udd35\", \"snake\": [(6, 12), (6, 13), (6, 14)], \"score\": 27, \"direction\": \"Left\"}\n    }\n}"
-          },
-          {
-            "role": "user",
-            "content": "\nThe Server side of a multi user \"Snake\" online game.\nServer is SnaekServer.py\n    Architecture: python 3, with Async IO, aiohttp serving SnakeClient.html, and connect via websockets\n    The game_board (a 100 x 100 2d character representation of the playing ground) is kept up to date\n    with the values of Snakes and Foods; Therefor you can check for collisions by checking the value of\n    the character in the game_board at position (x, y).\n\nTicks Logic:\n    The game is implemented as Ticks (5 per second).\n    Tick:\n        1. move each snake who's direction is not 'Stop':\n            new_head = head of snake + snake direction.\n\n            if new_head x or y are not in bounds: Snake_Dies\n            if game_board at new_head is a snake character: Snake_Dies.\n\n            if game_board at new_head is a food:\n                - game_board at new_head draw client char\n                - push new_head (x, y) onto front of snake\n                - remove new_head from foods.\n                - find a random (fx, fy) that is Space, add it to foods, and draw food char.\n                - add 100 to snake score.\n\n            if game_board at new_head is Space:\n                - game_board at new_head draw client char\n                - push new_head (x, y) onto front of snake\n                - pop last position from snake as tail.\n                - game_board at tail draw space\n                - add 1 to snake score\n\n        2. Send GameStatus to all connected Clients.\n\nSnake_Dies:\n    - Send SnakeDied message to client.\n    - erase client snake from the board.\n    - Do Reset_A_Client:\n\nReset_A_Client:\n    - new snake head is at random position so new snake is [(x, y), (x, y+1), (x, y+2)]\n        if game_board at each [(x, y), (x, y+1), (x, y+2)] == space\n            set client snake to new snake\n    - draw Client snake on game_board\n    - the Client score is set to zero\n    - the Client direction is set to \"Stop\"\n\nWhen Server receives \"Joining\":\n    - if free_snake_chars is empty then close websocket\n    - take a char from free_snake_chars and assign it to the Client as 'char'.\n    - the client['username']= username\n    - Do Reset_A_Client.\n\nServer When websocket disconnect:\n    - return Client char to game_state free_snake_chars.\n    - erase client snake from game_board\n    - del game_status['clients'][websocket]\n\nServer At Startup:\n    - At startup The Server will start a HTTP Server that serves the file SnakeClient.html\n"
-          },
-          {
-            "role": "user",
-            "content": "\nimplement the client of a multi user \"Snake\" online game.\nThe Client part is a single file containing html, css, and javascript called SnakeClient.html\n\nClient Architecture: html, css, javascript, websockets\n\nDisplay Artifacts:\n    GameBoard:\n        The GameBoard is a 2d 100 x 100 character array with default character \" \".\n        The Board needs a frame.\n        The Board needs to be resizable, the characters displayed in board need to be resized with board.\n\n    Client List:\n        The client list is displayed in a status bar at bottom of window.\n        display \"{client.char}{client.username}:{client.score} \" for each client in game_status.clients\n            for example: \"\ud83d\udd34Jerry:150  \ud83d\udd35Tom:423\"\n\nClient initialization:\n    - the Client prompts the user for a username.\n    - the Client connects via websocket\n    - the Client sends a \"Joining\" message (which includes the username).\n\nClient detects arrow keys:\n    - it sends \"DirectionChange\" message with 'Up', 'Down', 'Left', or 'Right', which starts the client.\n\nClient receives SnakeDied:\n     - client shows pop-up dialog.\n\nClient receives GameStatus:\n    - replace GameBoard and Client List with values from message"
-          },
-          {
-            "role": "user",
-            "content": "\nRead the application description above.\nCreate a msg protocol based on json messages that will be usedby the application.  \nFor each message describe: \n- Sender, \n- Receiver, \n- purpose of message, and \n- Example of Message.\n--- Answer ---"
-          }
-        ],
-        "answer": "1. **Joining Message**\n    - Sender: Client\n    - Receiver: Server\n    - Purpose: To notify the server that a new client is joining the game.\n    - Example: `{\"type\": \"Joining\", \"username\": \"Jerry\"}`\n\n2. **DirectionChange Message**\n    - Sender: Client\n    - Receiver: Server\n    - Purpose: To notify the server about the change in direction of the client's snake.\n    - Example: `{\"type\": \"DirectionChange\", \"direction\": \"Up\"}`\n\n3. **GameStatus Message**\n    - Sender: Server\n    - Receiver: Client\n    - Purpose: To update the client about the current status of the game.\n    - Example: \n    ```\n    {\n        \"type\": \"GameStatus\",\n        \"game_board\": \" \" * (BOARD_SIZE * BOARD_SIZE),\n        \"clients\": {\n            \"websocket1\": {\"name\": \"Jerry\", \"char\": \"\ud83d\udd34\", \"snake\": [(5, 3), (5, 4), (6, 4)], \"score\": 127, \"direction\": \"Up\"},\n            \"websocket2\": {\"name\": \"Tom\", \"char\": \"\ud83d\udd35\", \"snake\": [(6, 12), (6, 13), (6, 14)], \"score\": 27, \"direction\": \"Left\"}\n        }\n    }\n    ```\n\n4. **SnakeDied Message**\n    - Sender: Server\n    - Receiver: Client\n    - Purpose: To notify the client that their snake has died.\n    - Example: `{\"type\": \"SnakeDied\", \"message\": \"Your snake has died!\"}`\n\n5. **Disconnect Message**\n    - Sender: Server\n    - Receiver: Client\n    - Purpose: To notify the client that they have been disconnected from the server.\n    - Example: `{\"type\": \"Disconnect\", \"message\": \"You have been disconnected from the server.\"}`\n\n6. **ResetClient Message**\n    - Sender: Server\n    - Receiver: Client\n    - Purpose: To reset the client's game state after their snake has died.\n    - Example: \n    ```\n    {\n        \"type\": \"ResetClient\",\n        \"snake\": [(x, y), (x, y+1), (x, y+2)],\n        \"score\": 0,\n        \"direction\": \"Stop\"\n    }\n    ```",
-        "files": {},
-        "e_stats": {
-          "prompt_tokens": 1318,
-          "completion_tokens": 509,
-          "total_tokens": 1827,
-          "sp_cost": 0.03954,
-          "sc_cost": 0.030539999999999998,
-          "s_total": 0.07008,
-          "elapsed_time": 35.36914396286011
-        }
-      }
-    },
-    {
-      "py/object": "KbServerApp.step.Step",
-      "name": "Make Implementation Plan",
-      "prompt_name": "Snake6/Prompts/Make Implementation Plan.pe",
-      "verify_prompt": "",
-      "storage_path": "Snake6/Dynamic/Planning",
-      "text_file": "Implementation Plan Log.md",
+      "storage_path": "Snake6/Planning",
+      "text_file": "Make SnakeClient Log.md",
       "file_process_enabled": false,
       "file_process_name": "",
       "file_glob": "",
@@ -209,118 +290,21 @@
         "max_tokens": 5000,
         "model": "gpt-4",
         "mode": "chat",
-        "messages": [
-          {
-            "role": "system",
-            "content": "\nYou are an AI Engineer, programming a prompt for Chat GPT\nDo not explain yourself.\nDo not apologize.\nComplete the tasks given in a way that is optimized for Chat GPT's easy comprehension while not leaving anything out.\nAll answers will be in MarkDown and/or Python 3."
-          },
-          {
-            "role": "system",
-            "content": "\nWhen asked to print a file use the following format:\n\n```filename=filename.ext\nfile contents\n```"
-          },
-          {
-            "role": "system",
-            "content": "\nWhen asked to print a file use the following format:\n\n```filename=filename.ext\nfile contents\n```"
-          },
-          {
-            "role": "user",
-            "content": "\nBelow you will find a description of a complex application.\nYou will read the description, developing an \"Implementation Plan\".\nThe Plan will allow Chat GPT to do the implementation in individual steps.\n"
-          },
-          {
-            "role": "user",
-            "content": "\n\n# Game constants\nBOARD_SIZE = 100\nSNAKE_CHARACTERS = [\"\ud83d\udd34\", \"\ud83d\udd35\", \"\ud83d\udfe0\", \"\ud83d\udfe1\", \"\ud83d\udfe2\", \"\ud83d\udfe3\", \"\ud83d\udfe4\"]\nFOOD_CHAR = \"\ud83c\udf4e\"\nFOOD_COUNT = 5\nDIRECTION = {\"Stop\": (0, 0), \"Up\": (0,\u22121), \"Down\": (0,1), \"Left\": (\u22121,0), \"Right\": (1,0) }\n\n\nGameStatus = {\n    \"game_board\": \" \" * (BOARD_SIZE * BOARD_SIZE),  # (100 strings of 100 spaces)\n    \"free_snake_chars\": [\"\ud83d\udd34\", \"\ud83d\udd35\", \"\ud83d\udfe0\", \"\ud83d\udfe1\", \"\ud83d\udfe2\", \"\ud83d\udfe3\", \"\ud83d\udfe4\"],\n    \"foods\": [(50, 2), (5, 20), (34, 12), (50, 2), (12, 98)],\n    \"clients\": {\n      websocket1: {\"name\": \"Jerry\", \"char\": \"\ud83d\udd34\", \"snake\": [(5, 3), (5, 4), (6, 4)], \"score\": 127, \"direction\": \"Up\"},\n      websocket2: {\"name\": \"Tom\", \"char\": \"\ud83d\udd35\", \"snake\": [(6, 12), (6, 13), (6, 14)], \"score\": 27, \"direction\": \"Left\"}\n    }\n}"
-          },
-          {
-            "role": "user",
-            "content": "\nThe Server side of a multi user \"Snake\" online game.\nServer is SnaekServer.py\n    Architecture: python 3, with Async IO, aiohttp serving SnakeClient.html, and connect via websockets\n    The game_board (a 100 x 100 2d character representation of the playing ground) is kept up to date\n    with the values of Snakes and Foods; Therefor you can check for collisions by checking the value of\n    the character in the game_board at position (x, y).\n\nTicks Logic:\n    The game is implemented as Ticks (5 per second).\n    Tick:\n        1. move each snake who's direction is not 'Stop':\n            new_head = head of snake + snake direction.\n\n            if new_head x or y are not in bounds: Snake_Dies\n            if game_board at new_head is a snake character: Snake_Dies.\n\n            if game_board at new_head is a food:\n                - game_board at new_head draw client char\n                - push new_head (x, y) onto front of snake\n                - remove new_head from foods.\n                - find a random (fx, fy) that is Space, add it to foods, and draw food char.\n                - add 100 to snake score.\n\n            if game_board at new_head is Space:\n                - game_board at new_head draw client char\n                - push new_head (x, y) onto front of snake\n                - pop last position from snake as tail.\n                - game_board at tail draw space\n                - add 1 to snake score\n\n        2. Send GameStatus to all connected Clients.\n\nSnake_Dies:\n    - Send SnakeDied message to client.\n    - erase client snake from the board.\n    - Do Reset_A_Client:\n\nReset_A_Client:\n    - new snake head is at random position so new snake is [(x, y), (x, y+1), (x, y+2)]\n        if game_board at each [(x, y), (x, y+1), (x, y+2)] == space\n            set client snake to new snake\n    - draw Client snake on game_board\n    - the Client score is set to zero\n    - the Client direction is set to \"Stop\"\n\nWhen Server receives \"Joining\":\n    - if free_snake_chars is empty then close websocket\n    - take a char from free_snake_chars and assign it to the Client as 'char'.\n    - the client['username']= username\n    - Do Reset_A_Client.\n\nServer When websocket disconnect:\n    - return Client char to game_state free_snake_chars.\n    - erase client snake from game_board\n    - del game_status['clients'][websocket]\n\nServer At Startup:\n    - At startup The Server will start a HTTP Server that serves the file SnakeClient.html\n"
-          },
-          {
-            "role": "user",
-            "content": "\nimplement the client of a multi user \"Snake\" online game.\nThe Client part is a single file containing html, css, and javascript called SnakeClient.html\n\nClient Architecture: html, css, javascript, websockets\n\nDisplay Artifacts:\n    GameBoard:\n        The GameBoard is a 2d 100 x 100 character array with default character \" \".\n        The Board needs a frame.\n        The Board needs to be resizable, the characters displayed in board need to be resized with board.\n\n    Client List:\n        The client list is displayed in a status bar at bottom of window.\n        display \"{client.char}{client.username}:{client.score} \" for each client in game_status.clients\n            for example: \"\ud83d\udd34Jerry:150  \ud83d\udd35Tom:423\"\n\nClient initialization:\n    - the Client prompts the user for a username.\n    - the Client connects via websocket\n    - the Client sends a \"Joining\" message (which includes the username).\n\nClient detects arrow keys:\n    - it sends \"DirectionChange\" message with 'Up', 'Down', 'Left', or 'Right', which starts the client.\n\nClient receives SnakeDied:\n     - client shows pop-up dialog.\n\nClient receives GameStatus:\n    - replace GameBoard and Client List with values from message"
-          },
-          {
-            "role": "user",
-            "content": "\nPrint Implementation Plan\n"
-          }
-        ],
+        "messages": [],
         "answer": {
           "py/tuple": [
-            "# Implementation Plan\n\n## Server Side (SnakeServer.py)\n\n1. **Setup the server:**\n    - Import necessary libraries (aiohttp, asyncio, websockets).\n    - Define the game constants and initial game status.\n    - Start an HTTP server that serves the file SnakeClient.html.\n\n2. **Handle client connections:**\n    - When a websocket connection is established, wait for a \"Joining\" message from the client.\n    - If there are no free snake characters, close the websocket. Otherwise, assign a character to the client and update the game status.\n\n3. **Handle client disconnections:**\n    - When a websocket disconnects, return the client's character to the game state, erase the client's snake from the game board, and remove the client from the game status.\n\n4. **Implement game logic:**\n    - Implement the \"Tick\" logic, which moves each snake according to its direction, checks for collisions, updates scores, and handles food consumption.\n    - Implement the \"Snake_Dies\" logic, which sends a \"SnakeDied\" message to the client, erases the snake from the board, and resets the client.\n    - Implement the \"Reset_A_Client\" logic, which generates a new snake for the client, draws it on the game board, and resets the client's score and direction.\n\n5. **Send game updates:**\n    - After each \"Tick\", send the updated game status to all connected clients.\n\n## Client Side (SnakeClient.html)\n\n1. **Setup the client:**\n    - Create the HTML structure for the game board and client list.\n    - Style the game board and client list using CSS.\n    - Connect to the server via websocket using JavaScript.\n\n2. **Handle user input:**\n    - Prompt the user for a username and send a \"Joining\" message to the server.\n    - Detect arrow key presses and send \"DirectionChange\" messages to the server.\n\n3. **Handle server messages:**\n    - When a \"SnakeDied\" message is received, show a pop-up dialog.\n    - When a \"GameStatus\" message is received, update the game board and client list.\n\n4. **Resize the game board:**\n    - Implement a function to resize the game board and its characters when the window size changes."
+            ""
           ]
         },
         "files": {},
         "e_stats": {
-          "prompt_tokens": 1365,
-          "completion_tokens": 472,
-          "total_tokens": 1837,
-          "sp_cost": 0.04095,
-          "sc_cost": 0.028319999999999998,
-          "s_total": 0.06927,
-          "elapsed_time": 39.940160274505615
-        }
-      }
-    },
-    {
-      "py/object": "KbServerApp.step.Step",
-      "name": "Expand Implementation Plan",
-      "prompt_name": "Snake6/Prompts/Expand Implementation Plan.pe",
-      "verify_prompt": "",
-      "storage_path": "Snake6/Dynamic/Planning",
-      "text_file": "Expanded Implementation Plan.md",
-      "file_process_enabled": false,
-      "file_process_name": "",
-      "file_glob": "",
-      "macros": {},
-      "ai": {
-        "py/object": "KbServerApp.ai.AI",
-        "temperature": 0.0,
-        "max_tokens": 5000,
-        "model": "gpt-4",
-        "mode": "chat",
-        "messages": [
-          {
-            "role": "system",
-            "content": "\nYou are an AI Engineer, programming a prompt for Chat GPT\nDo not explain yourself.\nDo not apologize.\nComplete the tasks given in a way that is optimized for Chat GPT's easy comprehension while not leaving anything out.\nAll answers will be in MarkDown and/or Python 3."
-          },
-          {
-            "role": "system",
-            "content": "\nWhen asked to print a file use the following format:\n\n```filename=filename.ext\nfile contents\n```"
-          },
-          {
-            "role": "user",
-            "content": "\n\n# Game constants\nBOARD_SIZE = 100\nSNAKE_CHARACTERS = [\"\ud83d\udd34\", \"\ud83d\udd35\", \"\ud83d\udfe0\", \"\ud83d\udfe1\", \"\ud83d\udfe2\", \"\ud83d\udfe3\", \"\ud83d\udfe4\"]\nFOOD_CHAR = \"\ud83c\udf4e\"\nFOOD_COUNT = 5\nDIRECTION = {\"Stop\": (0, 0), \"Up\": (0,\u22121), \"Down\": (0,1), \"Left\": (\u22121,0), \"Right\": (1,0) }\n\n\nGameStatus = {\n    \"game_board\": \" \" * (BOARD_SIZE * BOARD_SIZE),  # (100 strings of 100 spaces)\n    \"free_snake_chars\": [\"\ud83d\udd34\", \"\ud83d\udd35\", \"\ud83d\udfe0\", \"\ud83d\udfe1\", \"\ud83d\udfe2\", \"\ud83d\udfe3\", \"\ud83d\udfe4\"],\n    \"foods\": [(50, 2), (5, 20), (34, 12), (50, 2), (12, 98)],\n    \"clients\": {\n      websocket1: {\"name\": \"Jerry\", \"char\": \"\ud83d\udd34\", \"snake\": [(5, 3), (5, 4), (6, 4)], \"score\": 127, \"direction\": \"Up\"},\n      websocket2: {\"name\": \"Tom\", \"char\": \"\ud83d\udd35\", \"snake\": [(6, 12), (6, 13), (6, 14)], \"score\": 27, \"direction\": \"Left\"}\n    }\n}"
-          },
-          {
-            "role": "user",
-            "content": "\nThe Server side of a multi user \"Snake\" online game.\nServer is SnaekServer.py\n    Architecture: python 3, with Async IO, aiohttp serving SnakeClient.html, and connect via websockets\n    The game_board (a 100 x 100 2d character representation of the playing ground) is kept up to date\n    with the values of Snakes and Foods; Therefor you can check for collisions by checking the value of\n    the character in the game_board at position (x, y).\n\nTicks Logic:\n    The game is implemented as Ticks (5 per second).\n    Tick:\n        1. move each snake who's direction is not 'Stop':\n            new_head = head of snake + snake direction.\n\n            if new_head x or y are not in bounds: Snake_Dies\n            if game_board at new_head is a snake character: Snake_Dies.\n\n            if game_board at new_head is a food:\n                - game_board at new_head draw client char\n                - push new_head (x, y) onto front of snake\n                - remove new_head from foods.\n                - find a random (fx, fy) that is Space, add it to foods, and draw food char.\n                - add 100 to snake score.\n\n            if game_board at new_head is Space:\n                - game_board at new_head draw client char\n                - push new_head (x, y) onto front of snake\n                - pop last position from snake as tail.\n                - game_board at tail draw space\n                - add 1 to snake score\n\n        2. Send GameStatus to all connected Clients.\n\nSnake_Dies:\n    - Send SnakeDied message to client.\n    - erase client snake from the board.\n    - Do Reset_A_Client:\n\nReset_A_Client:\n    - new snake head is at random position so new snake is [(x, y), (x, y+1), (x, y+2)]\n        if game_board at each [(x, y), (x, y+1), (x, y+2)] == space\n            set client snake to new snake\n    - draw Client snake on game_board\n    - the Client score is set to zero\n    - the Client direction is set to \"Stop\"\n\nWhen Server receives \"Joining\":\n    - if free_snake_chars is empty then close websocket\n    - take a char from free_snake_chars and assign it to the Client as 'char'.\n    - the client['username']= username\n    - Do Reset_A_Client.\n\nServer When websocket disconnect:\n    - return Client char to game_state free_snake_chars.\n    - erase client snake from game_board\n    - del game_status['clients'][websocket]\n\nServer At Startup:\n    - At startup The Server will start a HTTP Server that serves the file SnakeClient.html\n"
-          },
-          {
-            "role": "user",
-            "content": "\nimplement the client of a multi user \"Snake\" online game.\nThe Client part is a single file containing html, css, and javascript called SnakeClient.html\n\nClient Architecture: html, css, javascript, websockets\n\nDisplay Artifacts:\n    GameBoard:\n        The GameBoard is a 2d 100 x 100 character array with default character \" \".\n        The Board needs a frame.\n        The Board needs to be resizable, the characters displayed in board need to be resized with board.\n\n    Client List:\n        The client list is displayed in a status bar at bottom of window.\n        display \"{client.char}{client.username}:{client.score} \" for each client in game_status.clients\n            for example: \"\ud83d\udd34Jerry:150  \ud83d\udd35Tom:423\"\n\nClient initialization:\n    - the Client prompts the user for a username.\n    - the Client connects via websocket\n    - the Client sends a \"Joining\" message (which includes the username).\n\nClient detects arrow keys:\n    - it sends \"DirectionChange\" message with 'Up', 'Down', 'Left', or 'Right', which starts the client.\n\nClient receives SnakeDied:\n     - client shows pop-up dialog.\n\nClient receives GameStatus:\n    - replace GameBoard and Client List with values from message"
-          },
-          {
-            "role": "user",
-            "content": "\nRead the description above. \nI will now give you a implementation Plan which you are to expand upon.\nList each step as a Header.  \nIn each step list all information required to implement the step:\n- Be sure to include calling formats, \n- Message descriptions, \n- as well as documentaiton the purpose of each routine to be written.\n\nKeep a carefull eye to the interfacing of all routines and objects and the information flow.\n"
-          },
-          {
-            "role": "user",
-            "content": "\n# Implementation Plan\n\n## Server Side (SnakeServer.py)\n\n1. **Setup the server:**\n    - Import necessary libraries (aiohttp, asyncio, websockets).\n    - Define the game constants and initial game status.\n    - Start an HTTP server that serves the file SnakeClient.html.\n\n2. **Handle client connections:**\n    - When a websocket connection is established, wait for a \"Joining\" message from the client.\n    - If there are no free snake characters, close the websocket. Otherwise, assign a character to the client and update the game status.\n\n3. **Handle client disconnections:**\n    - When a websocket disconnects, return the client's character to the game state, erase the client's snake from the game board, and remove the client from the game status.\n\n4. **Implement game logic:**\n    - Implement the \"Tick\" logic, which moves each snake according to its direction, checks for collisions, updates scores, and handles food consumption.\n    - Implement the \"Snake_Dies\" logic, which sends a \"SnakeDied\" message to the client, erases the snake from the board, and resets the client.\n    - Implement the \"Reset_A_Client\" logic, which generates a new snake for the client, draws it on the game board, and resets the client's score and direction.\n\n5. **Send game updates:**\n    - After each \"Tick\", send the updated game status to all connected clients.\n\n## Client Side (SnakeClient.html)\n\n1. **Setup the client:**\n    - Create the HTML structure for the game board and client list.\n    - Style the game board and client list using CSS.\n    - Connect to the server via websocket using JavaScript.\n\n2. **Handle user input:**\n    - Prompt the user for a username and send a \"Joining\" message to the server.\n    - Detect arrow key presses and send \"DirectionChange\" messages to the server.\n\n3. **Handle server messages:**\n    - When a \"SnakeDied\" message is received, show a pop-up dialog.\n    - When a \"GameStatus\" message is received, update the game board and client list.\n\n4. **Resize the game board:**\n    - Implement a function to resize the game board and its characters when the window size changes."
-          },
-          {
-            "role": "user",
-            "content": "\nPrint \"Expanded Implementation Plan.md\"\n"
-          }
-        ],
-        "answer": "```filename=Expanded Implementation Plan.md\n# Expanded Implementation Plan\n\n## Server Side (SnakeServer.py)\n\n### 1. Setup the server:\n- Import necessary libraries: aiohttp for HTTP server, asyncio for asynchronous I/O, and websockets for WebSocket communication.\n- Define the game constants and initial game status as global variables.\n- Start an HTTP server that serves the file SnakeClient.html to clients.\n\n### 2. Handle client connections:\n- When a websocket connection is established, wait for a \"Joining\" message from the client. The \"Joining\" message should contain the client's username.\n- If the list of free snake characters is empty, close the websocket connection. Otherwise, assign a character to the client, update the game status to include the new client, and perform the \"Reset_A_Client\" operation.\n\n### 3. Handle client disconnections:\n- When a websocket disconnects, return the client's character to the list of free snake characters, erase the client's snake from the game board, and remove the client from the game status.\n\n### 4. Implement game logic:\n- Implement the \"Tick\" logic, which is executed five times per second. This logic moves each snake according to its direction, checks for collisions with the board edges or other snakes, updates scores, and handles food consumption.\n- Implement the \"Snake_Dies\" logic, which is triggered when a snake collides with the board edge or another snake. This logic sends a \"SnakeDied\" message to the client, erases the snake from the board, and performs the \"Reset_A_Client\" operation.\n- Implement the \"Reset_A_Client\" logic, which is used when a client joins the game or when a snake dies. This logic generates a new snake for the client at a random position, draws it on the game board, and resets the client's score and direction to zero and \"Stop\", respectively.\n\n### 5. Send game updates:\n- After each \"Tick\", send the updated game status to all connected clients. The game status should include the game board, the list of foods, and the list of clients with their scores and directions.\n\n## Client Side (SnakeClient.html)\n\n### 1. Setup the client:\n- Create the HTML structure for the game board and client list. The game board should be a 2D array of characters, and the client list should be a status bar at the bottom of the window.\n- Style the game board and client list using CSS. The game board should have a frame, and both the game board and client list should be resizable.\n- Connect to the server via websocket using JavaScript.\n\n### 2. Handle user input:\n- Prompt the user for a username and send a \"Joining\" message to the server. The \"Joining\" message should contain the username.\n- Detect arrow key presses and send \"DirectionChange\" messages to the server. The \"DirectionChange\" message should contain the new direction (\"Up\", \"Down\", \"Left\", or \"Right\").\n\n### 3. Handle server messages:\n- When a \"SnakeDied\" message is received, show a pop-up dialog to inform the user that their snake has died.\n- When a \"GameStatus\" message is received, update the game board and client list with the new information.\n\n### 4. Resize the game board:\n- Implement a function to resize the game board and its characters when the window size changes. This function should ensure that the game board always fits within the window and that the characters are always visible.\n```",
-        "files": {},
-        "e_stats": {
-          "prompt_tokens": 1871,
-          "completion_tokens": 721,
-          "total_tokens": 2592,
-          "sp_cost": 0.05613,
-          "sc_cost": 0.04326,
-          "s_total": 0.09939,
-          "elapsed_time": 60.187966108322144
+          "prompt_tokens": 0,
+          "completion_tokens": 0,
+          "total_tokens": 0,
+          "sp_cost": 0.0,
+          "sc_cost": 0.0,
+          "s_total": 0.0,
+          "elapsed_time": 0.0
         }
       }
     }
