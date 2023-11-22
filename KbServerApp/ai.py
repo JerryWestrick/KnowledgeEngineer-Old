@@ -8,7 +8,6 @@ from dotenv import load_dotenv
 from twisted.internet import utils
 from twisted.internet.defer import inlineCallbacks, succeed
 from twisted.logger import Logger
-from twisted.plugins.twisted_reactors import asyncio
 
 from OpenAI_API_Costs import OpenAI_API_Costs
 from db import DB
@@ -134,9 +133,9 @@ class AI:
                 msg = stderr.decode()
         except Exception as err:
             self.log.error("Error while writing patch file for AI...{msg}", msg=msg)
-            msg = f"Exception applying patch_file {name}: {err}"
+            msg = f"Exception applying patch_file {patch_name}: {err}"
 
-        self.log.info("Patch<<{name} {msg}", name=name, msg=msg)
+        self.log.info("Patch<<{name} {msg}", name=patch_name, msg=msg)
 
         return {'role': 'function', 'name': 'patch_file', 'content': msg}
 
