@@ -2,20 +2,17 @@ from __future__ import annotations
 
 import json
 import os
-import time
-import traceback
-from json import JSONDecodeError
+from openai import AsyncOpenAI
 
-import openai
 from dotenv import load_dotenv
-from twisted.internet.defer import inlineCallbacks
+from twisted.internet import utils
+from twisted.internet.defer import inlineCallbacks, succeed
 from twisted.logger import Logger
+from twisted.plugins.twisted_reactors import asyncio
 
-import KbServerApp.colors
-
-from KbServerApp.OpenAI_API_Costs import OpenAI_API_Costs
-from KbServerApp.db import DB
-from KbServerApp.defered import as_deferred
+from OpenAI_API_Costs import OpenAI_API_Costs
+from db import DB
+from defered import as_deferred
 
 load_dotenv()
 
@@ -23,16 +20,21 @@ load_dotenv()
 class AI:
     log = Logger(namespace='AI')
     memory = DB('Memory')
+    # client = OpenAI()
+    # client.api_key = os.getenv('OPENAI_API_KEY')
+    # m = client.models.list()
+    # models = m.data
+    #
+    client = AsyncOpenAI()
+    client.api_key = os.getenv('OPENAI_API_KEY')
 
-    openai.api_key = os.getenv('OPENAI_API_KEY')
-    models = openai.Model.list()
 
-    @classmethod
-    def list_models(cls):
-        l: list[str] = []
-        for m in cls.models.data:
-            l.append(m['id'])
-        return l
+    # @classmethod
+    # def list_models(cls):
+    #     l: list[str] = []
+    #     for m in cls.models.data:
+    #         l.append(m['id'])
+    #     return l
 
     def __init__(self,
                  model: str = "gpt-4",
@@ -51,7 +53,7 @@ class AI:
         self.messages: [dict[str, str]] = messages
         if messages is None:
             self.messages = []
-        self.answer: str = answer,
+        self.answer: str = answer
         if answer is None:
             self.messages = []
 
@@ -72,47 +74,72 @@ class AI:
             }
 
         try:
-            openai.Model.retrieve(model)
-        except openai.InvalidRequestError as e:
+            AI.client.models.retrieve(model)
+        except Exception as e:
             AI.log.error(f"Error: {e}")
             AI.log.warn(
                 f"Model {model} not available for provided API key. Reverting "
-                "to text-davinci-003. Sign up for the GPT-4 wait list here: "
+                "to gpt-3.5-turbo. Sign up for the GPT-4 wait list here: "
                 "https://openai.com/waitlist/gpt-4-api"
             )
             self.model = "gpt-3.5-turbo"
 
         # GptLogger.log('SYSTEM', f"Using model {self.model} in mode {self.mode}")
 
-    def read_file(self, name: str) -> dict[str, str]:
+    @inlineCallbacks
+    def read_file(self, name: str):
 
         try:
             file_msgs = self.memory[name]
+
         except Exception as err:
             self.log.error("Error while reading file for AI...")
-            raise
+            result = yield succeed({'role': 'function', 'name': 'read_file', 'content': f'ERROR file not found: {name}'})
+            return result
+
         file_msg = file_msgs[0]
         file_contents = file_msg['content']
-        return {'role': 'function', 'name': 'read_file', 'content': file_contents}
+        result = yield succeed({'role': 'function', 'name': 'read_file', 'content': file_contents})
+        return result
 
-    def write_file(self, name: str, contents: str) -> dict[str, str]:
+    @inlineCallbacks
+    def write_file(self, name: str, contents: str):
         try:
             self.memory[name] = contents
         except Exception as err:
             self.log.error("Error while writing file for AI...")
             raise
         self.log.info("Writing<<{name}", name=name)
-        return {'role': 'function', 'name': 'write_file', 'content': 'Done.'}
+        result = yield succeed({'role': 'function', 'name': 'write_file', 'content': 'Done.'})
+        return result
 
-    # def check_python(self, name: str, contents: str) -> str:
-    #     try:
-    #         self.memory[name] = contents
-    #     except Exception as err:
-    #         self.log.error("Error while writing file for AI...")
-    #         raise
-    #     self.log.info("Writing<<{name}", name=name)
-    #     return {'role': 'function', 'name': 'write_file', 'content': 'Done.'}
-    #
+    @inlineCallbacks
+    def patch_file(self, file_name: str, patch_name: str, contents: str) -> dict[str, str]:
+        self.memory[patch_name] = contents
+
+        # Get directory of file to update
+        directory = os.path.dirname(file_name)
+
+        # Command to apply the patch
+        cmd = f"patch < {patch_name}"
+        msg = ''
+        try:
+            stdout, stderr, exitcode = yield utils.getProcessOutputAndValue(
+                "/bin/sh",
+                args=["-c", cmd],
+                path=directory)
+            if exitcode == 0:
+                msg = stdout.decode()
+            else:
+                msg = stderr.decode()
+        except Exception as err:
+            self.log.error("Error while writing patch file for AI...{msg}", msg=msg)
+            msg = f"Exception applying patch_file {name}: {err}"
+
+        self.log.info("Patch<<{name} {msg}", name=name, msg=msg)
+
+        return {'role': 'function', 'name': 'patch_file', 'content': msg}
+
     functions = [
         {
             "name": "read_file",
@@ -145,12 +172,35 @@ class AI:
                 },
                 "required": ["name", "contents"],
             },
+        },
+        {
+            "name": "patch_file",
+            "description": "Run Patch file",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "file_name": {
+                        "type": "string",
+                        "description": "The name of the file to be patched",
+                    },
+                    "patch_name": {
+                        "type": "string",
+                        "description": "The name of the patch to be applied",
+                    },
+                    "contents": {
+                        "type": "string",
+                        "description": "The contents of the patch file",
+                    },
+                },
+                "required": ["file_name", "patch_name", "contents"],
+            },
         }
     ]
     available_functions = {
         "read_file": read_file,
         "write_file": write_file,
-    }  # only one function in this example, but you can have multiple
+        "patch_file": patch_file,
+    }
 
     @inlineCallbacks
     def generate(self, step, user_messages: list[dict[str, str]]) -> dict[str, str]:
@@ -171,53 +221,38 @@ class AI:
 
                 step.update_gui()
                 ai_response = yield self.chat(self.messages)
-                response_message = {'role': ai_response.choices[0].message['role'],
-                                    'content': ai_response.choices[0].message['content']
+                response_message = {'role': ai_response.choices[0].message.role,
+                                    'content': ai_response.choices[0].message.content
                                     }
                 function_name = None
                 function_args = None
                 if ai_response.choices[0].finish_reason == 'function_call':
                     # if ai_response.choices[0].message.get("function_call"):
-                    call_function = ai_response.choices[0].message.get("function_call")
-                    function_name = call_function["name"]
-                    try:
-                        t_args = call_function["arguments"]
-                        begin = t_args.find('"contents": "')
-                        if begin == -1:
-                            t1_args = t_args
-                        else:
-                            end = t_args.rfind('"')
-                            t1_args = t_args[:begin] + t_args[begin:end].replace('\n', '\\n') + t_args[end:]
-                        function_args = json.loads(t1_args)
-                    except JSONDecodeError as err:
-                        err_msg = err.args[0]
-                        self.log.warn("While parsing arguments for function call {name}\n{err_msg}",
-                                       name=function_name, err_msg=err_msg)
-                        # Okay Send error back to AI...
-                        repeat = True
-                        response_message['function_call'] = {'name': function_name, 'arguments': call_function["arguments"]}
-                        response_message['content'] = f'Arguments are not valid Jason\n{err_msg}'
-                        self.messages.append(response_message)
-                        self.log.info("    --> msg:{msg}", msg=response_message)
-                        continue
-
-                    response_message['function_call'] = {'name': function_name, 'arguments': call_function["arguments"]}
+                    function_call = ai_response.choices[0].message.function_call
+                    function_name = function_call.name
+                    function_args = json.loads(function_call.arguments)
+                    response_message['function_call'] = {'name': function_name, 'arguments': function_call.arguments}
                 else:
                     self.answer = f"{self.answer}\n\n - {response_message['content']}"
 
                 self.messages.append(response_message)
                 self.log.info("    <-- msg:{msg}", msg=response_message)  # Display with last message
                 if ai_response.choices[0].finish_reason == 'function_call':
-                    new_msg = self.available_functions[function_name](self, **function_args)
+                    new_msg = yield self.available_functions[function_name](self, **function_args)
                     self.messages.append(new_msg)
                     self.log.info("    --> msg:{msg}", msg=new_msg)
                     repeat = True
+                else:
+                    lines = response_message['content'].split("\n")
+                    if lines[-1].lower().endswith("continue?"):
+                        repeat = True
+                        self.messages.append({'role': 'User', 'content': 'Continue.'})
 
                 # Gather Answer
                 self.e_stats['prompt_tokens'] = \
-                    self.e_stats['prompt_tokens'] + ai_response['usage']['prompt_tokens']
+                    self.e_stats['prompt_tokens'] + ai_response.usage.prompt_tokens
                 self.e_stats['completion_tokens'] = \
-                    self.e_stats['completion_tokens'] + ai_response['usage']['completion_tokens']
+                    self.e_stats['completion_tokens'] + ai_response.usage.completion_tokens
 
         self.e_stats['sp_cost'] = pricing['input'] * (self.e_stats['prompt_tokens'] / 1000.0)
         self.e_stats['sc_cost'] = pricing['output'] * (self.e_stats['completion_tokens'] / 1000.0)
@@ -230,32 +265,24 @@ class AI:
 
         # AI.log.info(f"Calling {self.model} chat with messages: ")
         try:
-            response = yield as_deferred(openai.ChatCompletion.acreate(
+            response = yield as_deferred(AI.client.chat.completions.create(
                 messages=messages,
                 model=self.model,
                 temperature=self.temperature,
                 functions=self.functions,
-                function_call="auto",
-            ))
+                function_call="auto")
+            )
+            # messages = messages,
+            # model = self.model,
+            # temperature = self.temperature,
+            # tools = self.functions,
+            # tools_choice = "auto"
         except Exception as err:
             self.log.error("Call to ChatGpt returned error: {err}", err=err)
             raise
 
         # AI.log.info(f"{self.model} chat Response")
         return response
-
-    @inlineCallbacks
-    def complete(self, prompt: str) -> dict:
-
-        # AI.log.info(f"Calling {self.model} complete with prompt: ")
-        completion = yield as_deferred(openai.Completion.acreate(
-            model=self.model,
-            prompt=prompt,
-            max_tokens=self.max_tokens,
-            temperature=self.temperature,
-        ))
-        # AI.log.info(f"{self.model} Response")
-        return completion
 
     def to_json(self) -> dict:
         return {
@@ -273,8 +300,8 @@ class AI:
     def from_json(cls, param) -> AI:
         return cls(**param)
 
+
 if __name__ == "__main__":
-    my_models = {m.id for m in AI.models['data'] }
-    print(f"Models: {AI.models['data']}")
-    for m in sorted(my_models):
-        print(f'\t{m}')
+    print(f"Models: {len(OpenAI_API_Costs)}")
+    for m in sorted(OpenAI_API_Costs):
+        print(f'\t{OpenAI_API_Costs[m]}')

@@ -9,5 +9,5 @@ Following the Implementation Plan write the client to Snake6/Code/SnakeClient.ht
 .exec
 Study the client:
 Check that all routines have been fully impelmented, and nothing is left undone.
-implement any changes via a patch file Snake6/Code/SnakeClient.patch
+implement any changes by rewriting Snake6/Code/SnakeClient.py
 

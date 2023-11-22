@@ -1,5 +1,5 @@
 import jsonpickle as jsonpickle
-from KbServerApp.step import Step
+from step import Step
 
 
 def ProcessList_save(pl):

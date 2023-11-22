@@ -1,0 +1,16 @@
+--- SnakeServer.py	(original)
++++ SnakeServer.py	(modified)
+@@ -22,7 +22,10 @@
+ def initialize_game_board() -> str:
+     """
+     Create a 100x100 2D character array filled with spaces.
+     Return the initialized game board as a string.
++
++    :return: A string representing the initialized game board.
+     """
+-    # Placeholder for initialize_game_board implementation
+-    pass
++    board_size = 100
++    game_board = ' ' * (board_size * board_size)
++    return game_board
+ 

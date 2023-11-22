@@ -8,5 +8,13 @@
       <jdbc-url>jdbc:postgresql://localhost:5432/knowledgebase</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="asterisk@asterisk" uuid="25f0773e-b670-43a8-ac95-6b58aad8b323">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <remarks>Asterisk Configuration Database thru SSH</remarks>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://localhost:5432/asterisk</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

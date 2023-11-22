@@ -9,4 +9,4 @@ Include extensive documentation for each function.
 Write the plan to the file 'Snake6/Planning/Client_Implementation_Plan.md'
 .exec
 Study the implementation plan, check that all requirements are included, and that all routines are described.
-Implement any changes via a .patch file named Snake6/Planning/Client_implementation_Plan.patch
+Implement any changes by rewriting  Snake6/Planning/Client_implementation_Plan.md

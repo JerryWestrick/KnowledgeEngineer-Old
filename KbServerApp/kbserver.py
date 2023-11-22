@@ -12,9 +12,9 @@ from dotenv import load_dotenv, find_dotenv
 from twisted.internet.defer import inlineCallbacks, returnValue
 from twisted.logger import Logger
 
-from KbServerApp.OpenAI_API_Costs import OpenAI_API_Costs
-from KbServerApp.Processes import ProcessList, ProcessList_save, ProcessList_load
-from KbServerApp.step import Step
+from OpenAI_API_Costs import OpenAI_API_Costs
+from Processes import ProcessList, ProcessList_save, ProcessList_load
+from step import Step
 
 load_dotenv(find_dotenv())
 

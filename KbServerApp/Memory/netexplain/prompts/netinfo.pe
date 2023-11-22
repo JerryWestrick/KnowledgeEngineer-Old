@@ -1,0 +1,12 @@
+.system
+You are a python programmer and linux expert.
+We are writting the program 'netexplain/code/netinfo.py'.
+you can upload and download it directly.
+
+.user
+.include netexplain/prompts/netinfo_requirements.md
+
+generate code.  
+check it for syntax errors.
+write  'netexplain/code/netinfo.py'.
+

@@ -9,8 +9,8 @@ import time
 from twisted.internet.defer import inlineCallbacks
 from twisted.logger import Logger
 
-from KbServerApp.ai import AI
-from KbServerApp.db import DB
+from ai import AI
+from db import DB
 
 
 class Step:

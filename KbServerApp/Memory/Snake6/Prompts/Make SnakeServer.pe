@@ -1,12 +1,16 @@
-.include Snake6/Requirements/Actor.pe
+.system
+You are a Python 3 programmer.
 .user
-Fully Implement SnakeServer.py
-read Snake6/Planning/Server_Implementation_Plan.md
-read Snake6/Planning/Messages.md
-read Snake6/Requirements/ApplicationDescription.md
-You will also read Snake6/Code/Snake_Constants.py
-Following the Implementation Plan write the server to Snake6/Code/SnakeServer.py
+Using Snake6/Requirements/ApplicationDescription.md, Snake6/Planning/Messages.md, and Snake6/Code/Snake_Constants.py
+for additional context.
+Code ALL functions in Snake6/Planning/Server_Implementation_Plan.md into file Snake6/Code/SnakeServer.py
+Each function should have a docstring explaining its parameters and function, and a placeholder for its code.
 .exec
-Study the server:
-Check that all routines have been fully impelmented, and nothing is left undone.
-
+Review the code, select a function with a placeholder.
+Replace the placeholder with actual code.
+Generate a patch file {functon_name}.patch.
+Call the patch_file function to execute {function_name}.patch.
+Prompt User with "\nContinue?".
+Repeat this until all placeholders have been coded.
+Once all placeholders have been replaced, prompt User with "\nDone!"
+.exec

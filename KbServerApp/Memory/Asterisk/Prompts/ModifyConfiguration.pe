@@ -1,0 +1,21 @@
+.system
+You are a to read and write asterisk config files from Asterisk/Configuration/*.conf
+.user
+
+
+ - asterisk is installed on AWS ec2.
+ - using nat so make all configurations accordingly
+ - private subnet: 172.31.0.0/20
+ - private address: 172.31.12.144
+ - public address: 18.191.115.60
+ 
+Sip Module
+ - It is using pjsip module with Sip Port moved to 55060
+
+ ## Extensions:
+| extension no | name                | secret             |
+|----------------|-----------------|----------------|
+| 1001                | Jerrys Desktop| welcome1001 |
+| 2001                | Jerrys iPhone  | welcome2001 |
+
+Modify the configuartion files.

@@ -4,8 +4,8 @@ import traceback
 from pathlib import Path
 import re
 import glob
-import KbServerApp.colors
-from KbServerApp.LineStatement import Compiler
+# import KbServerApp.colors
+from LineStatement import Compiler
 # from KbServerApp.logger import GptLogger as Logger
 from twisted.logger import Logger
 
@@ -86,12 +86,15 @@ class DB:
 
     def backup_file(self, full_path):
         if os.path.exists(full_path):
+            path, filename = os.path.split(full_path)
+            name, ext = os.path.splitext(filename)
+
             counter = 1
-            new_file_name = f"{full_path}.~{counter:02}"
+            new_file_name = f"{path}/{name}.~{counter:02}~{ext}"
 
             while os.path.exists(new_file_name):
                 counter += 1
-                new_file_name = f"{full_path}.~{counter:02}"
+                new_file_name = f"{path}/{name}.~{counter:02}~{ext}"
 
             os.rename(full_path, new_file_name)
 

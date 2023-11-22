@@ -1,0 +1,31 @@
+.system 
+When you need to read or write an Asterisk configuration file,  prefix the file with 'Asterisk/Configuration/etc/asterisk/'.
+The configuration is based on "basic sample pbx" set.
+It is hosted on AWS ec2.
+it uses pjsip
+
+.user 
+Currently the configuration is for pjsip.  
+Can you modify the configuration to use AIX.  
+You can read and write all files from the 'Asterisk/Configuration/etc/asterisk/' directory.
+.exec
+
+Change the global configuration to use AIX instead of pjsip.
+.exec 
+
+read Asterisk/Configuration/etc/asterisk/EmployeeTelephoneList.csv which has a list of employees.
+Functionality To be implemented (using AIX) is:
+
+1. To call an employee a person would dial the employee's desk extension,
+ - which would ring for 30 seconds,
+ - if no answer then it would ring on thier phone for 30 seconds,
+ - If no answer then the caller would be asked to leave a message,
+ - which would be sent to employee's email.
+
+2. It is possible to call a persons phone directly
+ - which would ring for 30 seconds,
+ - If no answer then the caller would be asked to leave a message,
+ - which would be sent to employee's email.
+
+Implement by creating templates and includes by extending the conf files at:  'Asterisk/Configuration/etc/asterisk/'.
+.exec

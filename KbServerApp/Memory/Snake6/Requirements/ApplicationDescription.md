@@ -1,21 +1,21 @@
 
 # Game constants
-BOARD_SIZE = 100
-SNAKE_CHARACTERS = ["🔴", "🔵", "🟠", "🟡", "🟢", "🟣", "🟤"]
-FOOD_CHAR = "🍎"
-FOOD_COUNT = 5
-DIRECTION = {"Stop": (0, 0), "Up": (0,-1), "Down": (0,1), "Left": (-1,0), "Right": (1,0) }
-
-
-GameStatus = {
-    "game_board": " " * (BOARD_SIZE * BOARD_SIZE),  # (100 strings of 100 spaces)
-    "free_snake_chars": ["🔴", "🔵", "🟠", "🟡", "🟢", "🟣", "🟤"],
-    "foods": [(50, 2), (5, 20), (34, 12), (50, 2), (12, 98)],
-    "clients": {
-      websocket1: {"name": "Jerry", "char": "🔴", "snake": [(5, 3), (5, 4), (6, 4)], "score": 127, "direction": "Up"},
-      websocket2: {"name": "Tom", "char": "🔵", "snake": [(6, 12), (6, 13), (6, 14)], "score": 27, "direction": "Left"}
+    BOARD_SIZE = 100
+    SNAKE_CHARACTERS = ["🔴", "🔵", "🟠", "🟡", "🟢", "🟣", "🟤"]
+    FOOD_CHAR = "🍎"
+    FOOD_COUNT = 5
+    DIRECTION = {"Stop": (0, 0), "Up": (0,-1), "Down": (0,1), "Left": (-1,0), "Right": (1,0) }
+    
+    
+    GameStatus = {
+        "game_board": " " * (BOARD_SIZE * BOARD_SIZE),  # (100 strings of 100 spaces)
+        "free_snake_chars": ["🔴", "🔵", "🟠", "🟡", "🟢", "🟣", "🟤"],
+        "foods": [(50, 2), (5, 20), (34, 12), (50, 2), (12, 98)],
+        "clients": {
+          websocket1: {"name": "Jerry", "char": "🔴", "snake": [(5, 3), (5, 4), (6, 4)], "score": 127, "direction": "Up"},
+          websocket2: {"name": "Tom", "char": "🔵", "snake": [(6, 12), (6, 13), (6, 14)], "score": 27, "direction": "Left"}
+        }
     }
-}
 
 ### Note: 
 

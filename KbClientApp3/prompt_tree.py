@@ -95,7 +95,7 @@ class PromptTree(QWidget):
         self.tree_widget.itemCollapsed.connect(self.handle_collapsed)
         self.tree_widget.setContextMenuPolicy(Qt.CustomContextMenu)
         self.tree_widget.customContextMenuRequested.connect(self.on_context_menu)
-        REGISTER_CALLBACK(self, method_list=['process_list_initial_load'])
+        REGISTER_CALLBACK(self, method_list=['memory_initial_load'])
 
     def log(self, action, message):
         LOG({'system': 'PromptTree', 'action': action, 'message': message})

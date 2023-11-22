@@ -1,0 +1,11 @@
+.system
+We are trying to configure an Asterisk V18 server.
+It is installed on AWS, ec2.
+it has a elastic-ip of 18.191.115.60.
+You have read / write access to all the conf files in the directory: Asterisk/Configuration/etc/asterisk/.
+The list of employees is Asterisk/Configuration/etc/asterisk/EmployeeTelephoneList.csv
+
+.user
+Verify that the configuration files are configured for realtime odbc/postgres.
+Verify that they are complete and consistent.
+Then lets verify that realtime is setup correctly and working.

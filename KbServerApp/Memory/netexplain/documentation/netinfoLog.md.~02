@@ -1,0 +1,110 @@
+Log of Step: netinfo : netexplain/prompts/netinfo.pe
+
+
+ - The `netinfo.py` program has been written and saved as `netexplain/code/netinfo.py`. Here is the code:
+
+```python
+# netinfo.py
+
+import subprocess
+
+
+# Function to get program information
+
+def get_program_info(pid):
+    program_info = {}
+    try:
+        # Get program name
+        program_name = subprocess.check_output(['ps', '-p', str(pid), '-o', 'comm=']).decode().strip()
+        program_info['Program'] = program_name
+        # Get program UID, user, CWD, and command
+        program_details = subprocess.check_output(['ps', '-p', str(pid), '-o', 'uid=', '-o', 'user=', '-o', 'cwd=', '-o', 'cmd=']).decode().strip().splitlines()
+        uid = program_details[0]
+        user = program_details[1]
+        cwd = program_details[2]
+        command = program_details[3]
+        program_info['UID'] = uid
+        program_info['User'] = user
+        program_info['CWD'] = cwd
+        program_info['Command'] = command
+    except subprocess.CalledProcessError:
+        pass
+    return program_info
+
+
+# Function to get listening ports
+
+def get_listening_ports():
+    listening_ports = []
+    try:
+        netstat_output = subprocess.check_output(['netstat', '-tunlp']).decode().strip().splitlines()
+        for line in netstat_output[2:]:
+            line_parts = line.split()
+            protocol = line_parts[0]
+            local_port = line_parts[3].split(':')[1]
+            remote_host = line_parts[4].split(':')[0]
+            remote_port = line_parts[4].split(':')[1]
+            listening_ports.append({'Protocol': protocol, 'Local Port': local_port, 'Remote Host': remote_host, 'Remote Port': remote_port})
+    except subprocess.CalledProcessError:
+        pass
+    return listening_ports
+
+
+# Function to resolve hostnames
+
+def resolve_hostnames(ports):
+    for port in ports:
+        try:
+            hostname = subprocess.check_output(['host', port['Remote Host']]).decode().strip().split()[-1]
+            port['Remote Host'] = f'{hostname} ({port['Remote Host']})'
+        except subprocess.CalledProcessError:
+            pass
+    return ports
+
+
+# Function to evaluate ports
+
+def evaluate_ports(ports):
+    for port in ports:
+        if port['Protocol'] == 'tcp' and port['Remote Port'] == '443':
+            port['Evaluation'] = 'Normal'
+        elif port['Protocol'] == 'tcp6' and port['Remote Port'] == '443':
+            port['Evaluation'] = 'Normal'
+        else:
+            port['Evaluation'] = 'Unusual'
+    return ports
+
+
+# Main function
+
+def main():
+    program_info = get_program_info(3674)
+    listening_ports = get_listening_ports()
+    resolved_ports = resolve_hostnames(listening_ports)
+    evaluated_ports = evaluate_ports(resolved_ports)
+    
+    # Print program information
+    print('Program:', program_info['Program'], f'({pid})')
+    print('UID:', program_info['UID'])
+    print('User:', program_info['User'])
+    print('CWD:', program_info['CWD'])
+    print('Command:', program_info['Command'])
+    
+    # Print listening ports
+    print('Listening Ports:')
+    if len(evaluated_ports) == 0:
+        print('None')
+    else:
+        for port in evaluated_ports:
+            print('Local Port:', port['Local Port'])
+            print('Remote Host:', port['Remote Host'])
+            print('Remote Port:', port['Remote Port'])
+            print('Evaluation:', port['Evaluation'])
+            print()
+
+
+if __name__ == '__main__':
+    main()
+```
+
+Please let me know if you need any further assistance.
