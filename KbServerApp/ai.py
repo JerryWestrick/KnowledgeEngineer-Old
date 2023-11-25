@@ -4,6 +4,8 @@ import json
 import os
 from openai import AsyncOpenAI
 
+import re
+
 from dotenv import load_dotenv
 from twisted.internet import utils
 from twisted.internet.defer import inlineCallbacks, succeed
@@ -26,14 +28,6 @@ class AI:
     #
     client = AsyncOpenAI()
     client.api_key = os.getenv('OPENAI_API_KEY')
-
-
-    # @classmethod
-    # def list_models(cls):
-    #     l: list[str] = []
-    #     for m in cls.models.data:
-    #         l.append(m['id'])
-    #     return l
 
     def __init__(self,
                  model: str = "gpt-4",
@@ -114,13 +108,13 @@ class AI:
 
     @inlineCallbacks
     def patch_file(self, file_name: str, patch_name: str, contents: str) -> dict[str, str]:
-        self.memory[patch_name] = contents
-
-        # Get directory of file to update
-        directory = os.path.dirname(file_name)
+        dir_name = os.path.dirname(file_name)
+        directory = f"Memory/{dir_name}"
+        pname = os.path.basename(patch_name)
+        self.memory[f"{dir_name}/{pname}"] = contents
 
         # Command to apply the patch
-        cmd = f"patch < {patch_name}"
+        cmd = f"patch < {pname}"
         msg = ''
         try:
             stdout, stderr, exitcode = yield utils.getProcessOutputAndValue(
@@ -138,6 +132,25 @@ class AI:
         self.log.info("Patch<<{name} {msg}", name=patch_name, msg=msg)
 
         return {'role': 'function', 'name': 'patch_file', 'content': msg}
+
+    @inlineCallbacks
+    def replace_function(self, file_name: str, old_code: str, new_code: str) -> dict:
+        try:
+            # Reading the entire file content
+            file_contents = self.memory.read(file_name)
+
+            # Replacing old code with new code
+            updated_contents = file_contents.replace(old_code, new_code)
+
+            # Writing the updated content back to the file
+            self.memory[file_name] = updated_contents
+
+            result = yield succeed({'role': 'function', 'name': 'replace_function', 'content': 'Function Successfully replaced'})
+            return result
+
+        except Exception as e:
+            result = yield succeed({'role': 'function', 'name': 'replace_function', 'content': f"An error occurred: {e}"})
+            return result
 
     functions = [
         {
@@ -193,12 +206,37 @@ class AI:
                 },
                 "required": ["file_name", "patch_name", "contents"],
             },
+        },
+        {
+            "name": "replace_function",
+            "description": "In the file named file_name,"
+                           "search for a function called function_name with old definition of old_code, "
+                           "and replace it with the new definition of new_code",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "file_name": {
+                        "type": "string",
+                        "description": "The name of the file to be modified",
+                    },
+                    "old_code": {
+                        "type": "string",
+                        "description": "the lines of code of the old function definition",
+                    },
+                    "new_code": {
+                        "type": "string",
+                        "description": "the lines of code of the new function definition",
+                    },
+                },
+                "required": ["file_name", "old_code", "new_code"],
+            },
         }
     ]
     available_functions = {
         "read_file": read_file,
         "write_file": write_file,
         "patch_file": patch_file,
+        "replace_function": replace_function,
     }
 
     @inlineCallbacks
@@ -245,7 +283,7 @@ class AI:
                     lines = response_message['content'].split("\n")
                     if lines[-1].lower().endswith("continue?"):
                         repeat = True
-                        self.messages.append({'role': 'User', 'content': 'Continue.'})
+                        self.messages.append({'role': 'user', 'content': 'Continue.'})
 
                 # Gather Answer
                 self.e_stats['prompt_tokens'] = \
